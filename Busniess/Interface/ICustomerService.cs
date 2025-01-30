@@ -6,7 +6,7 @@ namespace Busniess.Interface
     {
         Task AddCustomers(CustomerEntity customer);
         Task DeleteCustomersAsync(int id);
-        Task<List<CustomerEntity>> GetAllCustomersAsaync();
+        Task<List<CustomerEntity>> GetAllCustomersAsync();
         Task<CustomerEntity?> GetCustomersByIdAsync(int id);
         Task UpdateCustomersAsync(CustomerEntity customer);
     }

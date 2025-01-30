@@ -18,7 +18,7 @@ public class CustomerService : ICustomerService
     {
         await _customerRepository.AddAsync(customer);
     }
-    public async Task<List<CustomerEntity>> GetAllCustomersAsaync()
+    public async Task<List<CustomerEntity>> GetAllCustomersAsync()
     {
         return await _customerRepository.GetAllAsync();
     }

@@ -19,7 +19,7 @@ public class ProjectService : IProjectService
     {
         await _projectRepository.AddAsync(project);
     }
-    public async Task<List<ProjectEntity>> GetAllProjectsAsaync()
+    public async Task<List<ProjectEntity>> GetAllProjectsAsync()
     {
         return await _projectRepository.GetAllAsync();
     }
@@ -34,7 +34,7 @@ public class ProjectService : IProjectService
         await _projectRepository.UpdateAsync(project);
     }
 
-    public async Task DeletePorjectAsync(int id)
+    public async Task DeleteProjectAsync(int id)
     {
         await _projectRepository.DeleteAsync(id);
     }

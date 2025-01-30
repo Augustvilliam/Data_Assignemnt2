@@ -7,34 +7,34 @@ namespace Busniess.Services;
 
 public class EmployeeService : IEmployeeService
 {
-    private readonly IGenericRepository<EmployeeEntity> _employeeRespitory;
+    private readonly IGenericRepository<EmployeeEntity> _employeeRepository;
 
     public EmployeeService(IGenericRepository<EmployeeEntity> employeeRepository)
     {
-        _employeeRespitory = employeeRepository;
+        _employeeRepository = employeeRepository;
     }
 
     public async Task AddEmployee(EmployeeEntity project)
     {
-        await _employeeRespitory.AddAsync(project);
+        await _employeeRepository.AddAsync(project);
     }
-    public async Task<List<EmployeeEntity>> GetAllEmployeesAsaync()
+    public async Task<List<EmployeeEntity>> GetAllEmployeesAsync()
     {
-        return await _employeeRespitory.GetAllAsync();
+        return await _employeeRepository.GetAllAsync();
     }
 
     public async Task<EmployeeEntity?> GetEmployeeByIdAsync(int id)
     {
-        return await _employeeRespitory.GetByIdAsync(id);
+        return await _employeeRepository.GetByIdAsync(id);
     }
 
     public async Task UpdateEmployeeAsync(EmployeeEntity project)
     {
-        await _employeeRespitory.UpdateAsync(project);
+        await _employeeRepository.UpdateAsync(project);
     }
 
     public async Task DeleteEmployeeAsync(int id)
     {
-        await _employeeRespitory.DeleteAsync(id);
+        await _employeeRepository.DeleteAsync(id);
     }
 }

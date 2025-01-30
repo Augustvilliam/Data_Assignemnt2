@@ -6,7 +6,7 @@ namespace Busniess.Interface
     {
         Task AddService(ServiceEntity project);
         Task DeleteServiceAsync(int id);
-        Task<List<ServiceEntity>> GetAllServiceAsaync();
+        Task<List<ServiceEntity>> GetAllServicesAsync();
         Task<ServiceEntity?> GetServiceByIdAsync(int id);
         Task UpdateServiceAsync(ServiceEntity project);
     }

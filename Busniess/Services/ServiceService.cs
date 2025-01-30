@@ -8,34 +8,34 @@ namespace Busniess.Services;
 
 public class ServiceService : IServiceService
 {
-    private readonly IGenericRepository<ServiceEntity> _serviceRespitory;
+    private readonly IGenericRepository<ServiceEntity> _serviceRepository;
 
     public ServiceService(IGenericRepository<ServiceEntity> serviceRepository)
     {
-        _serviceRespitory = serviceRepository;
+        _serviceRepository = serviceRepository;
     }
 
     public async Task AddService(ServiceEntity project)
     {
-        await _serviceRespitory.AddAsync(project);
+        await _serviceRepository.AddAsync(project);
     }
-    public async Task<List<ServiceEntity>> GetAllServiceAsaync()
+    public async Task<List<ServiceEntity>> GetAllServicesAsync()
     {
-        return await _serviceRespitory.GetAllAsync();
+        return await _serviceRepository.GetAllAsync();
     }
 
     public async Task<ServiceEntity?> GetServiceByIdAsync(int id)
     {
-        return await _serviceRespitory.GetByIdAsync(id);
+        return await _serviceRepository.GetByIdAsync(id);
     }
 
     public async Task UpdateServiceAsync(ServiceEntity project)
     {
-        await _serviceRespitory.UpdateAsync(project);
+        await _serviceRepository.UpdateAsync(project);
     }
 
     public async Task DeleteServiceAsync(int id)
     {
-        await _serviceRespitory.DeleteAsync(id);
+        await _serviceRepository.DeleteAsync(id);
     }
 }

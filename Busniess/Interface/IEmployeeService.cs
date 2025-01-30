@@ -6,7 +6,7 @@ namespace Busniess.Interface
     {
         Task AddEmployee(EmployeeEntity project);
         Task DeleteEmployeeAsync(int id);
-        Task<List<EmployeeEntity>> GetAllEmployeesAsaync();
+        Task<List<EmployeeEntity>> GetAllEmployeesAsync();
         Task<EmployeeEntity?> GetEmployeeByIdAsync(int id);
         Task UpdateEmployeeAsync(EmployeeEntity project);
     }
