@@ -4,6 +4,7 @@ using Microsoft.Extensions.Logging;
 using Busniess.Interface;
 using Busniess.Services;
 using System.Diagnostics;
+using MobileApp.ViewModels;
 
 namespace MobileApp;
 
@@ -34,6 +35,7 @@ public static class MauiProgram
         builder.Services.AddScoped<IEmployeeService, EmployeeService>();
         builder.Services.AddScoped<ICustomerService, CustomerService>();
         builder.Services.AddScoped<IServiceService, ServiceService>();
+        builder.Services.AddSingleton<ProjectViewModel>();
 
 #if DEBUG
         builder.Logging.AddDebug();

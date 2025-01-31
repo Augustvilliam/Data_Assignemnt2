@@ -65,7 +65,7 @@ public class DbInitializer
 
 
 
-    public void TestData()
+    public void TestData()  //typ hela denna är copypast från chatGPT., minus debug.Writeline för skiten inte ville funka.
     {
         using var connection = new SqliteConnection(_connectionString);
         connection.Open();
@@ -96,11 +96,11 @@ public class DbInitializer
             using var command = new SqliteCommand(sql, connection);
             command.ExecuteNonQuery();
 
-            Debug.WriteLine("✅ Testdata har lagts till!");
+            Debug.WriteLine("Testdata funkar");
         }
         else
         {
-            Debug.WriteLine("⚠️ Testdata finns redan, inga nya poster lades till.");
+            Debug.WriteLine("Testdata finns redan");
         }
     }
 
@@ -124,10 +124,10 @@ public class DbInitializer
         Debug.WriteLine("\n📝 Projekt i databasen:");
         while (reader.Read())
         {
-            Debug.WriteLine($"📌 Projekt: {reader.GetString(0)}");
-            Debug.WriteLine($"👤 Kund: {reader.GetString(1)}");
-            Debug.WriteLine($"👨‍💻 Anställd: {reader.GetString(2)}");
-            Debug.WriteLine($"🛠️ Tjänst: {reader.GetString(3)}");
+            Debug.WriteLine($"Projekt: {reader.GetString(0)}");
+            Debug.WriteLine($"Kund: {reader.GetString(1)}");
+            Debug.WriteLine($"Anställd: {reader.GetString(2)}");
+            Debug.WriteLine($"Tjänst: {reader.GetString(3)}");
             Debug.WriteLine("---------------------------");
         }
     }
