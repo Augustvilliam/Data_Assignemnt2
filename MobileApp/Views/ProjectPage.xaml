@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8" ?>
-<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+<ContentPage  xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-             x:Class="MobileApp.Pages.ProjectPage"
+             x:Class="MobileApp.Views.ProjectPage"
              Title="ProjectPage">
     <VerticalStackLayout>
         <CollectionView>
@@ -17,12 +17,13 @@
                 </DataTemplate>
             </CollectionView.ItemTemplate>
         </CollectionView>
-        
+
         <Button 
             Text="Create Project"
             Command="{Binding AddProjectCommand}"
             Background="DarkOliveGreen"
             TextColor="White"/>
-            
+
     </VerticalStackLayout>
 </ContentPage>
+    

@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="DataMauiApp.Views.ProjectsPage"
+             Title="ProjectsPage">
+    <VerticalStackLayout>
+        <CollectionView>
+            <CollectionView.ItemTemplate>
+                <DataTemplate>
+                    <Border Stroke="Grey">
+                        <VerticalStackLayout>
+                            <Label Text="{Binding Name}" FontSize="20" FontAttributes="Bold" />
+                            <Label  Text="{Binding Status}" FontSize="20" FontAttributes="Bold" />
+                            <Button BackgroundColor="DarkOliveGreen" Text="Details" Command="{Binding ViewProjectCommand}" CommandParameter="{Binding Id}"/>
+                        </VerticalStackLayout>
+                    </Border>
+                </DataTemplate>
+            </CollectionView.ItemTemplate>
+        </CollectionView>
+        <Button Text="New Projeckt"
+                Command="{Binding AddProjectCommand}"
+                Background="DarkOliveGreen"/>
+    </VerticalStackLayout>
+</ContentPage>

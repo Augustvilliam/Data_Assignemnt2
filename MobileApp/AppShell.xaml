@@ -3,12 +3,14 @@
     x:Class="MobileApp.AppShell"
     xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-    xmlns:local="clr-namespace:MobileApp"
+    xmlns:local="clr-namespace:MobileApp.Views"
     Shell.FlyoutBehavior="Flyout"
     Title="MobileApp">
 
     <ShellContent
-        Title="Projekt"
-        ContentTemplate="{DataTemplate MobileApp.Pages.ProjectsPage}" />
-        
+            Title="Projekt"
+            ContentTemplate="{DataTemplate local:ProjectsPage}" 
+        />
+
+
 </Shell>

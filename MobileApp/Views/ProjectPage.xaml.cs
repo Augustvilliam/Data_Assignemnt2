@@ -1,9 +1,9 @@
-namespace MobileApp.Pages;
+namespace MobileApp.Views;
 
 public partial class ProjectPage : ContentPage
 {
 	public ProjectPage()
 	{
-        InitializeComponent();
+		InitializeComponent();
 	}
 }

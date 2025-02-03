@@ -7,7 +7,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Data", "Data\Data.csproj", 
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Busniess", "Busniess\Busniess.csproj", "{B442C65C-3CB3-4095-98DE-FDB68B2F995F}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MobileApp", "MobileApp\MobileApp.csproj", "{79906576-0E94-498E-AA73-92DC22B930DB}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DataMauiApp", "DataMauiApp\DataMauiApp.csproj", "{35039A63-6779-4021-BC12-31FA6A7B28AF}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -23,10 +23,10 @@ Global
 		{B442C65C-3CB3-4095-98DE-FDB68B2F995F}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{B442C65C-3CB3-4095-98DE-FDB68B2F995F}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{B442C65C-3CB3-4095-98DE-FDB68B2F995F}.Release|Any CPU.Build.0 = Release|Any CPU
-		{79906576-0E94-498E-AA73-92DC22B930DB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{79906576-0E94-498E-AA73-92DC22B930DB}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{79906576-0E94-498E-AA73-92DC22B930DB}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{79906576-0E94-498E-AA73-92DC22B930DB}.Release|Any CPU.Build.0 = Release|Any CPU
+		{35039A63-6779-4021-BC12-31FA6A7B28AF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{35039A63-6779-4021-BC12-31FA6A7B28AF}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{35039A63-6779-4021-BC12-31FA6A7B28AF}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{35039A63-6779-4021-BC12-31FA6A7B28AF}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

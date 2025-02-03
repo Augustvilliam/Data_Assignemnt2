@@ -5,7 +5,7 @@ using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using Data.Entities;
 using Busniess.Interface;
-using MobileApp.Pages;
+using MobileApp.Views;
 
 namespace MobileApp.ViewModels;
 
