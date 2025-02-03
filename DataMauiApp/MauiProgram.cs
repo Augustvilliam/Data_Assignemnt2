@@ -18,16 +18,10 @@ namespace DataMauiApp
                     fonts.AddFont("OpenSans-Semibold.ttf", "OpenSansSemibold");
                 });
             builder.Services.AddSingleton<ProjectsViewModel>();
-            Debug.WriteLine("ProjectssssViewmodel Funkar.");
-
             builder.Services.AddTransient<ProjectViewModel>();
-            Debug.WriteLine("ProjectViewmode Funkar.");
-
-            builder.Services.AddSingleton<ProjectsPage>();
-            Debug.WriteLine("ProjectssssPage Funkar.");
 
             builder.Services.AddTransient<ProjectPage>();
-            Debug.WriteLine("ProjectPage Funkar.");
+            builder.Services.AddTransient<ProjectsPage>();
 
 
 #if DEBUG

@@ -35,22 +35,28 @@ namespace DataMauiApp.ViewModels
             Debug.WriteLine("LoadProject Funkar.");
         }
 
-
         [RelayCommand]
         private async Task AddProject()
         {
             await Shell.Current.GoToAsync(nameof(ProjectPage));
         }
+
         [RelayCommand]
         private async Task ViewProject(int id)
         {
-            var parameters = new Dictionary<string, object>
+            var selectedProject = Projects.FirstOrDefault(p => p.Id == id);
+            if (selectedProject != null)
             {
-                { "CurrentProject", Projects.FirstOrDefault(p => p.Id == id) }
-            };
-            await Shell.Current.GoToAsync(nameof(ProjectPage), parameters);
-            Debug.WriteLine("ViewProjects Funkar.");
-
+                var parameters = new Dictionary<string, object>
+                {
+                    { "CurrentProject", selectedProject }
+                };
+                await Shell.Current.GoToAsync(nameof(ProjectPage), parameters);
+            }
+            else
+            {
+                Debug.WriteLine($"Projekt med ID {id} hittades ej!");
+            }
         }
     }
 }

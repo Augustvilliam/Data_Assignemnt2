@@ -5,8 +5,8 @@
              Title="ProjectPage">
     <VerticalStackLayout>
         <Label Text="Project Details" />
-        <Entry Placeholder="Name" Text="{Binding CurrentProject.Name}" />
-        <Entry Placeholder="Status" Text="{Binding CurrentProject.Status}" />
-        <Button Text="Save" Command="{Binding SaveProjectCommand}" />
+        <Entry Placeholder="Name" Text="{Binding CurrentProject.Name, Mode=TwoWay}" />
+        <Entry Placeholder="Status" Text="{Binding CurrentProject.Status, Mode=TwoWay}" />
+        <Button Text="Save" Command="{Binding SaveProjectCommand, Mode=TwoWay}" />
     </VerticalStackLayout>
 </ContentPage>

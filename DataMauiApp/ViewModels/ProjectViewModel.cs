@@ -23,16 +23,17 @@ public partial class ProjectViewModel : ObservableObject
     [RelayCommand]
     private async Task SaveProject()
     {
-        if (currentProject.Id == 0)
+        if (currentProject != null)
         {
-            await _projectService.AddProject(currentProject);
-        }
-        else
-        {
-            await _projectService.UpdateProjectAsync(currentProject);
+            if (currentProject.Id == 0)
+            {
+                await _projectService.AddProject(currentProject);
+            }
+            else
+            {
+                await _projectService.UpdateProjectAsync(currentProject);
+            }
         }
         await Shell.Current.GoToAsync("..");
-        Debug.WriteLine("saveprojects Funkar.");
-
     }
 }
