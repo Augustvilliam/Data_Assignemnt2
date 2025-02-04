@@ -9,7 +9,5 @@ public partial class ProjectPage : ContentPage
     {
         InitializeComponent();
         BindingContext = viewModel;
-        Debug.WriteLine("ProjectPage Funkar.");
-
     }
 }

@@ -8,6 +8,7 @@ public class DataDbContext : DbContext
 {
     public DataDbContext(DbContextOptions<DataDbContext> options) : base(options)
     {
+        Database.EnsureCreated();
     }
 
     public DbSet<ProjectEntity> Projects { get; set; }

@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="DataMauiApp.Views.MainMenuPage"
+             Title="MainMenuPage">
+    <VerticalStackLayout>
+      <Label Text="Main Menu, Please select and option." />
+
+        <Button Text="Emplyee Menu"
+                Command="{Binding ToEmployeeMenuCommand}"
+                Background="DarkOliveGreen"
+                TextColor="White"/>
+        <Button Text="Customer Menu"
+                Command="{Binding ToCustomerMenuCommand}"
+                Background="DarkOliveGreen"
+                TextColor="White"/>
+        <Button Text="Project Menu"
+                Command="{Binding ToProjectMenuCommand}"
+                Background="DarkOliveGreen"
+                TextColor="White"/>
+
+
+    </VerticalStackLayout>
+</ContentPage>

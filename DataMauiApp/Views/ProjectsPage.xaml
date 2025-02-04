@@ -4,14 +4,17 @@
              x:Class="DataMauiApp.Views.ProjectsPage"
              Title="ProjectsPage">
     <VerticalStackLayout>
-        <CollectionView>
+        <CollectionView ItemsSource="{Binding Projects}">
             <CollectionView.ItemTemplate>
                 <DataTemplate>
                     <Border Stroke="Grey">
                         <VerticalStackLayout>
                             <Label Text="{Binding Name}" FontSize="20" FontAttributes="Bold" />
                             <Label  Text="{Binding Status}" FontSize="20" FontAttributes="Bold" />
-                            <Button BackgroundColor="DarkOliveGreen" Text="Details" Command="{Binding ViewProjectCommand}" CommandParameter="{Binding Id}"/>
+                            <Button BackgroundColor="DarkOliveGreen"
+                                    Text="Details"
+                                    Command="{Binding ViewProjectCommand}"
+                                    CommandParameter="{Binding Id}" />
                         </VerticalStackLayout>
                     </Border>
                 </DataTemplate>

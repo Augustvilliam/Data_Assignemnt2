@@ -6,7 +6,7 @@
     <VerticalStackLayout>
         <Label Text="Project Details" />
         <Entry Placeholder="Name" Text="{Binding CurrentProject.Name, Mode=TwoWay}" />
-        <Entry Placeholder="Status" Text="{Binding CurrentProject.Status, Mode=TwoWay}" />
+        <Picker ItemsSource="{Binding StatusOptions}" SelectedItem="{Binding SelectedStatus, Mode=TwoWay}"/>
         <Button Text="Save" Command="{Binding SaveProjectCommand, Mode=TwoWay}" />
     </VerticalStackLayout>
 </ContentPage>
