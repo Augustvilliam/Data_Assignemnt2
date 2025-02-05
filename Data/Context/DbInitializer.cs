@@ -35,12 +35,20 @@ public class DbInitializer
             Hours INTEGER NOT NULL
         );
 
+        CREATE TABLE IF NOT EXISTS Roles (
+            Id INTEGER PRIMARY KEY AUTOINCREMENT,
+            Name TEXT NOT NULL UNIQUE,
+            Price REAL NOT NULL
+        );
+
         CREATE TABLE IF NOT EXISTS Employees (
             Id INTEGER PRIMARY KEY AUTOINCREMENT,
             FirstName TEXT NOT NULL,
             LastName TEXT NOT NULL,
             Email TEXT NOT NULL UNIQUE,
-            PhoneNumber TEXT NOT NULL
+            PhoneNumber TEXT NOT NULL,
+            RoleId INTEGER NOT NULL,
+            FOREIGN KEY (RoleId) REFERENCES Roles (Id) ON DELETE RESTRICT
         );
 
         CREATE TABLE IF NOT EXISTS Projects (
@@ -63,44 +71,42 @@ public class DbInitializer
         Debug.WriteLine("Ja jag funkar.!");
     }
 
-
-
-    public void TestData()  //typ hela denna är copypast från chatGPT., minus debug.Writeline för skiten inte ville funka.
+    public void TestData()
     {
         using var connection = new SqliteConnection(_connectionString);
         connection.Open();
 
         Debug.WriteLine("Lägger till testdata...");
 
-        // Kontrollera om det redan finns en kund med denna e-post
+        // Kontrollera om vi redan har en kund
         var checkSql = "SELECT COUNT(*) FROM Customers WHERE Email = 'Sven@example.com';";
         using var checkCommand = new SqliteCommand(checkSql, connection);
-        var exists = (long)checkCommand.ExecuteScalar(); // Hämtar antal rader med denna e-post
+        var exists = (long)checkCommand.ExecuteScalar();
 
-        if (exists == 0) // Om det inte redan finns en kund
+        if (exists == 0) // Om vi inte redan har data
         {
-            var sql = @"    
-            INSERT INTO Customers (FirstName, LastName, Email, PhoneNumber)
-            VALUES ('Sven', 'Svensson', 'Sven@example.com', '0701234567');
+            var sql = @"
+        INSERT INTO Customers (FirstName, LastName, Email, PhoneNumber)
+        VALUES ('Sven', 'Svensson', 'Sven@example.com', '0701234567');
 
-            INSERT INTO Employees (FirstName, LastName, Email, PhoneNumber)
-            VALUES ('Kalle', 'Kallesson', 'Kalle@example.com', '0707654321');
+        INSERT INTO Employees (FirstName, LastName, Email, PhoneNumber, RoleId)
+        VALUES ('Kalle', 'Kallesson', 'Kalle@example.com', '0707654321', 2); -- Kopplar till Junior
 
-            INSERT INTO Services (Name, Price, Hours)
-            VALUES ('Stockholmsyndrom till MAUI', 500, 10);
+        INSERT INTO Services (Name, Price, Hours)
+        VALUES ('Stockholmsyndrom till MAUI', 500, 10);
 
-            INSERT INTO Projects (Name, StartDate, EndDate, Status, TotalPrice, CustomerId, ServiceId, EmployeeId)
-            VALUES ('Website Project', '2025-01-01', '2025-02-01', 'Ongoing', 5000, 1, 1, 1);
-        ";
+        INSERT INTO Projects (Name, StartDate, EndDate, Status, TotalPrice, CustomerId, ServiceId, EmployeeId)
+        VALUES ('Website Project', '2025-01-01', '2025-02-01', 'Ongoing', 5000, 1, 1, 1);
+    ";
 
             using var command = new SqliteCommand(sql, connection);
             command.ExecuteNonQuery();
 
-            Debug.WriteLine("Testdata funkar");
+            Debug.WriteLine("Testdata har lagts till.");
         }
         else
         {
-            Debug.WriteLine("Testdata finns redan");
+            Debug.WriteLine("Testdata finns redan.");
         }
     }
 
@@ -132,6 +138,37 @@ public class DbInitializer
         }
     }
 
+    public void InitializeRoles()
+    {
+        using var connection = new SqliteConnection( _connectionString);
+        connection.Open();
+
+        Debug.WriteLine("StandardRoller matas in...");
+
+        var checkSql = "SELECT COUNT (*) FROM Roles;";
+        using var checkCommand = new SqliteCommand( checkSql, connection);
+        var exists = (long)checkCommand.ExecuteScalar();
+
+        if (exists == 0)
+        {
+            var sql = @"
+            INSERT INTO Roles (Name, Price) VALUES
+            ('Intern', 100),
+            ('Junior', 200),
+            ('Senior', 400);
+            ";
+
+            using var command = new SqliteCommand(sql, connection);
+            command.ExecuteNonQuery();
+
+            Debug.WriteLine("Roller har lagts till.");
+
+        }
+        else
+        {
+            Debug.WriteLine("Roller finns redan.");
+        }
+    }
 }
 
 

@@ -15,6 +15,10 @@ namespace DataMauiApp
     {
         public static MauiApp CreateMauiApp()
         {
+
+
+
+
             var builder = MauiApp.CreateBuilder();
             builder
                 .UseMauiApp<App>()
@@ -33,15 +37,29 @@ namespace DataMauiApp
             builder.Services.AddScoped<IEmployeeService, EmployeeService>();
             builder.Services.AddScoped<IProjectService, ProjectService>();
             builder.Services.AddScoped<IServiceService, ServiceService>();
+            builder.Services.AddScoped<IRoleService, RoleService>();
 
             builder.Services.AddSingleton<ProjectsViewModel>();
             builder.Services.AddTransient<ProjectViewModel>();
+            builder.Services.AddTransient<MainMenuViewModel>();
 
             builder.Services.AddSingleton<ProjectsPage>();
             builder.Services.AddTransient<ProjectPage>();
+            builder.Services.AddTransient<MainMenuPage>();
+
+            builder.Services.AddSingleton<CustomerViewModel>();
+            builder.Services.AddSingleton<CustomerPage>();
+
+            builder.Services.AddSingleton<EmployeeViewModel>();
+            builder.Services.AddSingleton<EmployeePage>();
 
 
             //samtliga serviecs copy-pastade från chatGPT, ja, jag är fortfarande lat.
+
+            var dbInitializer = new DbInitializer("Data Source=project.db");
+            dbInitializer.InitializeDatabase();
+            dbInitializer.InitializeRoles();
+            dbInitializer.TestData();
 
 
 #if DEBUG

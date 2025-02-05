@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="DataMauiApp.Views.EmployeePage"
+             Title="EmployeePage">
+    <VerticalStackLayout>
+        <Label 
+            Text="Empoyee menu"/>
+        <Button
+            Text="Back"
+            BackgroundColor="Yellow"
+            TextColor="White"
+            Command="{Binding NavigateBackCommand}"
+            />
+        <Picker Title="Select Role"
+                ItemsSource="{Binding Roles}"
+                ItemDisplayBinding="{Binding Name}"
+                SelectedItem="{Binding SelectedRole, Mode=TwoWay}"/>
+    </VerticalStackLayout>
+</ContentPage>

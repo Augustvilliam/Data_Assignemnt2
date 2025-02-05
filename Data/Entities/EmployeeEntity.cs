@@ -10,5 +10,8 @@ public class EmployeeEntity
     public string Email { get; set; } = null!;
     public string PhoneNumber { get; set; } = null!;
 
+    public int RoleId { get; set; }
+    public RoleEntity? Role { get; set; }
+
     public List<ProjectEntity> Projects { get; set; } = new();
 }
