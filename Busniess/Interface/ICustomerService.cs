@@ -4,7 +4,7 @@ namespace Busniess.Interface
 {
     public interface ICustomerService
     {
-        Task AddCustomers(CustomerEntity customer);
+        Task AddCustomersAsync(CustomerEntity customer);
         Task DeleteCustomersAsync(int id);
         Task<List<CustomerEntity>> GetAllCustomersAsync();
         Task<CustomerEntity?> GetCustomersByIdAsync(int id);

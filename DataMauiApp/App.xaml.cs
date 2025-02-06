@@ -7,8 +7,7 @@ namespace DataMauiApp
         public App()
         {
             InitializeComponent();
-            Debug.WriteLine("App Funkar.");
-
+            
         }
 
         protected override Window CreateWindow(IActivationState? activationState)
