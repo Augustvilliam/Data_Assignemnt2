@@ -1,4 +1,5 @@
 ﻿
+using System.Diagnostics;
 using Data.Entities;
 using Microsoft.EntityFrameworkCore;
 
@@ -8,7 +9,15 @@ public class DataDbContext : DbContext
 {
     public DataDbContext(DbContextOptions<DataDbContext> options) : base(options)
     {
-        Database.EnsureDeleted(); //TA BORT MIG SEN NÄR ALLT FUNGERAR!!!
+        var desktopPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.Desktop), "project.db");
+
+        Debug.WriteLine("🔄 Nu tar jag bort Db...");
+        if (File.Exists(desktopPath))
+        {
+            File.Delete(desktopPath);
+        }
+
+        Debug.WriteLine("✅ Nu GÖR jag en NY Db...");
         Database.EnsureCreated();
     }
 

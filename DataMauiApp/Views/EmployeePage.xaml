@@ -6,15 +6,50 @@
     <VerticalStackLayout>
         <Label 
             Text="Empoyee menu"/>
+
+        <Label Margin="20" Text="First Name" />
+        <Entry Margin="20" Placeholder="Enter First Name" Text="{Binding newEmployee.FirstName, Mode=TwoWay}" />
+
+        <Label Margin="20" Text="Last Name" />
+        <Entry Margin="20" Placeholder="Enter Last Name" Text="{Binding newEmployee.LastName, Mode=TwoWay}" />
+
+        <Label Margin="20" Text="Email" />
+        <Entry Margin="20" Placeholder="Enter Email" Text="{Binding newEmployee.Email, Mode=TwoWay}" />
+
+        <Label Margin="20" Text="Phone Number" />
+        <Entry Margin="20" Placeholder="Enter Phone Number" Text="{Binding newEmployee.Phone, Mode=TwoWay}" />
+
+        <Picker Title="Select Role"
+        ItemsSource="{Binding Roles}"
+        ItemDisplayBinding="{Binding Name}"
+        SelectedItem="{Binding SelectedRole, Mode=TwoWay}"/>
+
+        <Label Text="Hourly Rate:" />
+        <Label Text="{Binding SelectedRole.Price, StringFormat='C'}" FontAttributes="Bold"/>
+
+
+        <ListView Margin="20" ItemsSource="{Binding Roles}">
+            <ListView.ItemTemplate>
+                <DataTemplate>
+                    <TextCell Text="{Binding Name}" Detail="{Binding Price}" />
+                </DataTemplate>
+            </ListView.ItemTemplate>
+        </ListView>
+
+        <Button Margin="20"
+            Text="Save Employee" 
+            Command="{Binding SaveEmployeeCommand}" 
+            BackgroundColor="Green"
+            TextColor="White"/>
+
+
         <Button
+            Margin="20"
             Text="Back"
             BackgroundColor="Yellow"
             TextColor="White"
             Command="{Binding NavigateBackCommand}"
             />
-        <Picker Title="Select Role"
-                ItemsSource="{Binding Roles}"
-                ItemDisplayBinding="{Binding Name}"
-                SelectedItem="{Binding SelectedRole, Mode=TwoWay}"/>
+
     </VerticalStackLayout>
 </ContentPage>

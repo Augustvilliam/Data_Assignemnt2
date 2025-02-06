@@ -9,10 +9,12 @@ public class ProjectEntity
     public DateTime StartDate { get; set; }
     public DateTime EndDate { get; set; }
     public string Status { get; set; } = "Not started";
-    public decimal TotalPrice { get; set; }
+    
 
     public int EmployeeId { get; set; }
     public EmployeeEntity? Employee { get; set; }
+    public decimal TotalPrice => Employee?.Price ?? 0;
+
 
     public int CustomerId   { get; set; }
     public CustomerEntity? Customer { get; set; } 

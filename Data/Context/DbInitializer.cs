@@ -14,12 +14,10 @@ public class DbInitializer
 
     public void InitializeDatabase()
     {
-        using var connection = new SqliteConnection(_connectionString);
-        connection.Open();
-
-        Debug.WriteLine("funkar du?...");
-
-        var sql = @"
+        using (var connection = new SqliteConnection(_connectionString))
+        {
+            connection.Open();
+            var sql = @"
         CREATE TABLE IF NOT EXISTS Customers (
             Id INTEGER PRIMARY KEY AUTOINCREMENT,
             FirstName TEXT NOT NULL,
@@ -28,11 +26,10 @@ public class DbInitializer
             PhoneNumber TEXT NOT NULL
         );
 
-        CREATE TABLE IF NOT EXISTS Services (
+            CREATE TABLE IF NOT EXISTS Services (
             Id INTEGER PRIMARY KEY AUTOINCREMENT, 
             Name TEXT NOT NULL,
-            Price REAL NOT NULL,
-            Hours INTEGER NOT NULL
+            Price REAL NOT NULL DEFAULT 0
         );
 
         CREATE TABLE IF NOT EXISTS Roles (
@@ -57,7 +54,6 @@ public class DbInitializer
             StartDate TEXT NOT NULL,
             EndDate TEXT NOT NULL,
             Status TEXT NOT NULL,
-            TotalPrice REAL NOT NULL,
             CustomerId INTEGER NOT NULL,
             ServiceId INTEGER NOT NULL,
             EmployeeId INTEGER NOT NULL,
@@ -66,9 +62,13 @@ public class DbInitializer
             FOREIGN KEY (EmployeeId) REFERENCES Employees (Id) ON DELETE CASCADE
         );";
 
-        using var command = new SqliteCommand(sql, connection);
-        command.ExecuteNonQuery();
-        Debug.WriteLine("Ja jag funkar.!");
+            using var command = new SqliteCommand(sql, connection);
+            command.ExecuteNonQuery();
+        }
+
+
+
+
     }
 
     public void TestData()
@@ -89,14 +89,15 @@ public class DbInitializer
         INSERT INTO Customers (FirstName, LastName, Email, PhoneNumber)
         VALUES ('Sven', 'Svensson', 'Sven@example.com', '0701234567');
 
+        -- 🔥 Roller måste finnas FÖRST, annars blir RoleId ogiltig
         INSERT INTO Employees (FirstName, LastName, Email, PhoneNumber, RoleId)
         VALUES ('Kalle', 'Kallesson', 'Kalle@example.com', '0707654321', 2); -- Kopplar till Junior
 
-        INSERT INTO Services (Name, Price, Hours)
-        VALUES ('Stockholmsyndrom till MAUI', 500, 10);
+        INSERT INTO Services (Name, Price)
+        VALUES ('Stockholmsyndrom till MAUI', 500);
 
-        INSERT INTO Projects (Name, StartDate, EndDate, Status, TotalPrice, CustomerId, ServiceId, EmployeeId)
-        VALUES ('Website Project', '2025-01-01', '2025-02-01', 'Ongoing', 5000, 1, 1, 1);
+        INSERT INTO Projects (Name, StartDate, EndDate, Status, CustomerId, ServiceId, EmployeeId)
+        VALUES ('Website Project', '2025-01-01', '2025-02-01', 'Ongoing', 1, 1, 1);
     ";
 
             using var command = new SqliteCommand(sql, connection);
@@ -140,35 +141,37 @@ public class DbInitializer
 
     public void InitializeRoles()
     {
-        using var connection = new SqliteConnection( _connectionString);
+        using var connection = new SqliteConnection(_connectionString);
         connection.Open();
 
-        Debug.WriteLine("StandardRoller matas in...");
+        Debug.WriteLine("⚡ Initierar roller...");
 
-        var checkSql = "SELECT COUNT (*) FROM Roles;";
-        using var checkCommand = new SqliteCommand( checkSql, connection);
+        var checkSql = "SELECT COUNT(*) FROM Roles;";
+        using var checkCommand = new SqliteCommand(checkSql, connection);
         var exists = (long)checkCommand.ExecuteScalar();
 
-        if (exists == 0)
+        if (exists == 0)  // 🔥 Om inga roller finns, lägg till dem
         {
+            Debug.WriteLine("✅ Roller existerar ej - Skapar dem nu...");
+
             var sql = @"
-            INSERT INTO Roles (Name, Price) VALUES
-            ('Intern', 100),
-            ('Junior', 200),
-            ('Senior', 400);
-            ";
+        INSERT INTO Roles (Name, Price) VALUES
+        ('Intern', 100),
+        ('Junior', 200),
+        ('Senior', 400);
+        ";
 
             using var command = new SqliteCommand(sql, connection);
             command.ExecuteNonQuery();
 
-            Debug.WriteLine("Roller har lagts till.");
-
+            Debug.WriteLine("✅ Roller har lagts till.");
         }
         else
         {
-            Debug.WriteLine("Roller finns redan.");
+            Debug.WriteLine("⚠️ Roller finns redan.");
         }
     }
+
 }
 
 

@@ -13,5 +13,7 @@ public class EmployeeEntity
     public int RoleId { get; set; }
     public RoleEntity? Role { get; set; }
 
+    public decimal Price => Role?.Price ?? 0;
+
     public List<ProjectEntity> Projects { get; set; } = new();
 }

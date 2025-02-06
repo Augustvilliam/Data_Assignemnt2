@@ -15,10 +15,6 @@ namespace DataMauiApp
     {
         public static MauiApp CreateMauiApp()
         {
-
-
-
-
             var builder = MauiApp.CreateBuilder();
             builder
                 .UseMauiApp<App>()
@@ -28,8 +24,11 @@ namespace DataMauiApp
                     fonts.AddFont("OpenSans-Semibold.ttf", "OpenSansSemibold");
                 });
 
+            var desktopPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.Desktop), "project.db");
+            Debug.WriteLine($"📂 Databasen finns här: {desktopPath}");
+
             builder.Services.AddDbContext<DataDbContext>(options =>
-                options.UseSqlite("Data Source=project.db"));
+                options.UseSqlite($"Data Source={desktopPath}"));
 
             builder.Services.AddScoped(typeof(IGenericRepository<>), typeof(GenericRepository<>));
 
@@ -56,7 +55,7 @@ namespace DataMauiApp
 
             //samtliga serviecs copy-pastade från chatGPT, ja, jag är fortfarande lat.
 
-            var dbInitializer = new DbInitializer("Data Source=project.db");
+            var dbInitializer = new DbInitializer($"Data Source={desktopPath}");
             dbInitializer.InitializeDatabase();
             dbInitializer.InitializeRoles();
             dbInitializer.TestData();

@@ -1,5 +1,6 @@
 ﻿
 
+using System.Diagnostics;
 using Busniess.Interface;
 using Data.Entities;
 using Data.Interface;
@@ -19,8 +20,9 @@ public class RoleService : IRoleService
 
     public async Task<List<RoleEntity>> GetAllRolesAsync()
     {
-        return await _roleRepository.GetAllAsync();
-
+        var roles = await _roleRepository.GetAllAsync();
+        Debug.WriteLine($"🟢 Hittade {roles.Count} roller i databasen.");
+        return roles;
     }
     public async Task<RoleEntity?> GetRoleByIdAsync(int id)
     {
