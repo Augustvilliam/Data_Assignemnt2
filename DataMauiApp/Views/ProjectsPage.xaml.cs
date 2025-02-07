@@ -9,7 +9,7 @@ public partial class ProjectsPage : ContentPage
     {
         InitializeComponent();
         BindingContext = viewModel;
-        Debug.WriteLine("ProjectsPage ViewModel Bunden!");
+        Debug.WriteLine("ProjectsssssPage ViewModel Bunden!");
 
     }
 }

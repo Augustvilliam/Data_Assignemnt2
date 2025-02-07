@@ -6,11 +6,43 @@
     <VerticalStackLayout>
         <Label 
             Text="Customer menu"/>
+
+        <Entry Margin="20 ,10 , 20, 0" Placeholder="First Name" Text="{Binding NewCustomer.FirstName, Mode=TwoWay}" />
+        <Entry Margin="20 ,10 , 20, 0" Placeholder="Last Name" Text="{Binding NewCustomer.LastName, Mode=TwoWay}" />
+        <Entry Margin="20 ,10 , 20, 0" Placeholder="Email" Text="{Binding NewCustomer.Email, Mode=TwoWay}" />
+        <Entry Margin="20 ,10 , 20, 0" Placeholder="Phone Number" Text="{Binding NewCustomer.PhoneNumber, Mode=TwoWay}" />
+
         <Button
+            Margin="20"
+            Text="Add Customer"
+            Command="{Binding AddCustomersCommand}"
+            BackgroundColor="DarkOliveGreen"
+            TextColor="White"/>
+        <Label FontSize="20" FontAttributes="Bold" HorizontalOptions="Center" Text="Customer List"/>
+
+        <Border Margin="20">
+            <ListView ItemsSource="{Binding Customers}" SelectedItem="{Binding SelectedCustomer, Mode=TwoWay}">
+                <ListView.ItemTemplate>
+                    <DataTemplate >
+                        <TextCell Text="{Binding FirstName}"
+                                  Detail="{Binding Email}"/>
+                    </DataTemplate>
+                </ListView.ItemTemplate>
+            </ListView>
+        </Border>
+        
+        <Button
+            Margin="20"
+            Text="Delete Customer"
+            Command="{Binding DeleteCustomerCommand}"
+            BackgroundColor="Red"
+            TextColor="White"/>
+  
+        <Button
+            Margin="20"
             Text="Back"
             BackgroundColor="Yellow"
-            TextColor="White"
-            Command="{Binding NavigateBackCommand}"
-            />
+            TextColor="Black"
+            Command="{Binding NavigateBackCommand}"/>
     </VerticalStackLayout>
 </ContentPage>

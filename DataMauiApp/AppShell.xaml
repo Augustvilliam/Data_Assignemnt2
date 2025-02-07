@@ -7,9 +7,11 @@
     Title="DataMauiApp">
 
     <ShellContent Title="Main Menu" ContentTemplate="{DataTemplate local:MainMenuPage}" Route="MainMenuPage" />
+    
     <ShellContent Title="Projects Overview" ContentTemplate="{DataTemplate local:ProjectsPage}" />
     <ShellContent Title="Customer Management" ContentTemplate="{DataTemplate local:CustomerPage}" />
     <ShellContent Title="Employee Management" ContentTemplate="{DataTemplate local:EmployeePage}" />
+    <ShellContent Title="Project Management" ContentTemplate="{DataTemplate local:ProjectPage}" Route="ProjectPage" />
 
 </Shell>
 

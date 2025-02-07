@@ -13,6 +13,7 @@ namespace DataMauiApp
 {
     public static class MauiProgram
     {
+        //samtliga serviecs copy-pastade från chatGPT, ja, jag är fortfarande lat.
         public static MauiApp CreateMauiApp()
         {
             var builder = MauiApp.CreateBuilder();
@@ -38,34 +39,38 @@ namespace DataMauiApp
             builder.Services.AddScoped<IServiceService, ServiceService>();
             builder.Services.AddScoped<IRoleService, RoleService>();
 
+
+
             builder.Services.AddSingleton<ProjectsViewModel>();
             builder.Services.AddTransient<ProjectViewModel>();
             builder.Services.AddTransient<MainMenuViewModel>();
+            builder.Services.AddSingleton<CustomerViewModel>();
+            builder.Services.AddSingleton<EmployeeViewModel>();
+
 
             builder.Services.AddSingleton<ProjectsPage>();
             builder.Services.AddTransient<ProjectPage>();
             builder.Services.AddTransient<MainMenuPage>();
-
-            builder.Services.AddSingleton<CustomerViewModel>();
             builder.Services.AddSingleton<CustomerPage>();
-
-            builder.Services.AddSingleton<EmployeeViewModel>();
             builder.Services.AddSingleton<EmployeePage>();
 
 
-            //samtliga serviecs copy-pastade från chatGPT, ja, jag är fortfarande lat.
 
-            var dbInitializer = new DbInitializer($"Data Source={desktopPath}");
-            dbInitializer.InitializeDatabase();
-            dbInitializer.InitializeRoles();
-            dbInitializer.TestData();
+            using (var scope = builder.Services.BuildServiceProvider().CreateScope())
+            {
+                var context = scope.ServiceProvider.GetRequiredService<DataDbContext>();
+                Debug.WriteLine("🔄 Återställer databasen en gång vid uppstart...");
+                context.Database.EnsureDeleted();
+                context.Database.EnsureCreated();
+                context.SeedRoles();
+            }
 
-
+            //Här slutar copypast. 
 #if DEBUG
             builder.Logging.AddDebug();
 #endif
 
-            try
+            try //Hade en jävla massa problem med att få appen att starta, därav debug. Visade sig att jag glömde en service...
             {
                 var app = builder.Build();
                 Debug.WriteLine("Nu borde appen starta,.l");

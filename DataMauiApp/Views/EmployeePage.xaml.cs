@@ -9,6 +9,6 @@ public partial class EmployeePage : ContentPage
 	{
 		InitializeComponent();
         BindingContext = viewModel;
-        Debug.WriteLine("MainMenuPage Bunden till ViewModel!");
+        Debug.WriteLine("EmployeePage Bunden till ViewModel!");
     }
 }

@@ -5,8 +5,36 @@
              Title="ProjectPage">
     <VerticalStackLayout>
         <Label Text="Project Details" />
-        <Entry Placeholder="Name" Text="{Binding CurrentProject.Name, Mode=TwoWay}" />
-        <Picker ItemsSource="{Binding StatusOptions}" SelectedItem="{Binding SelectedStatus, Mode=TwoWay}"/>
-        <Button Text="Save" Command="{Binding SaveProjectCommand, Mode=TwoWay}" />
+
+        <Entry Placeholder="Project Name" 
+               Text="{Binding CurrentProject.Name, Mode=TwoWay}"/>
+
+
+        <Label Text="Selected Customer" />
+        <Picker ItemsSource="{Binding Customers}"
+                ItemDisplayBinding="{Binding FirstName}"
+                SelectedIndex="{Binding SelectedCustomer, Mode=TwoWay}"/>
+
+        <Label Text="Selected Employee" />
+        <Picker ItemsSource="{Binding Employees}"
+               ItemDisplayBinding="{Binding FirstName}"
+               SelectedIndex="{Binding SelectedEmployee, Mode=TwoWay}"/>
+
+        <Label Text="Selected Customer" />
+        <Picker ItemsSource="{Binding StatusOptions}"
+               SelectedIndex="{Binding SelectedStatus, Mode=TwoWay}"/>
+
+        <Button Text="Save Project" 
+                Command="{Binding SaveProjectCommand}" 
+                BackgroundColor="Green"
+                TextColor="White"/>
+
+        <Button Text="Back"
+                Command="{Binding NavigateBackCommand}"
+                BackgroundColor="Yellow"
+                TextColor="Black"/>
+
+
+
     </VerticalStackLayout>
 </ContentPage>

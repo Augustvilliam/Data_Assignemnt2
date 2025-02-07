@@ -1,5 +1,6 @@
 ﻿
 
+using System.Collections.ObjectModel;
 using System.Diagnostics;
 using Busniess.Interface;
 using CommunityToolkit.Mvvm.ComponentModel;
@@ -13,53 +14,68 @@ namespace DataMauiApp.ViewModels;
 public partial class ProjectViewModel : ObservableObject
 {
     private readonly IProjectService _projectService;
+    private readonly ICustomerService _customerService;
+    private readonly IEmployeeService _employeeService;
+    private readonly IServiceService _serviceService;
 
-    private ProjectEntity _currentProject = new();
+    [ObservableProperty]
+    private ProjectEntity currentProject = new();
+    [ObservableProperty]
+    private ObservableCollection<CustomerEntity> customers = new();
+    [ObservableProperty]
+    private ObservableCollection<EmployeeEntity> employees = new();
+    [ObservableProperty]
+    private ObservableCollection<ServiceEntity> services = new();
+    [ObservableProperty]
+    private CustomerEntity selectedCustomer;
+    [ObservableProperty]
+    private EmployeeEntity selectedEmployee;
+    [ObservableProperty]
+    private ServiceEntity selectedService;
+    [ObservableProperty]
+    private string selectedStatus;
 
-    public ProjectEntity CurrentProject
-    { 
-        get => _currentProject;
-        set => SetProperty(ref _currentProject, value);
-    }
+    public List<string> StatusOptions { get; set; } = new() { "Not Started", "Ongoing", "Compleated" };
 
-    public List<String> StatusOptions { get; set; } = new() { "Not Started", "Ongoing", "Compleate" };
-
-    private string _selectedStatus;
-    public string SelectedStatus
-    {
-        get => _selectedStatus;
-        set
-        {
-            if (_selectedStatus != value)
-            {
-                _selectedStatus = value;
-                CurrentProject.Status = value;
-                OnPropertyChanged(nameof(SelectedStatus));
-            }
-        
-        }
-    }
-
-    public ProjectViewModel(IProjectService projectService)
+    public ProjectViewModel(
+        IProjectService projectService,
+        ICustomerService customerService,
+        IEmployeeService employeeService,
+        IServiceService serviceService)
     {
         _projectService = projectService;
+        _customerService = customerService;
+        _employeeService = employeeService;
+        _serviceService = serviceService;
 
-        if (!string.IsNullOrEmpty(CurrentProject.Status))
-        {
-            SelectedStatus = CurrentProject.Status;
-        }
-        else
-        {
-            SelectedStatus = StatusOptions.First();
-        }
+        LoadData();
     }
 
+    private async void LoadData()
+    {
+        try
+        {
+            Customers = new ObservableCollection<CustomerEntity>(await _customerService.GetAllCustomersAsync());
+            Employees = new ObservableCollection<EmployeeEntity>(await _employeeService.GetAllEmployeesAsync());
+            Services = new ObservableCollection<ServiceEntity>(await _serviceService.GetAllServicesAsync());
+
+            Debug.WriteLine($"Laddade {Customers.Count} kunder, {Employees.Count} anställda, {Services.Count} tjänster.");
+            SelectedStatus = CurrentProject.Status ?? StatusOptions.First();
+        }
+        catch (Exception ex)
+        {
+            Debug.WriteLine($"Fel vid laddning av data: {ex.Message}");
+        }
+    }
 
     [RelayCommand]
     private async Task SaveProject()
     {
-        if (CurrentProject != null)
+        if (SelectedCustomer != null && SelectedEmployee != null && SelectedService != null)
         {
+            CurrentProject.CustomerId = SelectedCustomer.Id;
+            CurrentProject.EmployeeId = SelectedEmployee.Id;
+            CurrentProject.ServiceId = SelectedService.Id;
             CurrentProject.Status = SelectedStatus;
 
             if (CurrentProject.Id == 0)
@@ -70,7 +86,19 @@ public partial class ProjectViewModel : ObservableObject
             {
                 await _projectService.UpdateProjectAsync(CurrentProject);
             }
+            Debug.WriteLine("✅ Projekt sparat!");
+            await Shell.Current.GoToAsync("..");
         }
+        else
+        {
+            Debug.WriteLine("❌ Du måste välja kund, anställd och tjänst!");
+        }
+    }
+    
+    [RelayCommand]
+    public async Task NavigateBack()
+    {
+        Debug.WriteLine("Navigerar tillbaka...");
         await Shell.Current.GoToAsync("..");
     }
 }

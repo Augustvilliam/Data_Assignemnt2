@@ -1,4 +1,4 @@
-using System.Diagnostics;
+﻿using System.Diagnostics;
 using DataMauiApp.ViewModels;
 
 namespace DataMauiApp.Views;
@@ -9,6 +9,7 @@ public partial class CustomerPage : ContentPage
 	{
 		InitializeComponent();
         BindingContext = viewModel;
-        Debug.WriteLine("MainMenuPage Bunden till ViewModel!");
+        Debug.WriteLine("✅ CustomerPage ViewModel Bunden!");
+
     }
 }

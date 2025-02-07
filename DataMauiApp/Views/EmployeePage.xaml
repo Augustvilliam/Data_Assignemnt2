@@ -5,27 +5,32 @@
              Title="EmployeePage">
     <VerticalStackLayout>
         <Label 
+            VerticalOptions="Center"
+            HorizontalOptions="Center"
+            FontAttributes="Bold"
+            FontSize="20"
             Text="Empoyee menu"/>
 
-        <Label Margin="20" Text="First Name" />
-        <Entry Margin="20" Placeholder="Enter First Name" Text="{Binding newEmployee.FirstName, Mode=TwoWay}" />
+        <Label Margin="20 ,20 , 20, 0" Text="First Name" />
+        <Entry Margin="20 ,10 , 20, 0" Placeholder="Enter First Name" Text="{Binding NewEmployee.FirstName, Mode=TwoWay}" />
 
-        <Label Margin="20" Text="Last Name" />
-        <Entry Margin="20" Placeholder="Enter Last Name" Text="{Binding newEmployee.LastName, Mode=TwoWay}" />
+        <Label Margin="20 ,20 , 20, 0" Text="Last Name" />
+        <Entry Margin="20 ,10 , 20, 0" Placeholder="Enter Last Name" Text="{Binding NewEmployee.LastName, Mode=TwoWay}" />
 
-        <Label Margin="20" Text="Email" />
-        <Entry Margin="20" Placeholder="Enter Email" Text="{Binding newEmployee.Email, Mode=TwoWay}" />
+        <Label Margin="20 ,20 , 20, 0" Text="Email" />
+        <Entry Margin="20 ,10 , 20, 0" Placeholder="Enter Email" Text="{Binding NewEmployee.Email, Mode=TwoWay}" />
 
-        <Label Margin="20" Text="Phone Number" />
-        <Entry Margin="20" Placeholder="Enter Phone Number" Text="{Binding newEmployee.Phone, Mode=TwoWay}" />
+        <Label Margin="20 ,20 , 20, 0" Text="Phone Number" />
+        <Entry Margin="20 ,10 , 20, 0" Placeholder="Enter Phone Number" Text="{Binding NewEmployee.PhoneNumber, Mode=TwoWay}" />
 
         <Picker Title="Select Role"
         ItemsSource="{Binding Roles}"
         ItemDisplayBinding="{Binding Name}"
-        SelectedItem="{Binding SelectedRole, Mode=TwoWay}"/>
+        SelectedItem="{Binding SelectedRole, Mode=TwoWay}"
+                Margin="20 ,10 , 20, 0"/>
 
-        <Label Text="Hourly Rate:" />
-        <Label Text="{Binding SelectedRole.Price, StringFormat='C'}" FontAttributes="Bold"/>
+        <Label Margin="20 ,20 , 20, 0" Text="Hourly Rate:" />
+        <Label Margin="20 ,20 , 20, 0" Text="{Binding SelectedRole.Price}" FontAttributes="Bold"/>
 
 
         <ListView Margin="20" ItemsSource="{Binding Roles}">

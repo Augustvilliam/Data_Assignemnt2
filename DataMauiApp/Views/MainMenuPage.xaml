@@ -7,14 +7,17 @@
       <Label Text="Main Menu, Please select and option." />
 
         <Button Text="Emplyee Menu"
+                Margin="20"
                 Command="{Binding NavigateToEmployeeMenuCommand}"
                 Background="DarkOliveGreen"
                 TextColor="White"/>
         <Button Text="Customer Menu"
+                Margin="20"
                 Command="{Binding NavigateToCustomerMenuCommand}"
                 Background="DarkOliveGreen"
                 TextColor="White"/>
         <Button Text="Project Menu"
+                Margin="20"
                 Command="{Binding NavigateToProjectMenuCommand}"
                 Background="DarkOliveGreen"
                 TextColor="White"/>

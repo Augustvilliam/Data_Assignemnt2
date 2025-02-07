@@ -24,11 +24,16 @@ public partial class EmployeeViewModel : ObservableObject
     private RoleEntity selectedRole;
 
     [ObservableProperty]
-    private EmployeeEntity newEmployee = new();
+    private EmployeeEntity newEmployee = new()
+    {
+        FirstName = string.Empty,
+        LastName = string.Empty,
+        Email = string.Empty,
+        PhoneNumber = string.Empty
+    };
 
 
-
-    public EmployeeViewModel(IRoleService roleService, IEmployeeService employeeService)
+public EmployeeViewModel(IRoleService roleService, IEmployeeService employeeService)
     {
         _roleService = roleService;
         _employeeService = employeeService;
@@ -52,17 +57,20 @@ public partial class EmployeeViewModel : ObservableObject
     [RelayCommand]
     public async Task SaveEmployee()
     {
-        if (SelectedRole != null)
+        if (string.IsNullOrWhiteSpace(NewEmployee.FirstName) ||
+        string.IsNullOrWhiteSpace(NewEmployee.LastName) ||
+        string.IsNullOrWhiteSpace(NewEmployee.Email) ||
+        string.IsNullOrWhiteSpace(NewEmployee.PhoneNumber) || 
+        SelectedRole == null)
         {
-            newEmployee.RoleId = selectedRole.Id;
-            await _employeeService.AddEmployee(newEmployee);
-            Debug.WriteLine($"Nu antälld tilllagd.");
-            await Shell.Current.GoToAsync("..");
+            Debug.Write("Alla fält måste fyllas i");
+            return;
+
         }
-        else
-        {
-            Debug.WriteLine("❌ Ingen roll vald!");
-        }
+        NewEmployee.RoleId = SelectedRole.Id;
+        await _employeeService.AddEmployee(NewEmployee);
+        Debug.WriteLine($"Nu antälld tilllagd.");
+        await Shell.Current.GoToAsync("..");
     }
 
     [RelayCommand]
