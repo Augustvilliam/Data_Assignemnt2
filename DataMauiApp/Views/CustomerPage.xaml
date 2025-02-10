@@ -3,46 +3,59 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              x:Class="DataMauiApp.Views.CustomerPage"
              Title="CustomerPage">
-    <VerticalStackLayout>
-        <Label 
-            Text="Customer menu"/>
+    <Grid
+          ColumnDefinitions="*,*"
+          RowDefinitions="Auto, *">
 
-        <Entry Margin="20 ,10 , 20, 0" Placeholder="First Name" Text="{Binding NewCustomer.FirstName, Mode=TwoWay}" />
-        <Entry Margin="20 ,10 , 20, 0" Placeholder="Last Name" Text="{Binding NewCustomer.LastName, Mode=TwoWay}" />
-        <Entry Margin="20 ,10 , 20, 0" Placeholder="Email" Text="{Binding NewCustomer.Email, Mode=TwoWay}" />
-        <Entry Margin="20 ,10 , 20, 0" Placeholder="Phone Number" Text="{Binding NewCustomer.PhoneNumber, Mode=TwoWay}" />
+        <Label HorizontalOptions="Center" Text="Customer menu"  Grid.ColumnSpan="2" FontSize="Large"/>
 
-        <Button
-            Margin="20"
-            Text="Add Customer"
-            Command="{Binding AddCustomersCommand}"
-            BackgroundColor="DarkOliveGreen"
-            TextColor="White"/>
-        <Label FontSize="20" FontAttributes="Bold" HorizontalOptions="Center" Text="Customer List"/>
 
-        <Border Margin="20">
-            <ListView ItemsSource="{Binding Customers}" SelectedItem="{Binding SelectedCustomer, Mode=TwoWay}">
-                <ListView.ItemTemplate>
-                    <DataTemplate >
-                        <TextCell Text="{Binding FirstName}"
-                                  Detail="{Binding Email}"/>
+        <Border Margin="10, 60, 10, 10" Grid.Column="1" Padding="10" Stroke="Gray">
+            <CollectionView ItemsSource="{Binding Customers}" SelectionMode="Single" SelectedItem="{Binding SelectedCustomer, Mode=TwoWay}">
+                <CollectionView.ItemTemplate>
+                    <DataTemplate>
+                        <Border BackgroundColor="LightGray">
+                            <VerticalStackLayout>
+                                <Label TextColor="black" Text="{Binding FirstName}" FontSize="18" FontAttributes="Bold"/>
+                                <Label TextColor="black" Text="{Binding Email}" FontSize="14"/>
+                                <Label TextColor="black" Text="{Binding PhoneNumber}" FontSize="14"/>
+                            </VerticalStackLayout>
+                        </Border>
                     </DataTemplate>
-                </ListView.ItemTemplate>
-            </ListView>
+                </CollectionView.ItemTemplate>
+            </CollectionView>
+        </Border>
+
+
+        <Border Grid.Column="0" Margin="10, 60, 10, 10" Padding="10" Stroke="Gray">
+            <VerticalStackLayout >
+                <Entry Margin="20 ,10 , 20, 0" Placeholder="First Name" Text="{Binding NewCustomer.FirstName, Mode=TwoWay}" />
+                <Entry Margin="20 ,10 , 20, 0" Placeholder="Last Name" Text="{Binding NewCustomer.LastName, Mode=TwoWay}" />
+                <Entry Margin="20 ,10 , 20, 0" Placeholder="Email" Text="{Binding NewCustomer.Email, Mode=TwoWay}" />
+                <Entry Margin="20 ,10 , 20, 0" Placeholder="Phone Number" Text="{Binding NewCustomer.PhoneNumber, Mode=TwoWay}" />
+                <Button
+                    Margin="20"
+                    Text="Add Customer"
+                    Command="{Binding AddCustomersCommand}"
+                    BackgroundColor="DarkOliveGreen"
+                    TextColor="White"/>
+                
+                <Button
+                    Margin="20"
+                    Text="Delete Customer"
+                    Command="{Binding DeleteCustomerCommand}"
+                    BackgroundColor="Red"
+                    TextColor="White"/>
+
+                <Button
+                    Margin="20"
+                    Text="Back"
+                    BackgroundColor="Yellow"
+                    TextColor="Black"
+                    Command="{Binding NavigateBackCommand}"/>
+            </VerticalStackLayout>
         </Border>
         
-        <Button
-            Margin="20"
-            Text="Delete Customer"
-            Command="{Binding DeleteCustomerCommand}"
-            BackgroundColor="Red"
-            TextColor="White"/>
-  
-        <Button
-            Margin="20"
-            Text="Back"
-            BackgroundColor="Yellow"
-            TextColor="Black"
-            Command="{Binding NavigateBackCommand}"/>
-    </VerticalStackLayout>
+
+    </Grid>
 </ContentPage>

@@ -16,4 +16,5 @@ public class EmployeeEntity
     public decimal Price => Role?.Price ?? 0;
 
     public List<ProjectEntity> Projects { get; set; } = new();
+    public List<ServiceEntity> Services { get; set; } = new();
 }

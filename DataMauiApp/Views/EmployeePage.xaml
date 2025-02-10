@@ -3,58 +3,87 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              x:Class="DataMauiApp.Views.EmployeePage"
              Title="EmployeePage">
-    <VerticalStackLayout>
-        <Label 
-            VerticalOptions="Center"
-            HorizontalOptions="Center"
-            FontAttributes="Bold"
-            FontSize="20"
-            Text="Empoyee menu"/>
+    <Grid
+          ColumnDefinitions="*,*"
+          RowDefinitions="Auto, *">
 
-        <Label Margin="20 ,20 , 20, 0" Text="First Name" />
-        <Entry Margin="20 ,10 , 20, 0" Placeholder="Enter First Name" Text="{Binding NewEmployee.FirstName, Mode=TwoWay}" />
+        <Label HorizontalOptions="Center" Grid.ColumnSpan="2" FontSize="Large" Text="Empoyee menu"/>
 
-        <Label Margin="20 ,20 , 20, 0" Text="Last Name" />
-        <Entry Margin="20 ,10 , 20, 0" Placeholder="Enter Last Name" Text="{Binding NewEmployee.LastName, Mode=TwoWay}" />
+        <Border Grid.Column="1" Margin="10, 60, 10, 10">
+            <CollectionView ItemsSource="{Binding Employees}" SelectionMode="Single" SelectedItem="{Binding SelectedEmployee, Mode=TwoWay}">
+                <CollectionView.ItemTemplate>
+                    <DataTemplate>
+                        <Border BackgroundColor="LightGray">
+                            <VerticalStackLayout>
+                                <Label Text="{Binding FirstName}" FontSize="18" FontAttributes="Bold"/>
+                                <Label Text="{Binding Email}" FontSize="14"/>
+                                <Label Text="{Binding PhoneNumber}" FontSize="14"/>
+                            </VerticalStackLayout>
+                        </Border>
+                    </DataTemplate>
+                </CollectionView.ItemTemplate>
+            </CollectionView>
+        </Border>
 
-        <Label Margin="20 ,20 , 20, 0" Text="Email" />
-        <Entry Margin="20 ,10 , 20, 0" Placeholder="Enter Email" Text="{Binding NewEmployee.Email, Mode=TwoWay}" />
+        <Border Margin="10, 60, 10, 10" Grid.Column="0" >
+            <VerticalStackLayout>
+                <Entry Margin="20 ,10 , 20, 0" Placeholder="Enter First Name" Text="{Binding NewEmployee.FirstName, Mode=TwoWay}" />
+                <Entry Margin="20 ,10 , 20, 0" Placeholder="Enter Last Name" Text="{Binding NewEmployee.LastName, Mode=TwoWay}" />
+                <Entry Margin="20 ,10 , 20, 0" Placeholder="Enter Email" Text="{Binding NewEmployee.Email, Mode=TwoWay}" />
+                <Entry Margin="20 ,10 , 20, 0" Placeholder="Enter Phone Number" Text="{Binding NewEmployee.PhoneNumber, Mode=TwoWay}" />
+                <Picker Title="Select Role"
+                     ItemsSource="{Binding Roles}"
+                     ItemDisplayBinding="{Binding Name}"
+                     SelectedItem="{Binding SelectedRole, Mode=TwoWay}"
+                     Margin="20 ,10 , 20, 0"/>
+                <Label Margin="20 ,0 , 0, 0" Text="Hourly Rate:" />
+                <Label Margin="20 ,0 , 0, 0" Text="{Binding SelectedRole.Price}" FontAttributes="Bold"/>
 
-        <Label Margin="20 ,20 , 20, 0" Text="Phone Number" />
-        <Entry Margin="20 ,10 , 20, 0" Placeholder="Enter Phone Number" Text="{Binding NewEmployee.PhoneNumber, Mode=TwoWay}" />
-
-        <Picker Title="Select Role"
-        ItemsSource="{Binding Roles}"
-        ItemDisplayBinding="{Binding Name}"
-        SelectedItem="{Binding SelectedRole, Mode=TwoWay}"
-                Margin="20 ,10 , 20, 0"/>
-
-        <Label Margin="20 ,20 , 20, 0" Text="Hourly Rate:" />
-        <Label Margin="20 ,20 , 20, 0" Text="{Binding SelectedRole.Price}" FontAttributes="Bold"/>
-
-
-        <ListView Margin="20" ItemsSource="{Binding Roles}">
-            <ListView.ItemTemplate>
-                <DataTemplate>
-                    <TextCell Text="{Binding Name}" Detail="{Binding Price}" />
-                </DataTemplate>
-            </ListView.ItemTemplate>
-        </ListView>
-
-        <Button Margin="20"
-            Text="Save Employee" 
-            Command="{Binding SaveEmployeeCommand}" 
-            BackgroundColor="Green"
-            TextColor="White"/>
-
-
-        <Button
-            Margin="20"
-            Text="Back"
-            BackgroundColor="Yellow"
-            TextColor="White"
-            Command="{Binding NavigateBackCommand}"
-            />
-
-    </VerticalStackLayout>
+                <CollectionView Margin="20 ,0 , 0, 0" ItemsSource="{Binding Roles}"
+                ItemsLayout="HorizontalList">
+                    <CollectionView.ItemTemplate>
+                        <DataTemplate>
+                            <Border Padding="10" Stroke="Gray">
+                                <VerticalStackLayout>
+                                    <Label Text="{Binding Name}" FontSize="14" FontAttributes="Bold"/>
+                                    <Label Text="{Binding Price}" FontSize="12"/>
+                                </VerticalStackLayout>
+                            </Border>
+                        </DataTemplate>
+                    </CollectionView.ItemTemplate>
+                </CollectionView>
+               
+                <Label Text="Select Services (Check applicable services):" FontAttributes="Bold"/>
+                <CollectionView ItemsSource="{Binding AvailableServices}" SelectionMode="Multiple">
+                    <CollectionView.ItemTemplate>
+                        <DataTemplate>
+                            <HorizontalStackLayout>
+                                <CheckBox IsChecked="{Binding IsSelected, Mode=TwoWay}" 
+                                          CheckedChanged="OnServiceCheckedChanged"/>
+                                <Label Text="{Binding Name}" VerticalOptions="Center"/>
+                            </HorizontalStackLayout>
+                        </DataTemplate>
+                    </CollectionView.ItemTemplate>
+                </CollectionView>
+                
+                <Button Margin="20"
+                    Text="Save Employee" 
+                    Command="{Binding SaveEmployeeCommand}" 
+                    BackgroundColor="Green"
+                    TextColor="White"/>
+                <Button
+                    Margin="20"
+                    Text="Delete Employee"
+                    Command="{Binding DeleteEmployeeCommand}"
+                    BackgroundColor="Red"
+                    TextColor="White"/>
+                <Button
+                    Margin="20"
+                    Text="Back"
+                    BackgroundColor="Yellow"
+                    TextColor="Black"
+                    Command="{Binding NavigateBackCommand}"/>
+            </VerticalStackLayout>
+        </Border>
+    </Grid>
 </ContentPage>

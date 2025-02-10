@@ -9,8 +9,7 @@ using Data.Entities;
 
 namespace DataMauiApp.ViewModels;
 
-[QueryProperty(nameof(CurrentProject), "CurrentProject")]
-
+ 
 public partial class ProjectViewModel : ObservableObject
 {
     private readonly IProjectService _projectService;
@@ -19,13 +18,15 @@ public partial class ProjectViewModel : ObservableObject
     private readonly IServiceService _serviceService;
 
     [ObservableProperty]
-    private ProjectEntity currentProject = new();
+    private ObservableCollection<ProjectEntity>  projects = new();
     [ObservableProperty]
     private ObservableCollection<CustomerEntity> customers = new();
     [ObservableProperty]
     private ObservableCollection<EmployeeEntity> employees = new();
     [ObservableProperty]
     private ObservableCollection<ServiceEntity> services = new();
+    [ObservableProperty]
+    private ProjectEntity selectedProject;
     [ObservableProperty]
     private CustomerEntity selectedCustomer;
     [ObservableProperty]
@@ -55,12 +56,12 @@ public partial class ProjectViewModel : ObservableObject
     {
         try
         {
+            Projects = new ObservableCollection<ProjectEntity>(await _projectService.GetAllProjectsAsync());
             Customers = new ObservableCollection<CustomerEntity>(await _customerService.GetAllCustomersAsync());
             Employees = new ObservableCollection<EmployeeEntity>(await _employeeService.GetAllEmployeesAsync());
             Services = new ObservableCollection<ServiceEntity>(await _serviceService.GetAllServicesAsync());
 
-            Debug.WriteLine($"Laddade {Customers.Count} kunder, {Employees.Count} anställda, {Services.Count} tjänster.");
-            SelectedStatus = CurrentProject.Status ?? StatusOptions.First();
+            Debug.WriteLine($"Laddade {Projects.Count} projekt, {Customers.Count} kunder, {Employees.Count} anställda, {Services.Count} tjänster.");
         }
         catch (Exception ex)
         {
@@ -73,26 +74,38 @@ public partial class ProjectViewModel : ObservableObject
     {
         if (SelectedCustomer != null && SelectedEmployee != null && SelectedService != null)
         {
-            CurrentProject.CustomerId = SelectedCustomer.Id;
-            CurrentProject.EmployeeId = SelectedEmployee.Id;
-            CurrentProject.ServiceId = SelectedService.Id;
-            CurrentProject.Status = SelectedStatus;
+            SelectedProject.CustomerId = SelectedCustomer.Id;
+            SelectedProject.EmployeeId = SelectedEmployee.Id;
+            SelectedProject.ServiceId = SelectedService.Id;
+            SelectedProject.Status = SelectedStatus;
 
-            if (CurrentProject.Id == 0)
+            if (SelectedProject.Id == 0)
             {
-                await _projectService.AddProject(CurrentProject);
+                await _projectService.AddProject(SelectedProject);
             }
             else
             {
-                await _projectService.UpdateProjectAsync(CurrentProject);
+                await _projectService.UpdateProjectAsync(SelectedProject);
             }
             Debug.WriteLine("✅ Projekt sparat!");
-            await Shell.Current.GoToAsync("..");
+            LoadData();
         }
         else
         {
             Debug.WriteLine("❌ Du måste välja kund, anställd och tjänst!");
         }
+    }
+
+    [RelayCommand]
+    public async Task DeleteProject()
+    {
+        if (SelectedProject != null && SelectedProject.Id != 0)
+            {
+            await _projectService.DeleteProjectAsync(SelectedProject.Id);
+            Debug.WriteLine($"🗑️ Projekt '{SelectedProject.Name}' raderat.");
+            LoadData();
+            SelectedProject = new();
+            }
     }
     
     [RelayCommand]

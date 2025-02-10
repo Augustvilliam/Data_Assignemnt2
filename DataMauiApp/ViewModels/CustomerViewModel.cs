@@ -19,7 +19,7 @@ public partial class CustomerViewModel : ObservableObject
     private CustomerEntity newCustomer = new();
 
     [ObservableProperty]
-    private CustomerEntity selectecCustomer;
+    private CustomerEntity selectedCustomer;
 
     public CustomerViewModel(ICustomerService customerService)
     {
@@ -62,10 +62,10 @@ public partial class CustomerViewModel : ObservableObject
     [RelayCommand]
     public async Task DeleteCustomer()
     {
-        if (SelectecCustomer != null)
+        if (SelectedCustomer != null)
         {
-            await _customerService.DeleteCustomersAsync(SelectecCustomer.Id);
-            Debug.WriteLine($"{SelectecCustomer.FirstName} raderad.");
+            await _customerService.DeleteCustomersAsync(SelectedCustomer.Id);
+            Debug.WriteLine($"{SelectedCustomer.FirstName} raderad.");
             LoadCustomers();
         }
         else
