@@ -52,14 +52,14 @@
                         </DataTemplate>
                     </CollectionView.ItemTemplate>
                 </CollectionView>
-               
-                <Label Text="Select Services (Check applicable services):" FontAttributes="Bold"/>
+
+                <Label Margin="20 ,10 , 20, 0" Text="Select Services (Check applicable services):" FontAttributes="Bold"/>
                 <CollectionView ItemsSource="{Binding AvailableServices}" SelectionMode="Multiple">
                     <CollectionView.ItemTemplate>
                         <DataTemplate>
                             <HorizontalStackLayout>
-                                <CheckBox IsChecked="{Binding IsSelected, Mode=TwoWay}" 
-                                          CheckedChanged="OnServiceCheckedChanged"/>
+                                <CheckBox IsChecked="{Binding IsSelected, Mode=TwoWay}"
+                                            CheckedChanged="OnServiceCheckedChanged" />
                                 <Label Text="{Binding Name}" VerticalOptions="Center"/>
                             </HorizontalStackLayout>
                         </DataTemplate>

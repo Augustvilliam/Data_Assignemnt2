@@ -7,8 +7,8 @@
     <Grid ColumnDefinitions="*,*" RowDefinitions="Auto, *">
         <Label Text="Project Managment" HorizontalOptions="Center" Grid.ColumnSpan="2"/>
 
-        <Border Grid.Column="0" Margin="10, 60, 10, 10" Padding="10" Stroke="Gray">
-            <CollectionView>
+        <Border Grid.Column="1" Margin="10, 60, 10, 10" Padding="10" Stroke="Gray">
+            <CollectionView ItemsSource="{Binding Projects}">
                 <CollectionView.ItemTemplate>
                     <DataTemplate>
                         <Border>
@@ -19,7 +19,6 @@
                                 <Label Text="{Binding Employee.FirstName}"/>
                                 <Label Text="{Binding Service.Name}"/>
                                 <Label Text="{Binding TotalPrice, StringFormat='Total Cost: {0:C}'}"/>
-
                             </VerticalStackLayout>
                         </Border>
                     </DataTemplate>
@@ -27,7 +26,7 @@
             </CollectionView>
         </Border>
 
-        <Border Grid.Column="1" Margin="10, 60, 10, 10" Padding="10" Stroke="Gray">
+        <Border Grid.Column="0" Margin="10, 60, 10, 10" Padding="10" Stroke="Gray">
             <VerticalStackLayout>
                 <Entry Margin="20, 10, 20, 20"
                     Placeholder="Project Name" 

@@ -9,7 +9,6 @@ public partial class MainMenuPage : ContentPage
 	{
 		InitializeComponent();
 		BindingContext = viewModle;
-        Debug.WriteLine("MainMenuPage Bunden till ViewModel!"); 
     }
 
 }

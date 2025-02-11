@@ -10,7 +10,6 @@ public partial class EmployeePage : ContentPage
 	{
 		InitializeComponent();
         BindingContext = viewModel;
-        Debug.WriteLine("EmployeePage Bunden till ViewModel!");
     }
     private void OnServiceCheckedChanged(object sender, CheckedChangedEventArgs e)
     {

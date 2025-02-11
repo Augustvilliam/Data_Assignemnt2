@@ -18,49 +18,60 @@ public class DbInitializer
         {
             connection.Open();
             var sql = @"
-        CREATE TABLE IF NOT EXISTS Customers (
-            Id INTEGER PRIMARY KEY AUTOINCREMENT,
-            FirstName TEXT NOT NULL,
-            LastName TEXT NOT NULL,
-            Email TEXT NOT NULL UNIQUE,
-            PhoneNumber TEXT NOT NULL
-        );
+    CREATE TABLE IF NOT EXISTS Customers (
+        Id INTEGER PRIMARY KEY AUTOINCREMENT,
+        FirstName TEXT NOT NULL,
+        LastName TEXT NOT NULL,
+        Email TEXT NOT NULL UNIQUE,
+        PhoneNumber TEXT NOT NULL
+    );
 
-            CREATE TABLE IF NOT EXISTS Services (
-            Id INTEGER PRIMARY KEY AUTOINCREMENT, 
-            Name TEXT NOT NULL,
-            Price REAL NOT NULL DEFAULT 0
-        );
+    CREATE TABLE IF NOT EXISTS Services (
+        Id INTEGER PRIMARY KEY AUTOINCREMENT, 
+        Name TEXT NOT NULL,
+        BasePrice REAL NOT NULL DEFAULT 0,
+        EstimatedHours INTEGER NOT NULL DEFAULT 1
+    );
 
-        CREATE TABLE IF NOT EXISTS Roles (
-            Id INTEGER PRIMARY KEY AUTOINCREMENT,
-            Name TEXT NOT NULL UNIQUE,
-            Price REAL NOT NULL
-        );
+    CREATE TABLE IF NOT EXISTS Roles (
+        Id INTEGER PRIMARY KEY AUTOINCREMENT,
+        Name TEXT NOT NULL UNIQUE,
+        Price REAL NOT NULL
+    );
 
-        CREATE TABLE IF NOT EXISTS Employees (
-            Id INTEGER PRIMARY KEY AUTOINCREMENT,
-            FirstName TEXT NOT NULL,
-            LastName TEXT NOT NULL,
-            Email TEXT NOT NULL UNIQUE,
-            PhoneNumber TEXT NOT NULL,
-            RoleId INTEGER NOT NULL,
-            FOREIGN KEY (RoleId) REFERENCES Roles (Id) ON DELETE RESTRICT
-        );
+    CREATE TABLE IF NOT EXISTS Employees (
+        Id INTEGER PRIMARY KEY AUTOINCREMENT,
+        FirstName TEXT NOT NULL,
+        LastName TEXT NOT NULL,
+        Email TEXT NOT NULL UNIQUE,
+        PhoneNumber TEXT NOT NULL,
+        RoleId INTEGER NOT NULL,
+        FOREIGN KEY (RoleId) REFERENCES Roles (Id) ON DELETE RESTRICT
+    );
 
-        CREATE TABLE IF NOT EXISTS Projects (
-            Id INTEGER PRIMARY KEY AUTOINCREMENT,
-            Name TEXT NOT NULL,
-            StartDate TEXT NOT NULL,
-            EndDate TEXT NOT NULL,
-            Status TEXT NOT NULL,
-            CustomerId INTEGER NOT NULL,
-            ServiceId INTEGER NOT NULL,
-            EmployeeId INTEGER NOT NULL,
-            FOREIGN KEY (CustomerId) REFERENCES Customers (Id) ON DELETE CASCADE,
-            FOREIGN KEY (ServiceId) REFERENCES Services (Id) ON DELETE CASCADE,
-            FOREIGN KEY (EmployeeId) REFERENCES Employees (Id) ON DELETE CASCADE
-        );";
+    -- ✅ Se till att EmployeeServices skapas innan testdata körs!
+    CREATE TABLE IF NOT EXISTS EmployeeServices (
+        EmployeeId INTEGER NOT NULL,
+        ServiceId INTEGER NOT NULL,
+        PRIMARY KEY (EmployeeId, ServiceId),
+        FOREIGN KEY (EmployeeId) REFERENCES Employees (Id) ON DELETE CASCADE,
+        FOREIGN KEY (ServiceId) REFERENCES Services (Id) ON DELETE CASCADE
+    );
+
+    CREATE TABLE IF NOT EXISTS Projects (
+        Id INTEGER PRIMARY KEY AUTOINCREMENT,
+        Name TEXT NOT NULL,
+        Description TEXT NOT NULL DEFAULT 'Enter workorder Description',
+        StartDate TEXT NOT NULL,
+        EndDate TEXT NOT NULL,
+        Status TEXT NOT NULL,
+        CustomerId INTEGER NOT NULL,
+        ServiceId INTEGER NOT NULL,
+        EmployeeId INTEGER NOT NULL,
+        FOREIGN KEY (CustomerId) REFERENCES Customers (Id) ON DELETE CASCADE,
+        FOREIGN KEY (ServiceId) REFERENCES Services (Id) ON DELETE CASCADE,
+        FOREIGN KEY (EmployeeId) REFERENCES Employees (Id) ON DELETE CASCADE
+    );";
 
             using var command = new SqliteCommand(sql, connection);
             command.ExecuteNonQuery();
@@ -78,7 +89,6 @@ public class DbInitializer
 
         Debug.WriteLine("Lägger till testdata...");
 
-        // Kontrollera om vi redan har en kund
         var checkSql = "SELECT COUNT(*) FROM Customers WHERE Email = 'Sven@example.com';";
         using var checkCommand = new SqliteCommand(checkSql, connection);
         var exists = (long)checkCommand.ExecuteScalar();
@@ -86,24 +96,76 @@ public class DbInitializer
         if (exists == 0) // Om vi inte redan har data
         {
             var sql = @"
-        INSERT INTO Customers (FirstName, LastName, Email, PhoneNumber)
-        VALUES ('Sven', 'Svensson', 'Sven@example.com', '0701234567');
+        -- Skapa roller
+        INSERT INTO Roles (Name, Price) VALUES
+        ('Intern', 100),
+        ('Junior', 200),
+        ('Senior', 400);
 
-        -- 🔥 Roller måste finnas FÖRST, annars blir RoleId ogiltig
-        INSERT INTO Employees (FirstName, LastName, Email, PhoneNumber, RoleId)
-        VALUES ('Kalle', 'Kallesson', 'Kalle@example.com', '0707654321', 2); -- Kopplar till Junior
+        -- Skapa tjänster med BasePrice och EstimatedHours
+        INSERT INTO Services (Name, BasePrice, EstimatedHours) VALUES
+        ('Web Development', 500, 40),
+        ('Database Optimization', 800, 60),
+        ('Security Testing', 1200, 80);
 
-        INSERT INTO Services (Name, Price)
-        VALUES ('Stockholmsyndrom till MAUI', 500);
+        -- Skapa kunder
+        INSERT INTO Customers (FirstName, LastName, Email, PhoneNumber) VALUES
+        ('Kalle', 'Karlsson', 'Kalle@example.se', '09000000'),
+        ('Lisa', 'Andersson', 'Lisa@example.se', '09000001'),
+        ('Khaled', 'Omkisson', 'Khaled@example.se', '09000002');
 
-        INSERT INTO Projects (Name, StartDate, EndDate, Status, CustomerId, ServiceId, EmployeeId)
-        VALUES ('Website Project', '2025-01-01', '2025-02-01', 'Ongoing', 1, 1, 1);
-    ";
+        -- Skapa anställda med roller
+        INSERT INTO Employees (FirstName, LastName, Email, PhoneNumber, RoleId) VALUES
+        ('Anders', 'Andersson', 'anders@example.se', '09000003', 2),
+        ('Nils', 'Nilsson', 'nils@example.se', '09000004', 3),
+        ('Fergie', 'Ferguson', 'fergie@example.se', '09000005', 1);
+        ";
 
             using var command = new SqliteCommand(sql, connection);
             command.ExecuteNonQuery();
 
-            Debug.WriteLine("Testdata har lagts till.");
+            Debug.WriteLine("Grunddata har lagts till.");
+
+            // 🟢 Kolla att EmployeeServices finns innan vi lägger till data!
+            var checkTableSql = "SELECT name FROM sqlite_master WHERE type='table' AND name='EmployeeServices';";
+            using var checkTableCommand = new SqliteCommand(checkTableSql, connection);
+            var tableExists = checkTableCommand.ExecuteScalar();
+
+            if (tableExists != null)
+            {
+                Debug.WriteLine("Tabellen EmployeeServices finns – lägger till relationer!");
+
+                var relationSql = @"
+            -- Koppla anställda till tjänster (EmployeeServices, Many-to-Many)
+            INSERT INTO EmployeeServices (EmployeeId, ServiceId) VALUES
+            (1, 1), -- Anders kan jobba med Web Development
+            (1, 2), -- Anders kan jobba med Database Optimization
+            (2, 2), -- Nils kan jobba med Database Optimization
+            (2, 3), -- Nils kan jobba med Security Testing
+            (3, 3); -- Fergie kan jobba med Security Testing
+            ";
+
+                using var relationCommand = new SqliteCommand(relationSql, connection);
+                relationCommand.ExecuteNonQuery();
+                Debug.WriteLine("Relationer har lagts till i EmployeeServices!");
+            }
+            else
+            {
+                Debug.WriteLine("❌ ERROR: Tabellen EmployeeServices existerar INTE! Relationer kunde inte läggas till.");
+            }
+
+            // 🟢 Skapa projekt kopplade till kunder, anställda och tjänster
+            var projectSql = @"
+        INSERT INTO Projects (Name, Description, StartDate, EndDate, Status, CustomerId, ServiceId, EmployeeId) VALUES
+        ('Webbshop för E-handel', 'Utveckling av en modern webbshop för e-handel', '2025-01-10', '2025-02-15', 'Ongoing', 1, 1, 2),
+        ('Databasoptimering för Bank AB', 'Optimering av SQL-databas för bättre prestanda', '2025-02-01', '2025-03-01', 'Not Started', 2, 2, 3),
+        ('Säkerhetstestning för FinTech', 'Genomgång och penetrationstest av FinTech-lösning', '2025-02-10', '2025-04-10', 'Completed', 3, 3, 1);
+        ";
+
+            using var projectCommand = new SqliteCommand(projectSql, connection);
+            projectCommand.ExecuteNonQuery();
+
+            Debug.WriteLine("Projekt har lagts till.");
         }
         else
         {

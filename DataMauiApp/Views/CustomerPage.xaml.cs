@@ -9,7 +9,5 @@ public partial class CustomerPage : ContentPage
 	{
 		InitializeComponent();
         BindingContext = viewModel;
-        Debug.WriteLine("✅ CustomerPage ViewModel Bunden!");
-
     }
 }

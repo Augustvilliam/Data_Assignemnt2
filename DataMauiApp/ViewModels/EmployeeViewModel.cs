@@ -145,18 +145,23 @@ public partial class EmployeeViewModel : ObservableObject
 
     public void ToggleServiceSelection(ServiceEntity service, bool isChecked)
     {
-        service.IsSelected = isChecked;
-
         if (isChecked)
         {
-            if (!SelectedServices.Contains(service))
+            if (!SelectedServices.Any(s => s.Id == service.Id))
+            {
                 SelectedServices.Add(service);
+            }
         }
         else
         {
-            SelectedServices.Remove(service);
+            var existingService = SelectedServices.FirstOrDefault(s => s.Id == service.Id);
+            if (existingService != null)
+            {
+                SelectedServices.Remove(existingService);
+            }
         }
-
         Debug.WriteLine($"🛠️ Valda tjänster: {string.Join(", ", SelectedServices.Select(s => s.Name))}");
     }
+
+
 }
