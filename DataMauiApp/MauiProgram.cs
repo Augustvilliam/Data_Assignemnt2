@@ -37,17 +37,26 @@ public static class MauiProgram
         builder.Services.AddScoped<IServiceService, ServiceService>();
         builder.Services.AddScoped<IRoleService, RoleService>();
 
-        builder.Services.AddSingleton<ProjectsViewModel>();
         builder.Services.AddTransient<ProjectViewModel>();
         builder.Services.AddTransient<MainMenuViewModel>();
         builder.Services.AddSingleton<CustomerViewModel>();
         builder.Services.AddSingleton<EmployeeViewModel>();
 
-        builder.Services.AddSingleton<ProjectsPage>();
         builder.Services.AddTransient<ProjectPage>();
         builder.Services.AddTransient<MainMenuPage>();
         builder.Services.AddSingleton<CustomerPage>();
         builder.Services.AddSingleton<EmployeePage>();
+
+        builder.Services.AddTransient<EmployeeEditViewModel>();
+        builder.Services.AddTransient<EmployeeEditPage>();
+
+        builder.Services.AddTransient<CustomerEditViewModel>();
+        builder.Services.AddTransient<CustomerEditPage>();
+
+        builder.Services.AddTransient<ProjectEditPage>();
+        builder.Services.AddTransient<ProjectEditViewModel>();
+
+
 
         // 🔄 Initialisera databasen
         using (var scope = builder.Services.BuildServiceProvider().CreateScope())

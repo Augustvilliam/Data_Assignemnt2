@@ -39,18 +39,22 @@
                     Command="{Binding AddCustomersCommand}"
                     BackgroundColor="DarkOliveGreen"
                     TextColor="White"/>
-                
                 <Button
-                    Margin="20"
-                    Text="Delete Customer"
-                    Command="{Binding DeleteCustomerCommand}"
-                    BackgroundColor="Red"
-                    TextColor="White"/>
-
+                    Text="Details/Edit mode"
+                    Command="{Binding OpenEditModeCommand}"
+                    BackgroundColor="Yellow"
+                    TextColor="Black"
+                    Margin="20"/>
+                <Button
+                   Margin="20"
+                   Text="Delete Customer"
+                   Command="{Binding DeleteCustomerCommand}"
+                   BackgroundColor="Red"
+                   TextColor="White"/>
                 <Button
                     Margin="20"
                     Text="Back"
-                    BackgroundColor="Yellow"
+                    BackgroundColor="White"
                     TextColor="Black"
                     Command="{Binding NavigateBackCommand}"/>
             </VerticalStackLayout>

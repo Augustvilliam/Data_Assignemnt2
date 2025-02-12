@@ -13,21 +13,21 @@ namespace DataMauiApp.ViewModels
         private async Task NavigateToCustomerMenu()
         {
             Debug.WriteLine("Navigerar Till Customers...");
-            await Shell.Current.GoToAsync(nameof(CustomerPage));
+            await Shell.Current.GoToAsync("//CustomerPage");
         }
 
         [RelayCommand]
         private async Task NavigateToEmployeeMenu()
         {
             Debug.WriteLine("Navigerar Till Employees...");
-            await Shell.Current.GoToAsync(nameof(EmployeePage));
+            await Shell.Current.GoToAsync("//EmployeePage");
         }
 
         [RelayCommand]
         private async Task NavigateToProjectMenu()
         {
             Debug.WriteLine("Navigerar Till Projects...");
-            await Shell.Current.GoToAsync(nameof(ProjectPage));
+            await Shell.Current.GoToAsync("//ProjectPage");
         }
     }
 }

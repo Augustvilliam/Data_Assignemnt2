@@ -6,6 +6,7 @@ using Busniess.Interface;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using Data.Entities;
+using DataMauiApp.Views;
 
 namespace DataMauiApp.ViewModels;
 
@@ -52,12 +53,12 @@ public partial class EmployeeViewModel : ObservableObject
         _employeeService = employeeService;
         _serviceService = serviceservice;
 
-        LoadRoles();
-        LoadEmployee();
-        LoadServices();
+        _ = LoadRoles();
+        _ = LoadEmployee();
+        _ = LoadServices();
     }
 
-    public async void LoadServices()
+    public async Task LoadServices()
     {
         try
         {
@@ -70,7 +71,7 @@ public partial class EmployeeViewModel : ObservableObject
             Debug.WriteLine($"Fel vid laddning av tjänster: {ex.Message}");
         }
     }
-    public async void LoadRoles()
+    public async Task LoadRoles()
     {
         try
         {
@@ -83,7 +84,7 @@ public partial class EmployeeViewModel : ObservableObject
             Debug.WriteLine($"Fel vid laddning av roller. { ex.Message} ");
         }
     }
-    public async void LoadEmployee()
+    public async Task LoadEmployee()
     {
         try
         {
@@ -140,9 +141,8 @@ public partial class EmployeeViewModel : ObservableObject
     public async Task NavigateBack()
     {
         Debug.WriteLine("Navigerar tillbaka...");
-        await Shell.Current.GoToAsync("..");
+        await Shell.Current.GoToAsync("//MainMenuPage");
     }
-
     public void ToggleServiceSelection(ServiceEntity service, bool isChecked)
     {
         if (isChecked)
@@ -162,6 +162,21 @@ public partial class EmployeeViewModel : ObservableObject
         }
         Debug.WriteLine($"🛠️ Valda tjänster: {string.Join(", ", SelectedServices.Select(s => s.Name))}");
     }
-
+    [RelayCommand]
+    public async Task OpenEditMode()
+    {
+        if (SelectedEmployee != null)
+        {
+            await Shell.Current.GoToAsync("//EmployeeEditPage", new Dictionary<string, object>
+            {
+                ["Employee"] = SelectedEmployee
+            });
+        }
+        else
+        {
+            await Application.Current.MainPage.DisplayAlert("Error", "You must select an employee before editing!", "OK");
+            Debug.WriteLine("No employee Selected");
+        }
+    }
 
 }

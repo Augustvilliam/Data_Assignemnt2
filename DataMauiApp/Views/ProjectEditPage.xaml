@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="DataMauiApp.Views.ProjectEditPage"
+             Title="ProjectEditPage">
+    
+    
+    
+    <Grid ColumnDefinitions="2*,3*" RowDefinitions="Auto,*">
+        <Label Text="Edit And Overview Menu" Grid.ColumnSpan="2" FontSize="Large" HorizontalOptions="Center"/>
+
+        <Border Grid.Row="1" Grid.Column="0" Margin="10" Padding="10" Stroke="Gray">
+            <VerticalStackLayout>
+                <Label Text="Select an Employee" FontSize="Medium" FontAttributes="Bold"/>
+                <CollectionView ItemsSource="{Binding Projects}" SelectionMode="Single" SelectedItem="{Binding SelectedProject, Mode=TwoWay}">
+                    <CollectionView.ItemTemplate>
+                        <DataTemplate>
+                            <Border BackgroundColor="LightGray" Padding="5">
+                                <VerticalStackLayout>
+                                    <Label Text="{Binding Id}" FontSize="16" FontAttributes="Bold"/>
+                                    <Label Text="{Binding Name}" FontSize="16" FontAttributes="Bold"/>
+                                    <Label Text="{Binding Status}" FontSize="14"/>
+                                </VerticalStackLayout>
+                            </Border>
+                        </DataTemplate>
+                    </CollectionView.ItemTemplate>
+                </CollectionView>
+
+                <Button Text="Save Changes"
+                        Command="{Binding SaveChangesCommand}"
+                        BackgroundColor="DarkOliveGreen"
+                        TextColor="White"
+                        Margin="0,10,0,0"/>
+
+                <Button Text="Return"
+                        Command="{Binding NavigateBackCommand}"
+                        BackgroundColor="White"
+                        TextColor="Black"
+                        Margin="0,10,0,0"/>
+            </VerticalStackLayout>
+        </Border>
+
+        <Border Grid.Row="1" Grid.Column="1" Margin="10" Padding="10" Stroke="Gray">
+            <VerticalStackLayout>
+                <Label Text="Employee Details" FontSize="Medium" FontAttributes="Bold"/>
+
+                <Label Text="ID:" FontAttributes="Bold"/>
+                <Label Text="{Binding SelectedProject.Id}" />
+
+                <Label Text="First Name:" FontAttributes="Bold"/>
+                <Entry Text="{Binding SelectedProject.Name, Mode=TwoWay}" Placeholder="Enter Project Name"/>
+
+                <Label Text="Last Name:" FontAttributes="Bold"/>
+                <Entry Text="{Binding SelectedProject.LastName, Mode=TwoWay}" Placeholder="Enter last name"/>
+
+                <Label Text="Email:" FontAttributes="Bold"/>
+                <Entry Text="{Binding SelectedProject.Email, Mode=TwoWay}" Placeholder="Enter email"/>
+
+                <Label Text="Phone Number:" FontAttributes="Bold"/>
+                <Entry Text="{Binding SelectedProject.PhoneNumber, Mode=TwoWay}" Placeholder="Enter phone number"/>
+            </VerticalStackLayout>
+        </Border>
+    </Grid>
+</ContentPage>

@@ -8,7 +8,7 @@
         <Label Text="Project Managment" HorizontalOptions="Center" Grid.ColumnSpan="2"/>
 
         <Border Grid.Column="1" Margin="10, 60, 10, 10" Padding="10" Stroke="Gray">
-            <CollectionView ItemsSource="{Binding Projects}">
+            <CollectionView ItemsSource="{Binding Projects}" SelectionMode="Single" SelectedItem="{Binding SelectedProject, Mode=TwoWay}">
                 <CollectionView.ItemTemplate>
                     <DataTemplate>
                         <Border>
@@ -62,7 +62,7 @@
                 <Button Text="Save Project" 
                     Margin="20, 10, 20, 20"
                     Command="{Binding SaveProjectCommand}" 
-                    BackgroundColor="Green"
+                    BackgroundColor="DarkOliveGreen"
                     TextColor="White"/>
                 <Button Text="Delete Project"
                         Margin="20, 10, 20, 20"
@@ -70,10 +70,16 @@
                         BackgroundColor="Red"
                         TextColor="White"/>
 
+                <Button
+                    Text="Details/Edit mode"
+                    Command="{Binding OpenEditModeCommand}"
+                    BackgroundColor="Yellow"
+                    TextColor="Black"
+                    Margin="20"/>
                 <Button Text="Back"
                     Margin="20, 10, 20, 20"
                     Command="{Binding NavigateBackCommand}"
-                    BackgroundColor="Yellow"
+                    BackgroundColor="White"
                     TextColor="Black"/>
             </VerticalStackLayout>
         </Border>

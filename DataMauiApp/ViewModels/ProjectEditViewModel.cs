@@ -1,25 +1,23 @@
 ﻿
-
 using System.Collections.ObjectModel;
 using System.Diagnostics;
 using Busniess.Interface;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using Data.Entities;
-using DataMauiApp.Views;
 
 namespace DataMauiApp.ViewModels;
 
- 
-public partial class ProjectViewModel : ObservableObject
+public partial class ProjectEditViewModel : ObservableObject
 {
     private readonly IProjectService _projectService;
     private readonly ICustomerService _customerService;
     private readonly IEmployeeService _employeeService;
     private readonly IServiceService _serviceService;
 
+
     [ObservableProperty]
-    private ObservableCollection<ProjectEntity>  projects = new();
+    private ObservableCollection<ProjectEntity> projects = new();
     [ObservableProperty]
     private ObservableCollection<CustomerEntity> customers = new();
     [ObservableProperty]
@@ -37,13 +35,11 @@ public partial class ProjectViewModel : ObservableObject
     [ObservableProperty]
     private string selectedStatus;
 
-    public List<string> StatusOptions { get; set; } = new() { "Not Started", "Ongoing", "Compleated" };
-
-    public ProjectViewModel(
-        IProjectService projectService,
-        ICustomerService customerService,
-        IEmployeeService employeeService,
-        IServiceService serviceService)
+    public ProjectEditViewModel(
+    IProjectService projectService,
+    ICustomerService customerService,
+    IEmployeeService employeeService,
+    IServiceService serviceService)
     {
         _projectService = projectService;
         _customerService = customerService;
@@ -71,66 +67,23 @@ public partial class ProjectViewModel : ObservableObject
     }
 
     [RelayCommand]
-    private async Task SaveProject()
+    public async Task SaveChanges()
     {
-        if (SelectedCustomer != null && SelectedEmployee != null && SelectedService != null)
+        if (SelectedEmployee != null)
         {
-            SelectedProject.CustomerId = SelectedCustomer.Id;
-            SelectedProject.EmployeeId = SelectedEmployee.Id;
-            SelectedProject.ServiceId = SelectedService.Id;
-            SelectedProject.Status = SelectedStatus;
-
-            if (SelectedProject.Id == 0)
-            {
-                await _projectService.AddProject(SelectedProject);
-            }
-            else
-            {
-                await _projectService.UpdateProjectAsync(SelectedProject);
-            }
-            Debug.WriteLine("✅ Projekt sparat!");
-            LoadData();
+            await _employeeService.UpdateEmployeeAsync(SelectedEmployee);
+            Debug.WriteLine("Employee Updated");
         }
         else
         {
-            Debug.WriteLine("❌ Du måste välja kund, anställd och tjänst!");
+            Debug.WriteLine("Somehting went wrong");
         }
     }
-
-    [RelayCommand]
-    public async Task DeleteProject()
-    {
-        if (SelectedProject != null && SelectedProject.Id != 0)
-            {
-            await _projectService.DeleteProjectAsync(SelectedProject.Id);
-            Debug.WriteLine($"🗑️ Projekt '{SelectedProject.Name}' raderat.");
-            LoadData();
-            SelectedProject = new();
-            }
-    }
-
-    [RelayCommand]
-    public async Task OpenEditMode()
-    {
-        if (SelectedProject != null)
-        {
-            await Shell.Current.GoToAsync("//ProjectEditPage", new Dictionary<string, object>
-            {
-                ["Project"] = SelectedProject
-            });
-        }
-        else
-        {
-            await Application.Current.MainPage.DisplayAlert("Error", "You must select an employee before editing!", "OK");
-            Debug.WriteLine("No Project Selected");
-        }
-    }
-
 
     [RelayCommand]
     public async Task NavigateBack()
     {
-        Debug.WriteLine("Navigerar tillbaka...");
-        await Shell.Current.GoToAsync("//MainMenuPage");
+        Debug.WriteLine("Navigerar tillbaka till ProjectPage...");
+        await Shell.Current.GoToAsync("//ProjectPage");
     }
 }

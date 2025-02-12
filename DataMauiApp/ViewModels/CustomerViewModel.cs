@@ -5,6 +5,7 @@ using Busniess.Interface;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using Data.Entities;
+using DataMauiApp.Views;
 
 namespace DataMauiApp.ViewModels;
 
@@ -24,10 +25,10 @@ public partial class CustomerViewModel : ObservableObject
     public CustomerViewModel(ICustomerService customerService)
     {
         _customerService = customerService;
-        LoadCustomers();
+        _ = LoadCustomers();
     }
 
-    public async void LoadCustomers()
+    public async Task LoadCustomers()
     {
         try
         {
@@ -79,6 +80,25 @@ public partial class CustomerViewModel : ObservableObject
     public async Task NavigateBack()
     {
         Debug.WriteLine("Navigerar tillbaka...");
-        await Shell.Current.GoToAsync("..");
+        await Shell.Current.GoToAsync("//MainMenuPage");
+    }
+   
+    
+    [RelayCommand]
+
+    public async Task OpenEditMode()
+    {
+        if (SelectedCustomer != null)
+        {
+            await Shell.Current.GoToAsync("//CustomerEditPage", new Dictionary<string, object>
+            {
+                ["Customer"] = SelectedCustomer
+            });
+        }
+        else
+        {
+            await Application.Current.MainPage.DisplayAlert("Error", "You must select an Customer before editing!", "OK");
+            Debug.WriteLine("No Customer Selected");
+        }
     }
 }

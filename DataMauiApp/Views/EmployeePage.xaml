@@ -65,12 +65,18 @@
                         </DataTemplate>
                     </CollectionView.ItemTemplate>
                 </CollectionView>
-                
+
                 <Button Margin="20"
                     Text="Save Employee" 
                     Command="{Binding SaveEmployeeCommand}" 
-                    BackgroundColor="Green"
+                    BackgroundColor="DarkOliveGreen"
                     TextColor="White"/>
+                <Button
+                    Text="Details/Edit mode"
+                    Command="{Binding OpenEditModeCommand}"
+                    BackgroundColor="Yellow"
+                    TextColor="Black"
+                    Margin="20"/>
                 <Button
                     Margin="20"
                     Text="Delete Employee"
@@ -80,9 +86,10 @@
                 <Button
                     Margin="20"
                     Text="Back"
-                    BackgroundColor="Yellow"
+                    BackgroundColor="White"
                     TextColor="Black"
                     Command="{Binding NavigateBackCommand}"/>
+
             </VerticalStackLayout>
         </Border>
     </Grid>
