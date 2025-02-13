@@ -54,6 +54,21 @@
 
                 <Label Text="Phone Number:" FontAttributes="Bold"/>
                 <Entry Text="{Binding SelectedCustomer.PhoneNumber, Mode=TwoWay}" Placeholder="Enter phone number"/>
+
+                <Label Text="Projects:" FontAttributes="Bold" Margin="0,10,0,0"/>
+                <CollectionView ItemsSource="{Binding SelectedCustomer.Projects}">
+                    <CollectionView.ItemTemplate>
+                        <DataTemplate>
+                            <Border BackgroundColor="LightGray" Padding="5">
+                                <VerticalStackLayout>
+                                    <Label Text="{Binding Name}" FontSize="16" FontAttributes="Bold"/>
+                                    <Label Text="{Binding Status}" FontSize="14"/>
+                                    <Label Text="{Binding TotalPrice, StringFormat='Total Cost: {0:C}'}"/>
+                                </VerticalStackLayout>
+                            </Border>
+                        </DataTemplate>
+                    </CollectionView.ItemTemplate>
+                </CollectionView>
             </VerticalStackLayout>
         </Border>
     </Grid>

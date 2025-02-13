@@ -104,23 +104,22 @@ public partial class EmployeeViewModel : ObservableObject
             string.IsNullOrWhiteSpace(NewEmployee.LastName) ||
             string.IsNullOrWhiteSpace(NewEmployee.Email) ||
             string.IsNullOrWhiteSpace(NewEmployee.PhoneNumber) ||
-            SelectedRole == null)
+            SelectedRole == null) 
         {
-            Debug.WriteLine("Alla fält måste fyllas i.");
+            Debug.WriteLine("❌ Alla fält måste fyllas i.");
             return;
-      
-
         }
+
         NewEmployee.RoleId = SelectedRole.Id;
-        NewEmployee.Services = SelectedServices.ToList();
 
         await _employeeService.AddEmployee(NewEmployee);
-        Debug.WriteLine($"✅ Ny anställd tillagd med {SelectedServices.Count} tjänster.");
+        Debug.WriteLine($"✅ Ny anställd tillagd: {NewEmployee.FirstName} {NewEmployee.LastName} med roll {SelectedRole.Name}");
 
+       
         LoadEmployee();
-        NewEmployee = new();
 
-        await Shell.Current.GoToAsync("..");
+        
+        NewEmployee = new();
     }
     [RelayCommand]
     public async Task DeleteEmployee()

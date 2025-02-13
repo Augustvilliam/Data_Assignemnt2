@@ -42,22 +42,41 @@
 
         <Border Grid.Row="1" Grid.Column="1" Margin="10" Padding="10" Stroke="Gray">
             <VerticalStackLayout>
-                <Label Text="Employee Details" FontSize="Medium" FontAttributes="Bold"/>
+                <Label Text="Project Details" FontSize="Medium" FontAttributes="Bold"/>
 
-                <Label Text="ID:" FontAttributes="Bold"/>
+                <Label Text="Project ID:" FontAttributes="Bold"/>
                 <Label Text="{Binding SelectedProject.Id}" />
 
-                <Label Text="First Name:" FontAttributes="Bold"/>
-                <Entry Text="{Binding SelectedProject.Name, Mode=TwoWay}" Placeholder="Enter Project Name"/>
+                <Label Text="Project Name:" FontAttributes="Bold"/>
+                <Entry Text="{Binding SelectedProject.Name, Mode=TwoWay}" Placeholder="Enter project name"/>
 
-                <Label Text="Last Name:" FontAttributes="Bold"/>
-                <Entry Text="{Binding SelectedProject.LastName, Mode=TwoWay}" Placeholder="Enter last name"/>
+                <Label Text="Description:" FontAttributes="Bold"/>
+                <Editor Text="{Binding SelectedProject.Description, Mode=TwoWay}" Placeholder="Enter description"/>
 
-                <Label Text="Email:" FontAttributes="Bold"/>
-                <Entry Text="{Binding SelectedProject.Email, Mode=TwoWay}" Placeholder="Enter email"/>
+                <Label Text="Start Date:" FontAttributes="Bold"/>
+                <DatePicker Date="{Binding SelectedProject.StartDate, Mode=TwoWay}"/>
 
-                <Label Text="Phone Number:" FontAttributes="Bold"/>
-                <Entry Text="{Binding SelectedProject.PhoneNumber, Mode=TwoWay}" Placeholder="Enter phone number"/>
+                <Label Text="End Date:" FontAttributes="Bold"/>
+                <DatePicker Date="{Binding SelectedProject.EndDate, Mode=TwoWay}"/>
+
+                <Label Text="Customer:" FontAttributes="Bold"/>
+                <Picker ItemsSource="{Binding Customers}" 
+                        ItemDisplayBinding="{Binding FirstName}" 
+                        SelectedItem="{Binding SelectedCustomer, Mode=TwoWay}"/>
+
+                <Label Text="Employee:" FontAttributes="Bold"/>
+                <Picker ItemsSource="{Binding Employees}" 
+                        ItemDisplayBinding="{Binding FirstName}" 
+                        SelectedItem="{Binding SelectedEmployee, Mode=TwoWay}"/>
+
+                <Label Text="Service:" FontAttributes="Bold"/>
+                <Picker ItemsSource="{Binding Services}" 
+                        ItemDisplayBinding="{Binding Name}" 
+                        SelectedItem="{Binding SelectedService, Mode=TwoWay}"/>
+
+                <Label Text="Status:" FontAttributes="Bold"/>
+                <Picker ItemsSource="{Binding StatusOptions}" 
+                        SelectedItem="{Binding SelectedStatus, Mode=TwoWay}"/>
             </VerticalStackLayout>
         </Border>
     </Grid>

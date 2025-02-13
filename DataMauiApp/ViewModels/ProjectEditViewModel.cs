@@ -7,7 +7,7 @@ using CommunityToolkit.Mvvm.Input;
 using Data.Entities;
 
 namespace DataMauiApp.ViewModels;
-
+[QueryProperty(nameof(SelectedProject), "Project")]
 public partial class ProjectEditViewModel : ObservableObject
 {
     private readonly IProjectService _projectService;
@@ -35,6 +35,8 @@ public partial class ProjectEditViewModel : ObservableObject
     [ObservableProperty]
     private string selectedStatus;
 
+    public List<string> StatusOptions { get; set; } = new() { "Not Started", "Ongoing", "Completed" };
+
     public ProjectEditViewModel(
     IProjectService projectService,
     ICustomerService customerService,
@@ -49,6 +51,14 @@ public partial class ProjectEditViewModel : ObservableObject
         _ = LoadData();
     }
 
+    partial void OnSelectedProjectChanged(ProjectEntity value)
+    {
+        if (value != null)
+        {
+
+            _ = LoadData();
+        }
+    }
     private async Task LoadData()
     {
         try
@@ -58,11 +68,19 @@ public partial class ProjectEditViewModel : ObservableObject
             Employees = new ObservableCollection<EmployeeEntity>(await _employeeService.GetAllEmployeesAsync());
             Services = new ObservableCollection<ServiceEntity>(await _serviceService.GetAllServicesAsync());
 
-            Debug.WriteLine($"Laddade {Projects.Count} projekt, {Customers.Count} kunder, {Employees.Count} anställda, {Services.Count} tjänster.");
+            if (SelectedProject != null)
+            {
+                SelectedCustomer = Customers.FirstOrDefault(c => c.Id == SelectedProject.CustomerId);
+                SelectedEmployee = Employees.FirstOrDefault(e => e.Id == SelectedProject.EmployeeId);
+                SelectedService = Services.FirstOrDefault(s => s.Id == SelectedProject.ServiceId);
+                SelectedStatus = SelectedProject.Status;
+            }
+
+            Debug.WriteLine($"✅ Loaded {Projects.Count} projects, {Customers.Count} customers, {Employees.Count} employees, {Services.Count} services.");
         }
         catch (Exception ex)
         {
-            Debug.WriteLine($"Fel vid laddning av data: {ex.Message}");
+            Debug.WriteLine($"❌ Error loading data: {ex.Message}");
         }
     }
 
@@ -71,6 +89,12 @@ public partial class ProjectEditViewModel : ObservableObject
     {
         if (SelectedEmployee != null)
         {
+
+            SelectedProject.CustomerId = SelectedCustomer?.Id ?? 0;
+            SelectedProject.EmployeeId = SelectedEmployee?.Id ?? 0;
+            SelectedProject.ServiceId = SelectedService?.Id ?? 0;
+            SelectedProject.Status = SelectedStatus;
+
             await _employeeService.UpdateEmployeeAsync(SelectedEmployee);
             Debug.WriteLine("Employee Updated");
         }

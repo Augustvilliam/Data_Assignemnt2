@@ -27,6 +27,8 @@ public partial class ProjectViewModel : ObservableObject
     [ObservableProperty]
     private ObservableCollection<ServiceEntity> services = new();
     [ObservableProperty]
+    private ProjectEntity newProject = new();
+    [ObservableProperty]
     private ProjectEntity selectedProject;
     [ObservableProperty]
     private CustomerEntity selectedCustomer;
@@ -75,20 +77,15 @@ public partial class ProjectViewModel : ObservableObject
     {
         if (SelectedCustomer != null && SelectedEmployee != null && SelectedService != null)
         {
-            SelectedProject.CustomerId = SelectedCustomer.Id;
-            SelectedProject.EmployeeId = SelectedEmployee.Id;
-            SelectedProject.ServiceId = SelectedService.Id;
-            SelectedProject.Status = SelectedStatus;
+            NewProject.CustomerId = SelectedCustomer.Id;
+            NewProject.EmployeeId = SelectedEmployee.Id;
+            NewProject.ServiceId = SelectedService.Id;
+            NewProject.Status = SelectedStatus;
 
-            if (SelectedProject.Id == 0)
-            {
-                await _projectService.AddProject(SelectedProject);
-            }
-            else
-            {
-                await _projectService.UpdateProjectAsync(SelectedProject);
-            }
-            Debug.WriteLine("✅ Projekt sparat!");
+            await _projectService.AddProject(NewProject);
+            Debug.WriteLine("✅ New project added!");
+
+            NewProject = new();
             LoadData();
         }
         else
@@ -105,7 +102,7 @@ public partial class ProjectViewModel : ObservableObject
             await _projectService.DeleteProjectAsync(SelectedProject.Id);
             Debug.WriteLine($"🗑️ Projekt '{SelectedProject.Name}' raderat.");
             LoadData();
-            SelectedProject = new();
+            SelectedProject = null;
             }
     }
 
