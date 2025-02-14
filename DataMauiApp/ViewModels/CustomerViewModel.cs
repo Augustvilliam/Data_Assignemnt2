@@ -1,6 +1,7 @@
 ﻿
 using System.Collections.ObjectModel;
 using System.Diagnostics;
+using Busniess.Helper;
 using Busniess.Interface;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
@@ -45,20 +46,20 @@ public partial class CustomerViewModel : ObservableObject
     [RelayCommand]
     public async Task AddCustomers()
     {
-        if (!string.IsNullOrEmpty(NewCustomer.FirstName) &&
-            !string.IsNullOrEmpty(NewCustomer.LastName) &&
-            !string.IsNullOrEmpty(NewCustomer.Email) &&
-            !string.IsNullOrEmpty(NewCustomer.PhoneNumber))
+        var errors = ValidationHelper.ValidateCustomer(NewCustomer);
+
+        if (errors.Count > 0)
         {
-            await _customerService.AddCustomersAsync(NewCustomer);
-            Debug.WriteLine("Customer tillagd");
-            LoadCustomers();
-            NewCustomer = new();
+            Debug.WriteLine($"❌ Valideringsfel: {string.Join(", ", errors)}");
+            await Application.Current.MainPage.DisplayAlert("Validation Error", string.Join("\n", errors), "OK");
+            return;
         }
-        else
-        {
-            Debug.WriteLine("Samtliga fält måste fyllas i.");
-        }
+
+        await _customerService.AddCustomersAsync(NewCustomer);
+        Debug.WriteLine($"✅ Customer tillagd: {NewCustomer.FirstName} {NewCustomer.LastName}");
+
+        await LoadCustomers();
+        NewCustomer = new();
     }
     [RelayCommand]
     public async Task DeleteCustomer()

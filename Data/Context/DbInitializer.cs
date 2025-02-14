@@ -47,10 +47,9 @@ public class DbInitializer
         PhoneNumber TEXT NOT NULL,
         RoleId INTEGER NOT NULL,
         FOREIGN KEY (RoleId) REFERENCES Roles (Id) ON DELETE RESTRICT
-    );
 
-    -- ✅ Se till att EmployeeServices skapas innan testdata körs!
-    CREATE TABLE IF NOT EXISTS EmployeeServices (
+    );
+    CREATE TABLE IF NOT EXISTS EmployeeService (
         EmployeeId INTEGER NOT NULL,
         ServiceId INTEGER NOT NULL,
         PRIMARY KEY (EmployeeId, ServiceId),
@@ -76,9 +75,6 @@ public class DbInitializer
             using var command = new SqliteCommand(sql, connection);
             command.ExecuteNonQuery();
         }
-
-
-
 
     }
 
@@ -127,7 +123,7 @@ public class DbInitializer
             Debug.WriteLine("Grunddata har lagts till.");
 
             // 🟢 Kolla att EmployeeServices finns innan vi lägger till data!
-            var checkTableSql = "SELECT name FROM sqlite_master WHERE type='table' AND name='EmployeeServices';";
+            var checkTableSql = "SELECT name FROM sqlite_master WHERE type='table' AND name='EmployeeService';";
             using var checkTableCommand = new SqliteCommand(checkTableSql, connection);
             var tableExists = checkTableCommand.ExecuteScalar();
 
@@ -137,7 +133,7 @@ public class DbInitializer
 
                 var relationSql = @"
             -- Koppla anställda till tjänster (EmployeeServices, Many-to-Many)
-            INSERT INTO EmployeeServices (EmployeeId, ServiceId) VALUES
+            INSERT INTO EmployeeService (EmployeeId, ServiceId) VALUES
             (1, 1), -- Anders kan jobba med Web Development
             (1, 2), -- Anders kan jobba med Database Optimization
             (2, 2), -- Nils kan jobba med Database Optimization

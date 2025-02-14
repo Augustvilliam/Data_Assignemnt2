@@ -6,6 +6,7 @@ using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using Data.Entities;
 using System.Diagnostics;
+using Busniess.Helper;
 
 namespace DataMauiApp.ViewModels
 {
@@ -43,15 +44,24 @@ namespace DataMauiApp.ViewModels
         [RelayCommand]
         public async Task SaveChanges()
         {
-            if (SelectedCustomer != null)
+            if (SelectedCustomer == null)
             {
-                await _customerService.UpdateCustomersAsync(SelectedCustomer);
-                Debug.WriteLine("Customer Updated");
+                Debug.WriteLine("❌ Ingen kund vald.");
+                return;
             }
-            else
+
+            var errors = ValidationHelper.ValidateCustomer(SelectedCustomer);
+            if (errors.Count > 0)
             {
-                Debug.WriteLine("Somehting went wrong");
+                Debug.WriteLine($"❌ Valideringsfel: {string.Join(", ", errors)}");
+                await Application.Current.MainPage.DisplayAlert("Validation Error", string.Join("\n", errors), "OK");
+                return;
             }
+
+            await _customerService.UpdateCustomersAsync(SelectedCustomer);
+            Debug.WriteLine($"✅ Kund '{SelectedCustomer.FirstName} {SelectedCustomer.LastName}' uppdaterad.");
+
+            await LoadCustomers();
         }
 
         [RelayCommand]

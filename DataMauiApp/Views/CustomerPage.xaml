@@ -14,11 +14,11 @@
             <CollectionView ItemsSource="{Binding Customers}" SelectionMode="Single" SelectedItem="{Binding SelectedCustomer, Mode=TwoWay}">
                 <CollectionView.ItemTemplate>
                     <DataTemplate>
-                        <Border BackgroundColor="LightGray">
+                        <Border BackgroundColor="Transparent">
                             <VerticalStackLayout>
-                                <Label TextColor="black" Text="{Binding FirstName}" FontSize="18" FontAttributes="Bold"/>
-                                <Label TextColor="black" Text="{Binding Email}" FontSize="14"/>
-                                <Label TextColor="black" Text="{Binding PhoneNumber}" FontSize="14"/>
+                                <Label TextColor="White" Text="{Binding FirstName}" FontSize="18" FontAttributes="Bold"/>
+                                <Label TextColor="White" Text="{Binding Email}" FontSize="14"/>
+                                <Label TextColor="White" Text="{Binding PhoneNumber}" FontSize="14"/>
                             </VerticalStackLayout>
                         </Border>
                     </DataTemplate>

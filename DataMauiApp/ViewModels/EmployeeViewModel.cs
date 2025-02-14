@@ -2,6 +2,7 @@
 
 using System.Collections.ObjectModel;
 using System.Diagnostics;
+using Busniess.Helper;
 using Busniess.Interface;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
@@ -57,7 +58,6 @@ public partial class EmployeeViewModel : ObservableObject
         _ = LoadEmployee();
         _ = LoadServices();
     }
-
     public async Task LoadServices()
     {
         try
@@ -89,36 +89,33 @@ public partial class EmployeeViewModel : ObservableObject
         try
         {
             var employeeList = await _employeeService.GetAllEmployeesAsync();
-            Employees = new ObservableCollection<EmployeeEntity>(employeeList); // 🟢 Använd den genererade egenskapen!
-            Debug.WriteLine($"Antal anställda laddade: {Employees.Count}");
+            Employees = new ObservableCollection<EmployeeEntity>(employeeList);
+            Debug.WriteLine($"✅ {Employees.Count} anställda laddade och UI uppdaterat.");
         }
         catch (Exception ex)
         {
-            Debug.WriteLine($"Fel vid laddning av roller. {ex.Message} ");
+            Debug.WriteLine($"❌ Fel vid laddning av anställda: {ex.Message}");
         }
     }
     [RelayCommand]
     public async Task SaveEmployee()
     {
-        if (string.IsNullOrWhiteSpace(NewEmployee.FirstName) ||
-            string.IsNullOrWhiteSpace(NewEmployee.LastName) ||
-            string.IsNullOrWhiteSpace(NewEmployee.Email) ||
-            string.IsNullOrWhiteSpace(NewEmployee.PhoneNumber) ||
-            SelectedRole == null) 
+        NewEmployee.RoleId = SelectedRole?.Id ?? 0;
+        NewEmployee.Services = SelectedServices.ToList();
+
+        var errors = ValidationHelper.ValidateEmployee(NewEmployee);
+
+        if (errors.Count > 0)
         {
-            Debug.WriteLine("❌ Alla fält måste fyllas i.");
+            Debug.WriteLine($"❌ Valideringsfel: {string.Join(", ", errors)}");
+            await Application.Current.MainPage.DisplayAlert("Validation Error", string.Join("\n", errors), "OK");
             return;
         }
 
-        NewEmployee.RoleId = SelectedRole.Id;
-
         await _employeeService.AddEmployee(NewEmployee);
-        Debug.WriteLine($"✅ Ny anställd tillagd: {NewEmployee.FirstName} {NewEmployee.LastName} med roll {SelectedRole.Name}");
+        Debug.WriteLine($"✅ Ny anställd tillagd: {NewEmployee.FirstName} {NewEmployee.LastName} med roll {SelectedRole?.Name}");
 
-       
-        LoadEmployee();
-
-        
+        await LoadEmployee();
         NewEmployee = new();
     }
     [RelayCommand]
@@ -127,13 +124,12 @@ public partial class EmployeeViewModel : ObservableObject
         if (SelectedEmployee != null)
         {
             await _employeeService.DeleteEmployeeAsync(SelectedEmployee.Id);
-            Debug.WriteLine($"{SelectedEmployee.FirstName} raderad.");
 
-            LoadEmployee();
+            await LoadEmployee();
         }
         else
         {
-            Debug.WriteLine("Ingen kund vald.");
+            Debug.WriteLine("❌ Ingen kund vald.");
         }
     }
     [RelayCommand]

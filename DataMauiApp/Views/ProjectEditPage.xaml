@@ -15,11 +15,13 @@
                 <CollectionView ItemsSource="{Binding Projects}" SelectionMode="Single" SelectedItem="{Binding SelectedProject, Mode=TwoWay}">
                     <CollectionView.ItemTemplate>
                         <DataTemplate>
-                            <Border BackgroundColor="LightGray" Padding="5">
+                            <Border BackgroundColor="Transparent" Padding="5">
                                 <VerticalStackLayout>
-                                    <Label Text="{Binding Id}" FontSize="16" FontAttributes="Bold"/>
-                                    <Label Text="{Binding Name}" FontSize="16" FontAttributes="Bold"/>
-                                    <Label Text="{Binding Status}" FontSize="14"/>
+                                    <Label Text="{Binding Id, StringFormat='Project Number: {0}'}" FontSize="14" FontAttributes="Bold"/>
+                                    <Label Text="{Binding Name}" FontSize="16"/>
+                                    <Label Text="{Binding StartDate, StringFormat='Start: {0:yyyy-MM-dd}'}"/>
+                                    <Label Text="{Binding EndDate, StringFormat='End: {0:yyyy-MM-dd}'}"/>
+                                    <Label Text="{Binding Status}" FontAttributes="Bold"/>
                                 </VerticalStackLayout>
                             </Border>
                         </DataTemplate>

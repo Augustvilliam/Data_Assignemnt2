@@ -13,20 +13,30 @@ public class DataDbContext : DbContext
 
     }
 
-    public DbSet<ProjectEntity> Projects { get; set; }
-    public DbSet<ServiceEntity> Services { get; set; }
-    public DbSet<CustomerEntity> Customers { get; set; }
     public DbSet<EmployeeEntity> Employees { get; set; }
+    public DbSet<ServiceEntity> Services { get; set; }
     public DbSet<RoleEntity> Roles { get; set; }
-   
+    public DbSet<CustomerEntity> Customers { get; set; }
+    public DbSet<ProjectEntity> Projects { get; set; }
+
+
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         modelBuilder.Entity<EmployeeEntity>()
-            .HasOne(e => e.Role)
-            .WithMany(r => r.Employees)
-            .HasForeignKey(e => e.RoleId)
-            .OnDelete(DeleteBehavior.Restrict);
+            .HasMany(e => e.Services)
+            .WithMany(s => s.Employees)
+            .UsingEntity<Dictionary<string, object>>(
+                "EmployeeService",
+                j => j.HasOne<ServiceEntity>().WithMany().HasForeignKey("ServiceId"),
+                j => j.HasOne<EmployeeEntity>().WithMany().HasForeignKey("EmployeeId"),
+                j =>
+                {
+                    j.HasKey("EmployeeId", "ServiceId");
+                    j.ToTable("EmployeeService");
+                });
+
+        base.OnModelCreating(modelBuilder);
     }
 
     public void SeedRoles()

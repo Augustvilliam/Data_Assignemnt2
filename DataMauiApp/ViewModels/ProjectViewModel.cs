@@ -2,6 +2,7 @@
 
 using System.Collections.ObjectModel;
 using System.Diagnostics;
+using Busniess.Helper;
 using Busniess.Interface;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
@@ -75,23 +76,22 @@ public partial class ProjectViewModel : ObservableObject
     [RelayCommand]
     private async Task SaveProject()
     {
-        if (SelectedCustomer != null && SelectedEmployee != null && SelectedService != null)
-        {
-            NewProject.CustomerId = SelectedCustomer.Id;
-            NewProject.EmployeeId = SelectedEmployee.Id;
-            NewProject.ServiceId = SelectedService.Id;
-            NewProject.Status = SelectedStatus;
+        NewProject.CustomerId = SelectedCustomer?.Id ?? 0;
+        NewProject.EmployeeId = SelectedEmployee?.Id ?? 0;
+        NewProject.ServiceId = SelectedService?.Id ?? 0;
+        NewProject.Status = SelectedStatus;
 
-            await _projectService.AddProject(NewProject);
-            Debug.WriteLine("✅ New project added!");
+        var errors = ValidationHelper.ValidateProject(NewProject);
 
-            NewProject = new();
-            LoadData();
-        }
-        else
+        if (errors.Count > 0)
         {
-            Debug.WriteLine("❌ Du måste välja kund, anställd och tjänst!");
+            await Application.Current.MainPage.DisplayAlert("Validation Error", string.Join("\n", errors), "OK");
+            return;
         }
+
+        await _projectService.AddProject(NewProject);
+        await LoadData();
+        NewProject = new();
     }
 
     [RelayCommand]

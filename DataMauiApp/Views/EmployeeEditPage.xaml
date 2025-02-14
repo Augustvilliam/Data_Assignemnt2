@@ -13,7 +13,7 @@
                 <CollectionView ItemsSource="{Binding Employees}" SelectionMode="Single" SelectedItem="{Binding SelectedEmployee, Mode=TwoWay}">
                     <CollectionView.ItemTemplate>
                         <DataTemplate>
-                            <Border BackgroundColor="LightGray" Padding="5">
+                            <Border BackgroundColor="Transparent" Padding="5">
                                 <VerticalStackLayout>
                                     <Label Text="{Binding FirstName}" FontSize="16" FontAttributes="Bold"/>
                                     <Label Text="{Binding Email}" FontSize="14"/>
@@ -77,7 +77,7 @@
                 <CollectionView ItemsSource="{Binding SelectedEmployee.Projects}">
                     <CollectionView.ItemTemplate>
                         <DataTemplate>
-                            <Border BackgroundColor="LightGray" Padding="5">
+                            <Border BackgroundColor="Transparent" Padding="5">
                                 <VerticalStackLayout>
                                     <Label Text="{Binding Name}" FontSize="16" FontAttributes="Bold"/>
                                     <Label Text="{Binding Status}" FontSize="14"/>

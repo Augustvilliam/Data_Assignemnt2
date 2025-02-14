@@ -1,6 +1,7 @@
 ﻿
 using System.Collections.ObjectModel;
 using System.Diagnostics;
+using Busniess.Helper;
 using Busniess.Interface;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
@@ -87,21 +88,29 @@ public partial class ProjectEditViewModel : ObservableObject
     [RelayCommand]
     public async Task SaveChanges()
     {
-        if (SelectedEmployee != null)
+        if (SelectedProject == null)
         {
-
-            SelectedProject.CustomerId = SelectedCustomer?.Id ?? 0;
-            SelectedProject.EmployeeId = SelectedEmployee?.Id ?? 0;
-            SelectedProject.ServiceId = SelectedService?.Id ?? 0;
-            SelectedProject.Status = SelectedStatus;
-
-            await _employeeService.UpdateEmployeeAsync(SelectedEmployee);
-            Debug.WriteLine("Employee Updated");
+            Debug.WriteLine("❌ No project selected.");
+            return;
         }
-        else
+
+        var errors = ValidationHelper.ValidateProject(SelectedProject);
+        if (errors.Count > 0)
         {
-            Debug.WriteLine("Somehting went wrong");
+            Debug.WriteLine($"❌ Validation errors: {string.Join(", ", errors)}");
+            await Application.Current.MainPage.DisplayAlert("Validation Error", string.Join("\n", errors), "OK");
+            return;
         }
+
+        SelectedProject.CustomerId = SelectedCustomer?.Id ?? 0;
+        SelectedProject.EmployeeId = SelectedEmployee?.Id ?? 0;
+        SelectedProject.ServiceId = SelectedService?.Id ?? 0;
+        SelectedProject.Status = SelectedStatus;
+
+        await _projectService.UpdateProjectAsync(SelectedProject);
+        Debug.WriteLine($"✅ Project '{SelectedProject.Name}' updated.");
+
+        await LoadData();
     }
 
     [RelayCommand]

@@ -1,6 +1,9 @@
 ﻿
+
+
 using System.Collections.ObjectModel;
 using System.Diagnostics;
+using Busniess.Helper;
 using Busniess.Interface;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
@@ -17,7 +20,7 @@ public partial class EmployeeEditViewModel : ObservableObject
     private readonly IServiceService _serviceService;
 
     [ObservableProperty]
-    private ObservableCollection<EmployeeEntity> employees  = new();
+    private ObservableCollection<EmployeeEntity> employees = new();
     [ObservableProperty]
     private ObservableCollection<RoleEntity> roles = new();
     [ObservableProperty]
@@ -47,12 +50,16 @@ public partial class EmployeeEditViewModel : ObservableObject
             Roles = new ObservableCollection<RoleEntity>(await _roleService.GetAllRolesAsync());
             AvailableServices = new ObservableCollection<ServiceEntity>(await _serviceService.GetAllServicesAsync());
 
-            if (Employees.Count > 0)
-                SelectedEmployee = Employees.First();
+            if (SelectedEmployee != null)
+            {
+                SelectedServices = new ObservableCollection<ServiceEntity>(SelectedEmployee.Services);
+                Projects = new ObservableCollection<ProjectEntity>(SelectedEmployee.Projects);
+            }
+
         }
         catch (Exception ex)
         {
-            Debug.WriteLine($"something went wrong when loading users {ex.Message}.");
+            Debug.WriteLine($"❌ Error loading data: {ex.Message}");
         }
     }
 
@@ -85,21 +92,31 @@ public partial class EmployeeEditViewModel : ObservableObject
     }
 
 
-
     [RelayCommand]
     public async Task SaveChanges()
     {
-        if (SelectedEmployee != null)
+        if (SelectedEmployee == null)
         {
-            SelectedEmployee.Services = SelectedServices.ToList();
-            await _employeeService.UpdateEmployeeAsync(SelectedEmployee);
-            Debug.WriteLine("✅ Employee Updated");
+            Debug.WriteLine("❌ No employee selected.");
+            return;
         }
-        else
+
+        var errors = ValidationHelper.ValidateEmployee(SelectedEmployee);
+        if (errors.Count > 0)
         {
-            Debug.WriteLine("Somehting went wrong");
+            Debug.WriteLine($"❌ Validation errors: {string.Join(", ", errors)}");
+            await Application.Current.MainPage.DisplayAlert("Validation Error", string.Join("\n", errors), "OK");
+            return;
         }
+
+        SelectedEmployee.Services = SelectedServices.ToList();
+        await _employeeService.UpdateEmployeeAsync(SelectedEmployee);
+
+        Debug.WriteLine($"✅ Employee '{SelectedEmployee.FirstName} {SelectedEmployee.LastName}' updated.");
+
+        await LoadData();
     }
+
 
     [RelayCommand]
     public async Task NavigateBack()
