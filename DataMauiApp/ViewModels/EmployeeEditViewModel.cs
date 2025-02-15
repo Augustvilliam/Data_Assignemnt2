@@ -95,26 +95,23 @@ public partial class EmployeeEditViewModel : ObservableObject
     [RelayCommand]
     public async Task SaveChanges()
     {
-        if (SelectedEmployee == null)
+        if (SelectedEmployee != null)
         {
-            Debug.WriteLine("❌ No employee selected.");
-            return;
-        }
+            SelectedEmployee.Services = SelectedServices.ToList();
+            await _employeeService.UpdateEmployeeAsync(SelectedEmployee);
 
-        var errors = ValidationHelper.ValidateEmployee(SelectedEmployee);
-        if (errors.Count > 0)
+            // 🟢 Ladda om hela listan från databasen efter uppdatering
+            Employees = new ObservableCollection<EmployeeEntity>(await _employeeService.GetAllEmployeesAsync());
+
+            // 🔄 Se till att den valda anställda fortfarande är markerad
+            SelectedEmployee = Employees.FirstOrDefault(e => e.Id == SelectedEmployee.Id);
+
+            Debug.WriteLine("✅ Employee Updated and UI Refreshed");
+        }
+        else
         {
-            Debug.WriteLine($"❌ Validation errors: {string.Join(", ", errors)}");
-            await Application.Current.MainPage.DisplayAlert("Validation Error", string.Join("\n", errors), "OK");
-            return;
+            Debug.WriteLine("❌ Error: No employee selected for update.");
         }
-
-        SelectedEmployee.Services = SelectedServices.ToList();
-        await _employeeService.UpdateEmployeeAsync(SelectedEmployee);
-
-        Debug.WriteLine($"✅ Employee '{SelectedEmployee.FirstName} {SelectedEmployee.LastName}' updated.");
-
-        await LoadData();
     }
 
 

@@ -12,7 +12,7 @@
             <CollectionView ItemsSource="{Binding Customers}" SelectionMode="Single" SelectedItem="{Binding SelectedCustomer, Mode=TwoWay}">
                 <CollectionView.ItemTemplate>
                     <DataTemplate>
-                        <Border BackgroundColor="Transparent">
+                        <Border BackgroundColor="Transparent" Padding="5">
                             <VerticalStackLayout>
                                 <Label TextColor="White" Text="{Binding Id}" FontSize="18" FontAttributes="Bold"/>
                                 <Label TextColor="White" Text="{Binding FirstName}" FontSize="18" FontAttributes="Bold"/>

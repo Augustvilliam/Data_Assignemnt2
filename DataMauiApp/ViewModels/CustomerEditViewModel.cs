@@ -8,67 +8,64 @@ using Data.Entities;
 using System.Diagnostics;
 using Busniess.Helper;
 
-namespace DataMauiApp.ViewModels
+namespace DataMauiApp.ViewModels;
+
+public partial class CustomerEditViewModel : ObservableObject
 {
-    public partial class CustomerEditViewModel : ObservableObject
+    private readonly ICustomerService _customerService;
+
+
+    [ObservableProperty]
+    private ObservableCollection<CustomerEntity> customers = new();
+
+    [ObservableProperty]
+    private CustomerEntity selectedCustomer;
+
+    public CustomerEditViewModel(ICustomerService customerService)
     {
-        private readonly ICustomerService _customerService
-            ;
+        _customerService = customerService;
+        _ = LoadCustomers();
+    }
 
-        [ObservableProperty]
-        private ObservableCollection<CustomerEntity> customers = new();
-
-        [ObservableProperty]
-        private CustomerEntity selectedCustomer;
-
-        public CustomerEditViewModel(ICustomerService customerService)
+    public async Task LoadCustomers()
+    {
+        try
         {
-            _customerService = customerService;
-            _ = LoadCustomers();
+            Customers = new ObservableCollection<CustomerEntity>(await _customerService.GetAllCustomersAsync());
+            if (Customers.Count > 0)
+                SelectedCustomer = Customers.First();
+        }
+        catch (Exception ex)
+        {
+            Debug.WriteLine($"something went wrong when loading Custoemrs {ex.Message}.");
+        }
+    }
+
+    [RelayCommand]
+    public async Task SaveChanges()
+    {
+        if (SelectedCustomer == null)
+        {
+            Debug.WriteLine("❌ Ingen kund vald.");
+            return;
         }
 
-        public async Task LoadCustomers()
+        var errors = ValidationHelper.ValidateCustomer(SelectedCustomer);
+        if (errors.Count > 0)
         {
-            try
-            {
-                Customers = new ObservableCollection<CustomerEntity>(await _customerService.GetAllCustomersAsync());
-                if (Customers.Count > 0)
-                    SelectedCustomer = Customers.First();
-            }
-            catch (Exception ex)
-            {
-                Debug.WriteLine($"something went wrong when loading Custoemrs {ex.Message}.");
-            }
+            Debug.WriteLine($"❌ Valideringsfel: {string.Join(", ", errors)}");
+            await Application.Current.MainPage.DisplayAlert("Validation Error", string.Join("\n", errors), "OK");
+            return;
         }
 
-        [RelayCommand]
-        public async Task SaveChanges()
-        {
-            if (SelectedCustomer == null)
-            {
-                Debug.WriteLine("❌ Ingen kund vald.");
-                return;
-            }
+        await _customerService.UpdateCustomersAsync(SelectedCustomer);
+        await LoadCustomers();
+    }
 
-            var errors = ValidationHelper.ValidateCustomer(SelectedCustomer);
-            if (errors.Count > 0)
-            {
-                Debug.WriteLine($"❌ Valideringsfel: {string.Join(", ", errors)}");
-                await Application.Current.MainPage.DisplayAlert("Validation Error", string.Join("\n", errors), "OK");
-                return;
-            }
-
-            await _customerService.UpdateCustomersAsync(SelectedCustomer);
-            Debug.WriteLine($"✅ Kund '{SelectedCustomer.FirstName} {SelectedCustomer.LastName}' uppdaterad.");
-
-            await LoadCustomers();
-        }
-
-        [RelayCommand]
-        public async Task NavigateBack()
-        {
-            Debug.WriteLine("Navigerar tillbaka till CustomerPage...");
-            await Shell.Current.GoToAsync("//CustomerPage");
-        }
+    [RelayCommand]
+    public async Task NavigateBack()
+    {
+        Debug.WriteLine("Navigerar tillbaka till CustomerPage...");
+        await Shell.Current.GoToAsync("//CustomerPage");
     }
 }

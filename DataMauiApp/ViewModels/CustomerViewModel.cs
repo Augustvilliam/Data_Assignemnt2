@@ -6,7 +6,6 @@ using Busniess.Interface;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using Data.Entities;
-using DataMauiApp.Views;
 
 namespace DataMauiApp.ViewModels;
 
@@ -27,6 +26,8 @@ public partial class CustomerViewModel : ObservableObject
     {
         _customerService = customerService;
         _ = LoadCustomers();
+        Debug.WriteLine("Jag har Laddat anvädnare.");
+
     }
 
     public async Task LoadCustomers()
@@ -36,10 +37,11 @@ public partial class CustomerViewModel : ObservableObject
             Customers = new ObservableCollection<CustomerEntity>(await _customerService.GetAllCustomersAsync());
             if (Customers.Count > 0)
                 SelectedCustomer = Customers.First();
+            Debug.WriteLine("Jag har Laddat anvädnare.");
         }
         catch (Exception ex)
         {
-            Debug.WriteLine($"Customers laddades inte {ex.Message}");
+            Debug.WriteLine($"something went wrong when loading Custoemrs {ex.Message}.");
         }
     }
 
@@ -61,6 +63,7 @@ public partial class CustomerViewModel : ObservableObject
         await LoadCustomers();
         NewCustomer = new();
     }
+
     [RelayCommand]
     public async Task DeleteCustomer()
     {
@@ -68,7 +71,7 @@ public partial class CustomerViewModel : ObservableObject
         {
             await _customerService.DeleteCustomersAsync(SelectedCustomer.Id);
             Debug.WriteLine($"{SelectedCustomer.FirstName} raderad.");
-            LoadCustomers();
+            await LoadCustomers();
         }
         else
         {
@@ -82,11 +85,10 @@ public partial class CustomerViewModel : ObservableObject
     {
         Debug.WriteLine("Navigerar tillbaka...");
         await Shell.Current.GoToAsync("//MainMenuPage");
-    }
+    } 
    
     
     [RelayCommand]
-
     public async Task OpenEditMode()
     {
         if (SelectedCustomer != null)

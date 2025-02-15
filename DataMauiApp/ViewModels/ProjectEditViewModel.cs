@@ -108,8 +108,6 @@ public partial class ProjectEditViewModel : ObservableObject
         SelectedProject.Status = SelectedStatus;
 
         await _projectService.UpdateProjectAsync(SelectedProject);
-        Debug.WriteLine($"✅ Project '{SelectedProject.Name}' updated.");
-
         await LoadData();
     }
 

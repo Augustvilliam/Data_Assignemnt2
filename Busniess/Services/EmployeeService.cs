@@ -33,18 +33,34 @@ public class EmployeeService : IEmployeeService
         return await _employeeRepository.GetByIdAsync(id);
     }
 
-    public async Task UpdateEmployeeAsync(EmployeeEntity employee) //kopplar bort så tabellen kan uppdateras utan Idkrock. Gjort med hjälp av chatGPT
+    public async Task UpdateEmployeeAsync(EmployeeEntity employee)
     {
-        var trackedEntity = await _context.Employees
+        var existingEmployee = await _context.Employees
             .Include(e => e.Services)
             .FirstOrDefaultAsync(e => e.Id == employee.Id);
-        if (trackedEntity != null)
+
+        if (existingEmployee == null)
         {
-            _context.Entry(trackedEntity).State = EntityState.Detached;
+            throw new InvalidOperationException("Employee not found.");
         }
+
+        // 🛑 Rensa gamla tjänst-relationer för att undvika duplicering
+        existingEmployee.Services.Clear();
+        await _context.SaveChangesAsync(); // Spara ändringen direkt innan vi lägger till nya relationer
+
+        // 🔄 Hämta uppdaterad lista över tjänster från databasen för att undvika duplicering
+        var updatedServices = await _context.Services
+            .Where(s => employee.Services.Select(es => es.Id).Contains(s.Id))
+            .ToListAsync();
+
+        // 🆕 Lägg till de nya tjänsterna och spara ändringen
+        employee.Services = updatedServices;
         _context.Employees.Update(employee);
+
         await _context.SaveChangesAsync();
     }
+
+
 
     public async Task DeleteEmployeeAsync(int id)
     {
