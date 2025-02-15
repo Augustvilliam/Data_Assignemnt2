@@ -33,9 +33,9 @@ public partial class CustomerViewModel : ObservableObject
     {
         try
         {
-            var customerList = await _customerService.GetAllCustomersAsync();
-            Customers = new ObservableCollection<CustomerEntity>(customerList);
-            Debug.WriteLine($"{Customers.Count} Customers Laddades");
+            Customers = new ObservableCollection<CustomerEntity>(await _customerService.GetAllCustomersAsync());
+            if (Customers.Count > 0)
+                SelectedCustomer = Customers.First();
         }
         catch (Exception ex)
         {

@@ -6,9 +6,7 @@
     <Grid
           ColumnDefinitions="*,*"
           RowDefinitions="Auto, *">
-
         <Label HorizontalOptions="Center" Text="Customer menu"  Grid.ColumnSpan="2" FontSize="Large"/>
-
 
         <Border Margin="10, 60, 10, 10" Grid.Column="1" Padding="10" Stroke="Gray">
             <CollectionView ItemsSource="{Binding Customers}" SelectionMode="Single" SelectedItem="{Binding SelectedCustomer, Mode=TwoWay}">
@@ -16,9 +14,9 @@
                     <DataTemplate>
                         <Border BackgroundColor="Transparent">
                             <VerticalStackLayout>
+                                <Label TextColor="White" Text="{Binding Id}" FontSize="18" FontAttributes="Bold"/>
                                 <Label TextColor="White" Text="{Binding FirstName}" FontSize="18" FontAttributes="Bold"/>
                                 <Label TextColor="White" Text="{Binding Email}" FontSize="14"/>
-                                <Label TextColor="White" Text="{Binding PhoneNumber}" FontSize="14"/>
                             </VerticalStackLayout>
                         </Border>
                     </DataTemplate>

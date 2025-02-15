@@ -122,8 +122,6 @@ public partial class ProjectViewModel : ObservableObject
             Debug.WriteLine("No Project Selected");
         }
     }
-
-
     [RelayCommand]
     public async Task NavigateBack()
     {

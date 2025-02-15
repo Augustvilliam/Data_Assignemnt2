@@ -44,8 +44,14 @@
                 <Label Text="Employee" Margin="20,10,0,0"/>
                 <Picker ItemsSource="{Binding Employees}" ItemDisplayBinding="{Binding FirstName}" SelectedItem="{Binding SelectedEmployee, Mode=TwoWay}" Margin="20,10,20,10"/>
 
+                <Label Text="Service" Margin="20,10,0,0"/>
+                <Picker ItemsSource="{Binding Services}"  ItemDisplayBinding="{Binding Name}"  SelectedItem="{Binding SelectedService, Mode=TwoWay}"  Margin="20,10,20,10"/>
+
+
                 <Label Text="Status" Margin="20,10,0,0"/>
                 <Picker ItemsSource="{Binding StatusOptions}" SelectedItem="{Binding SelectedStatus, Mode=TwoWay}" Margin="20,10,20,10"/>
+
+
 
 
                 <Button
