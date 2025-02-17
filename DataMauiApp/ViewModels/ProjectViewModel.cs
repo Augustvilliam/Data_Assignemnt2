@@ -2,6 +2,7 @@
 
 using System.Collections.ObjectModel;
 using System.Diagnostics;
+using Busniess.Factories;
 using Busniess.Helper;
 using Busniess.Interface;
 using CommunityToolkit.Mvvm.ComponentModel;
@@ -76,12 +77,24 @@ public partial class ProjectViewModel : ObservableObject
     [RelayCommand]
     private async Task SaveProject()
     {
-        NewProject.CustomerId = SelectedCustomer?.Id ?? 0;
-        NewProject.EmployeeId = SelectedEmployee?.Id ?? 0;
-        NewProject.ServiceId = SelectedService?.Id ?? 0;
-        NewProject.Status = SelectedStatus;
+        if (SelectedCustomer == null || SelectedEmployee == null || SelectedService == null)
+        {
+            await Application.Current.MainPage.DisplayAlert("Validation Error", "You must select a customer, employee, and service!", "OK");
+            return;
+        }
 
-        var errors = ValidationHelper.ValidateProject(NewProject);
+        var project = ProjectFactory.CreateProject(
+            NewProject.Name,
+            NewProject.Description,
+            NewProject.StartDate,
+            NewProject.EndDate,
+            SelectedCustomer.Id,
+            SelectedEmployee.Id,
+            SelectedService.Id
+            );
+
+
+        var errors = ValidationHelper.ValidateProject(project);
 
         if (errors.Count > 0)
         {
@@ -89,11 +102,10 @@ public partial class ProjectViewModel : ObservableObject
             return;
         }
 
-        await _projectService.AddProject(NewProject);
+        await _projectService.AddProject(project);
         await LoadData();
-        NewProject = new();
+        ClearProjectForm();
     }
-
     [RelayCommand]
     public async Task DeleteProject()
     {
@@ -105,7 +117,6 @@ public partial class ProjectViewModel : ObservableObject
             SelectedProject = null;
             }
     }
-
     [RelayCommand]
     public async Task OpenEditMode()
     {
@@ -127,5 +138,14 @@ public partial class ProjectViewModel : ObservableObject
     {
         Debug.WriteLine("Navigerar tillbaka...");
         await Shell.Current.GoToAsync("//MainMenuPage");
+    }
+
+    private void ClearProjectForm()
+    {
+        NewProject = new();
+        SelectedCustomer = null;
+        SelectedEmployee = null;
+        SelectedService = null;
+        SelectedStatus = "Not started";
     }
 }

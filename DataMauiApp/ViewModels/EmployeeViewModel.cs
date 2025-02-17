@@ -2,6 +2,7 @@
 
 using System.Collections.ObjectModel;
 using System.Diagnostics;
+using Busniess.Factories;
 using Busniess.Helper;
 using Busniess.Interface;
 using CommunityToolkit.Mvvm.ComponentModel;
@@ -100,21 +101,23 @@ public partial class EmployeeViewModel : ObservableObject
     [RelayCommand]
     public async Task SaveEmployee()
     {
-        NewEmployee.RoleId = SelectedRole?.Id ?? 0;
-        NewEmployee.Services = SelectedServices.ToList();
+        var employees = EmployeeFactory.CreateEmployee(
+            NewEmployee.FirstName,
+            NewEmployee.LastName,
+            NewEmployee.Email,
+            NewEmployee.PhoneNumber,
+            SelectedRole,
+            SelectedServices.ToList()
+            );
 
-        var errors = ValidationHelper.ValidateEmployee(NewEmployee);
-
+        var errors = ValidationHelper.ValidateEmployee(employees);
         if (errors.Count > 0)
         {
-            Debug.WriteLine($"❌ Valideringsfel: {string.Join(", ", errors)}");
             await Application.Current.MainPage.DisplayAlert("Validation Error", string.Join("\n", errors), "OK");
             return;
         }
 
-        await _employeeService.AddEmployee(NewEmployee);
-        Debug.WriteLine($"✅ Ny anställd tillagd: {NewEmployee.FirstName} {NewEmployee.LastName} med roll {SelectedRole?.Name}");
-
+        await _employeeService.AddEmployee(employees);
         await LoadEmployee();
         NewEmployee = new();
     }

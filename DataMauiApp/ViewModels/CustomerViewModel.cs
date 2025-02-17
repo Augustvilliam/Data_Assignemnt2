@@ -1,6 +1,7 @@
 ﻿
 using System.Collections.ObjectModel;
 using System.Diagnostics;
+using Busniess.Factories;
 using Busniess.Helper;
 using Busniess.Interface;
 using CommunityToolkit.Mvvm.ComponentModel;
@@ -15,10 +16,8 @@ public partial class CustomerViewModel : ObservableObject
 
     [ObservableProperty]
     private ObservableCollection<CustomerEntity> customers = new();
-
     [ObservableProperty]
     private CustomerEntity newCustomer = new();
-
     [ObservableProperty]
     private CustomerEntity selectedCustomer;
 
@@ -44,11 +43,16 @@ public partial class CustomerViewModel : ObservableObject
             Debug.WriteLine($"something went wrong when loading Custoemrs {ex.Message}.");
         }
     }
-
     [RelayCommand]
     public async Task AddCustomers()
     {
-        var errors = ValidationHelper.ValidateCustomer(NewCustomer);
+        var customer = CustomerFactory.CreateCustomer(
+            NewCustomer.FirstName,
+            NewCustomer.LastName,
+            NewCustomer.Email,
+            NewCustomer.PhoneNumber);
+
+        var errors = ValidationHelper.ValidateCustomer(customer);
 
         if (errors.Count > 0)
         {
@@ -57,13 +61,13 @@ public partial class CustomerViewModel : ObservableObject
             return;
         }
 
-        await _customerService.AddCustomersAsync(NewCustomer);
-        Debug.WriteLine($"✅ Customer tillagd: {NewCustomer.FirstName} {NewCustomer.LastName}");
+        await _customerService.AddCustomersAsync(customer);
 
         await LoadCustomers();
-        NewCustomer = new();
-    }
 
+        NewCustomer = new();
+
+    }
     [RelayCommand]
     public async Task DeleteCustomer()
     {
@@ -78,16 +82,11 @@ public partial class CustomerViewModel : ObservableObject
             Debug.WriteLine("Ingen kund vald.");
         }
     }
-
-
     [RelayCommand]
     public async Task NavigateBack()
     {
-        Debug.WriteLine("Navigerar tillbaka...");
         await Shell.Current.GoToAsync("//MainMenuPage");
     } 
-   
-    
     [RelayCommand]
     public async Task OpenEditMode()
     {
@@ -101,7 +100,6 @@ public partial class CustomerViewModel : ObservableObject
         else
         {
             await Application.Current.MainPage.DisplayAlert("Error", "You must select an Customer before editing!", "OK");
-            Debug.WriteLine("No Customer Selected");
         }
     }
 }
