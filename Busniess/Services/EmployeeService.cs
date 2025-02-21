@@ -1,5 +1,8 @@
 ﻿
+using System.Diagnostics;
 using System.Runtime.InteropServices;
+using Busniess.Dtos;
+using Busniess.Factories;
 using Busniess.Interface;
 using Data.Context;
 using Data.Entities;
@@ -19,51 +22,104 @@ public class EmployeeService : IEmployeeService
         _context = context;
     }
 
-    public async Task AddEmployee(EmployeeEntity project)
+    public async Task AddEmployee(EmployeeDto dto)
     {
-        await _employeeRepository.AddAsync(project);
-    }
-    public async Task<List<EmployeeEntity>> GetAllEmployeesAsync()
-    {
-        return await _employeeRepository.GetAllAsync();
-    }
+        var employee = EmployeeFactory.CreateEmployee(dto);
 
-    public async Task<EmployeeEntity?> GetEmployeeByIdAsync(int id)
-    {
-        return await _employeeRepository.GetByIdAsync(id);
-    }
-
-    public async Task UpdateEmployeeAsync(EmployeeEntity employee)
-    {
-        var existingEmployee = await _context.Employees
-            .Include(e => e.Services)
-            .FirstOrDefaultAsync(e => e.Id == employee.Id);
-
-        if (existingEmployee == null)
+        await _employeeRepository.BeginTransactionAsync();
+        try
         {
-            throw new InvalidOperationException("Employee not found.");
+            await _employeeRepository.AddAsync(employee);
+            await _employeeRepository.CommitTransactionAsync();
+        }
+        catch (Exception ex)
+        {
+            Debug.WriteLine($"❌ Error adding employee: {ex.Message}");
+            await _employeeRepository.RollbackTransactionAsync();
+            throw;
         }
 
-        // 🛑 Rensa gamla tjänst-relationer för att undvika duplicering
-        existingEmployee.Services.Clear();
-        await _context.SaveChangesAsync(); // Spara ändringen direkt innan vi lägger till nya relationer
+     }
+    public async Task<List<EmployeeDto>> GetAllEmployeesAsync()
+    {
+        var employees = await _context.Employees
+             .Include(e => e.Role)
+             .Include(e => e.Services)
+             .Include(e => e.Projects)
+             .ToListAsync();
 
-        // 🔄 Hämta uppdaterad lista över tjänster från databasen för att undvika duplicering
-        var updatedServices = await _context.Services
-            .Where(s => employee.Services.Select(es => es.Id).Contains(s.Id))
-            .ToListAsync();
-
-        // 🆕 Lägg till de nya tjänsterna och spara ändringen
-        employee.Services = updatedServices;
-        _context.Employees.Update(employee);
-
-        await _context.SaveChangesAsync();
+        return employees.Select(EmployeeFactory.CreateDto).ToList();
     }
 
 
+    public async Task<EmployeeDto?> GetEmployeeByIdAsync(int id)
+    {
+        var employee = await _context.Employees
+            .Include(e => e.Role)
+            .Include(e => e.Services)
+            .Include(e => e.Projects)
+            .FirstOrDefaultAsync(e => e.Id == id);
+
+        return employee != null ? EmployeeFactory.CreateDto(employee) : null;
+    }
+
+
+    public async Task UpdateEmployeeAsync(EmployeeDto dto)
+    {
+        await _employeeRepository.BeginTransactionAsync();
+        try
+        {
+            var existingEmployee = await _context.Employees
+                .Include(e => e.Services)
+                .FirstOrDefaultAsync(e => e.Id == dto.Id);
+
+            if (existingEmployee == null)
+            {
+                throw new InvalidOperationException("Employee not found.");
+            }
+
+            // 🛑 Rensa gamla tjänst-relationer för att undvika duplicering
+            existingEmployee.Services.Clear();
+            await _context.SaveChangesAsync();
+
+            // 🔄 Hämta uppdaterad lista över tjänster från databasen för att undvika duplicering
+            var updatedServices = await _context.Services
+                .Where(s => dto.Services.Select(es => es.Id).Contains(s.Id))
+                .ToListAsync();
+
+            // 🆕 Uppdatera befintlig employee istället för att skapa en ny
+            existingEmployee.FirstName = dto.FirstName;
+            existingEmployee.LastName = dto.LastName;
+            existingEmployee.Email = dto.Email;
+            existingEmployee.PhoneNumber = dto.PhoneNumber;
+            existingEmployee.RoleId = dto.RoleId;
+            existingEmployee.Role = await _context.Roles.FindAsync(dto.RoleId);
+            existingEmployee.Services = updatedServices;
+
+            await _context.SaveChangesAsync();
+            await _employeeRepository.CommitTransactionAsync();
+        }
+        catch (Exception ex)
+        {
+            Debug.WriteLine($"❌ Error updating employee: {ex.Message}");
+            await _employeeRepository.RollbackTransactionAsync();
+            throw;
+        }
+    }
 
     public async Task DeleteEmployeeAsync(int id)
     {
-        await _employeeRepository.DeleteAsync(id);
+        await _employeeRepository.BeginTransactionAsync();
+        try
+        {
+            await _employeeRepository.DeleteAsync(id);
+            await _employeeRepository.CommitTransactionAsync();
+        }
+        catch (Exception ex)
+        {
+            Debug.WriteLine($"❌ Error deleting employee: {ex.Message}");
+            await _employeeRepository.RollbackTransactionAsync();
+            throw;
+        }
     }
 }

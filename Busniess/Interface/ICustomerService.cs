@@ -1,13 +1,14 @@
-﻿using Data.Entities;
+﻿using Busniess.Dtos;
+using Data.Entities;
 
 namespace Busniess.Interface
 {
     public interface ICustomerService
     {
-        Task AddCustomersAsync(CustomerEntity customer);
+        Task AddCustomersAsync(CustomerDto dto);
         Task DeleteCustomersAsync(int id);
-        Task<List<CustomerEntity>> GetAllCustomersAsync();
-        Task<CustomerEntity?> GetCustomersByIdAsync(int id);
-        Task UpdateCustomersAsync(CustomerEntity customer);
+        Task<List<CustomerDto>> GetAllCustomersAsync();
+        Task<CustomerDto?> GetCustomersByIdAsync(int id);
+        Task UpdateCustomersAsync(CustomerDto customer);
     }
 }

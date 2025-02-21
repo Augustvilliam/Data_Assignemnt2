@@ -1,13 +1,14 @@
-﻿using Data.Entities;
+﻿using Busniess.Dtos;
+using Data.Entities;
 
 namespace Busniess.Interface
 {
     public interface IProjectService
     {
-        Task AddProject(ProjectEntity project);
+        Task AddProject(ProjectDto dto);
         Task DeleteProjectAsync(int id);
-        Task<List<ProjectEntity>> GetAllProjectsAsync();
-        Task<ProjectEntity?> GetProjectByIdAsync(int id);
-        Task UpdateProjectAsync(ProjectEntity project);
+        Task<List<ProjectDto>> GetAllProjectsAsync();
+        Task<ProjectDto?> GetProjectByIdAsync(int id);
+        Task UpdateProjectAsync(ProjectDto project);
     }
 }

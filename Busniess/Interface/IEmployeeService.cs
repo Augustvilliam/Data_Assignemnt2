@@ -1,13 +1,14 @@
-﻿using Data.Entities;
+﻿using Busniess.Dtos;
+using Data.Entities;
 
 namespace Busniess.Interface
 {
     public interface IEmployeeService
     {
-        Task AddEmployee(EmployeeEntity project);
+        Task AddEmployee(EmployeeDto dto);
         Task DeleteEmployeeAsync(int id);
-        Task<List<EmployeeEntity>> GetAllEmployeesAsync();
-        Task<EmployeeEntity?> GetEmployeeByIdAsync(int id);
-        Task UpdateEmployeeAsync(EmployeeEntity project);
+        Task<List<EmployeeDto>> GetAllEmployeesAsync();
+        Task<EmployeeDto?> GetEmployeeByIdAsync(int id);
+        Task UpdateEmployeeAsync(EmployeeDto project);
     }
 }

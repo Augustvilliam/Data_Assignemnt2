@@ -1,5 +1,8 @@
 ﻿
 
+using System.Diagnostics;
+using Busniess.Dtos;
+using Busniess.Factories;
 using Busniess.Interface;
 using Data.Entities;
 using Data.Interface;
@@ -15,28 +18,68 @@ public class ProjectService : IProjectService
         _projectRepository = projectRepository;
     }
 
-    public async Task AddProject(ProjectEntity project)
+    public async Task AddProject(ProjectDto dto)
     {
-        await _projectRepository.AddAsync(project);
+        var project = ProjectFactory.CreateProject(dto);
+
+        await _projectRepository.BeginTransactionAsync();
+        try
+        {
+            await _projectRepository.AddAsync(project);
+            await _projectRepository.CommitTransactionAsync();
+        }
+        catch (Exception ex)
+        {
+            Debug.WriteLine($"❌ Error adding project: {ex.Message}");
+            await _projectRepository.RollbackTransactionAsync();
+            throw;
+        }
     }
-    public async Task<List<ProjectEntity>> GetAllProjectsAsync()
+    public async Task<List<ProjectDto>> GetAllProjectsAsync()
     {
-        return await _projectRepository.GetAllAsync();
+        var projects = await _projectRepository.GetAllAsync();
+        return projects.Select(ProjectFactory.CreateDto).ToList();
     }
 
-    public async Task<ProjectEntity?> GetProjectByIdAsync(int id)
+    public async Task<ProjectDto?> GetProjectByIdAsync(int id)
     {
-        return await _projectRepository.GetByIdAsync(id);
+        var project = await _projectRepository.GetByIdAsync(id);
+        return project != null ? ProjectFactory.CreateDto(project) : null;
     }
 
-    public async Task UpdateProjectAsync(ProjectEntity project)
+    public async Task UpdateProjectAsync(ProjectDto dto)
     {
-        await _projectRepository.UpdateAsync(project);
+        await _projectRepository.BeginTransactionAsync();
+        try
+        {
+            var project = ProjectFactory.CreateProject(dto);
+            project.Id = dto.Id;
+
+            await _projectRepository.UpdateAsync(project);
+            await _projectRepository.CommitTransactionAsync();
+        }
+        catch (Exception ex)
+        {
+            Debug.WriteLine($"❌ Error updating project: {ex.Message}");
+            await _projectRepository.RollbackTransactionAsync();
+            throw;
+        }
     }
 
     public async Task DeleteProjectAsync(int id)
     {
-        await _projectRepository.DeleteAsync(id);
+        await _projectRepository.BeginTransactionAsync();
+        try
+        {
+            await _projectRepository.DeleteAsync(id);
+            await _projectRepository.CommitTransactionAsync();
+        }
+        catch (Exception ex)
+        {
+            Debug.WriteLine($"❌ Error deleting project: {ex.Message}");
+            await _projectRepository.RollbackTransactionAsync();
+            throw;
+        }
     }
 
 

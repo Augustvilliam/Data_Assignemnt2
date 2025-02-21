@@ -1,6 +1,7 @@
 ﻿
 using System.Collections.ObjectModel;
 using System.Diagnostics;
+using Busniess.Dtos;
 using Busniess.Factories;
 using Busniess.Helper;
 using Busniess.Interface;
@@ -15,58 +16,47 @@ public partial class CustomerViewModel : ObservableObject
     private readonly ICustomerService _customerService;
 
     [ObservableProperty]
-    private ObservableCollection<CustomerEntity> customers = new();
+    private ObservableCollection<CustomerDto> customers = new();
     [ObservableProperty]
-    private CustomerEntity newCustomer = new();
+    private CustomerDto newCustomer = new();
     [ObservableProperty]
-    private CustomerEntity selectedCustomer;
+    private CustomerDto selectedCustomer;
 
     public CustomerViewModel(ICustomerService customerService)
     {
         _customerService = customerService;
         _ = LoadCustomers();
-        Debug.WriteLine("Jag har Laddat anvädnare.");
-
     }
 
     public async Task LoadCustomers()
     {
         try
         {
-            Customers = new ObservableCollection<CustomerEntity>(await _customerService.GetAllCustomersAsync());
+            var customerList = await _customerService.GetAllCustomersAsync(); 
+            Customers = new ObservableCollection<CustomerDto>(customerList); 
             if (Customers.Count > 0)
                 SelectedCustomer = Customers.First();
-            Debug.WriteLine("Jag har Laddat anvädnare.");
         }
         catch (Exception ex)
         {
-            Debug.WriteLine($"something went wrong when loading Custoemrs {ex.Message}.");
+            Debug.WriteLine($"❌ Error loading customers: {ex.Message}");
         }
     }
     [RelayCommand]
     public async Task AddCustomers()
     {
-        var customer = CustomerFactory.CreateCustomer(
-            NewCustomer.FirstName,
-            NewCustomer.LastName,
-            NewCustomer.Email,
-            NewCustomer.PhoneNumber);
+        var customer = CustomerFactory.CreateCustomer(NewCustomer); 
 
-        var errors = ValidationHelper.ValidateCustomer(customer);
-
+        var errors = ValidationHelper.ValidateCustomer(NewCustomer);
         if (errors.Count > 0)
         {
-            Debug.WriteLine($"❌ Valideringsfel: {string.Join(", ", errors)}");
             await Application.Current.MainPage.DisplayAlert("Validation Error", string.Join("\n", errors), "OK");
             return;
         }
 
-        await _customerService.AddCustomersAsync(customer);
-
+        await _customerService.AddCustomersAsync(customer); 
         await LoadCustomers();
-
         NewCustomer = new();
-
     }
     [RelayCommand]
     public async Task DeleteCustomer()
@@ -74,12 +64,11 @@ public partial class CustomerViewModel : ObservableObject
         if (SelectedCustomer != null)
         {
             await _customerService.DeleteCustomersAsync(SelectedCustomer.Id);
-            Debug.WriteLine($"{SelectedCustomer.FirstName} raderad.");
             await LoadCustomers();
         }
         else
         {
-            Debug.WriteLine("Ingen kund vald.");
+            Debug.WriteLine("❌ Ingen kund vald.");
         }
     }
     [RelayCommand]
@@ -99,7 +88,7 @@ public partial class CustomerViewModel : ObservableObject
         }
         else
         {
-            await Application.Current.MainPage.DisplayAlert("Error", "You must select an Customer before editing!", "OK");
+            await Application.Current.MainPage.DisplayAlert("Error", "You must select a customer before editing!", "OK");
         }
     }
 }

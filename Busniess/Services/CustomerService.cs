@@ -1,4 +1,7 @@
 ﻿
+using System.Diagnostics;
+using Busniess.Dtos;
+using Busniess.Factories;
 using Busniess.Interface;
 using Data.Entities;
 using Data.Interface;
@@ -14,27 +17,67 @@ public class CustomerService : ICustomerService
         _customerRepository = customerRepository;
     }
 
-    public async Task AddCustomersAsync(CustomerEntity customer)
+    public async Task AddCustomersAsync(CustomerDto dto)
     {
-        await _customerRepository.AddAsync(customer);
+        var customer = CustomerFactory.CreateCustomer(dto);
+
+        await _customerRepository.BeginTransactionAsync();
+        try
+        {
+            await _customerRepository.AddAsync(customer);
+            await _customerRepository.CommitTransactionAsync();
+        }
+        catch (Exception ex)
+        {
+            Debug.WriteLine($"❌ Error adding customer: {ex.Message}");
+            await _customerRepository.RollbackTransactionAsync();
+            throw;
+        }
     }
-    public async Task<List<CustomerEntity>> GetAllCustomersAsync()
+    public async Task<List<CustomerDto?>> GetAllCustomersAsync()
     {
-        return await _customerRepository.GetAllAsync();
+        var customer = await _customerRepository.GetAllAsync();
+        return customer.Select(CustomerFactory.CreateDto).ToList();
     }
 
-    public async Task<CustomerEntity?> GetCustomersByIdAsync(int id)
+    public async Task<CustomerDto?> GetCustomersByIdAsync(int id)
     {
-        return await _customerRepository.GetByIdAsync(id);
+        var customer = await _customerRepository.GetByIdAsync(id);
+        return customer != null ? CustomerFactory.CreateDto(customer) : null;
     }
 
-    public async Task UpdateCustomersAsync(CustomerEntity customer)
+    public async Task UpdateCustomersAsync(CustomerDto dto)
     {
-        await _customerRepository.UpdateAsync(customer);
+        await _customerRepository.BeginTransactionAsync();
+        try
+        {
+            var customer = CustomerFactory.CreateCustomer(dto);
+            customer.Id = dto.Id;
+
+            await _customerRepository.UpdateAsync(customer);
+            await _customerRepository.CommitTransactionAsync();
+        }
+        catch (Exception ex)
+        {
+            Debug.WriteLine($" Error updating customer: {ex.Message}");
+            await _customerRepository.RollbackTransactionAsync();
+            throw;
+        }
     }
 
     public async Task DeleteCustomersAsync(int id)
     {
-        await _customerRepository.DeleteAsync(id);
+        await _customerRepository.BeginTransactionAsync();
+        try
+        {
+            await _customerRepository.DeleteAsync(id);
+            await _customerRepository.CommitTransactionAsync();
+        }
+        catch (Exception ex)
+        {
+            Debug.WriteLine($"❌ Error deleting customer: {ex.Message}");
+            await _customerRepository.RollbackTransactionAsync();
+            throw;
+        }
     }
 }
