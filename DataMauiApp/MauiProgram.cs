@@ -58,16 +58,16 @@ public static class MauiProgram
 
 
 
-        // 🔄 Initialisera databasen
+        //majoriteten av denna delen generead med chatGPT
         using (var scope = builder.Services.BuildServiceProvider().CreateScope())
         {
             var context = scope.ServiceProvider.GetRequiredService<DataDbContext>();
             var dbInitializer = new DbInitializer($"Data Source={desktopPath}");
 
             Debug.WriteLine("🔄 Återställer och initialiserar databasen...");
-            context.Database.EnsureDeleted();
+           // context.Database.EnsureDeleted(); // Nukar databasen vid uppstart för att spara tid under utvecklingen. 
             dbInitializer.InitializeDatabase();  // ✅ Skapar tabeller enligt schema
-            dbInitializer.TestData();           // ✅ Lägger in testdata
+            //dbInitializer.TestData();           // ✅ Lägger in testdata
         }
 
 #if DEBUG

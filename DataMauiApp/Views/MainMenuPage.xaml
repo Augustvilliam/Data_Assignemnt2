@@ -4,7 +4,7 @@
              x:Class="DataMauiApp.Views.MainMenuPage"
              Title="MainMenuPage">
     <VerticalStackLayout>
-      <Label Text="Main Menu, Please select and option." />
+      <Label HorizontalOptions="Center" FontSize="30" Text="Main Menu, Please select and option." />
 
         <Button Text="Emplyee Menu"
                 Margin="20"

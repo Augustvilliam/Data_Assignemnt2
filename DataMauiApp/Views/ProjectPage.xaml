@@ -5,10 +5,10 @@
              Title="ProjectPage">
 
     <Grid ColumnDefinitions="*,*" RowDefinitions="Auto, *">
-        <Label Text="Project Managment" HorizontalOptions="Center" Grid.ColumnSpan="2"/>
+        <Label FontSize="30" Text="Project Managment" HorizontalOptions="Center" Grid.ColumnSpan="2"/>
 
         <Border Grid.Column="1" Margin="10, 60, 10, 10" Padding="10" Stroke="Gray">
-            <CollectionView ItemsSource="{Binding Projects}" SelectionMode="Single" SelectedItem="{Binding SelectedProject, Mode=TwoWay}">
+            <CollectionView HeightRequest="880" ItemsSource="{Binding Projects}" SelectionMode="Single" SelectedItem="{Binding SelectedProject, Mode=TwoWay}">
                 <CollectionView.ItemTemplate>
                     <DataTemplate>
                         <Border BackgroundColor="Transparent" Padding="5">

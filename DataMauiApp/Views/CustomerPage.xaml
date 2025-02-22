@@ -9,19 +9,21 @@
         <Label HorizontalOptions="Center" Text="Customer menu"  Grid.ColumnSpan="2" FontSize="Large"/>
 
         <Border Margin="10, 60, 10, 10" Grid.Column="1" Padding="10" Stroke="Gray">
-            <CollectionView ItemsSource="{Binding Customers}" SelectionMode="Single" SelectedItem="{Binding SelectedCustomer, Mode=TwoWay}">
-                <CollectionView.ItemTemplate>
-                    <DataTemplate>
-                        <Border BackgroundColor="Transparent" Padding="5">
-                            <VerticalStackLayout>
-                                <Label TextColor="White" Text="{Binding Id}" FontSize="18" FontAttributes="Bold"/>
-                                <Label TextColor="White" Text="{Binding FirstName}" FontSize="18" FontAttributes="Bold"/>
-                                <Label TextColor="White" Text="{Binding Email}" FontSize="14"/>
-                            </VerticalStackLayout>
-                        </Border>
-                    </DataTemplate>
-                </CollectionView.ItemTemplate>
-            </CollectionView>
+            <ScrollView>
+                <CollectionView HeightRequest="550" ItemsSource="{Binding Customers}" SelectionMode="Single" SelectedItem="{Binding SelectedCustomer, Mode=TwoWay}">
+                    <CollectionView.ItemTemplate>
+                        <DataTemplate>
+                            <Border BackgroundColor="Transparent" Padding="5">
+                                <VerticalStackLayout>
+                                    <Label TextColor="White" Text="{Binding Id}" FontSize="18" FontAttributes="Bold"/>
+                                    <Label TextColor="White" Text="{Binding FirstName}" FontSize="18" FontAttributes="Bold"/>
+                                    <Label TextColor="White" Text="{Binding Email}" FontSize="14"/>
+                                </VerticalStackLayout>
+                            </Border>
+                        </DataTemplate>
+                    </CollectionView.ItemTemplate>
+                </CollectionView>
+            </ScrollView>
         </Border>
 
 

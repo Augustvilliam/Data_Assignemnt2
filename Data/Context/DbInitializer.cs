@@ -77,7 +77,7 @@ public class DbInitializer
         }
 
     }
-    //TestData som använder under uppgiftens gång då jag 
+    //TestData som använder under uppgiftens gång då jag Nukat databasen vi uppstart för att testa så allt funkar rent. Låter kommentaren ligga kvar för dokumentation. 
   //public void TestData() 
   //  {
   //      using var connection = new SqliteConnection(_connectionString);
@@ -208,7 +208,7 @@ public class DbInitializer
         using var checkCommand = new SqliteCommand(checkSql, connection);
         var exists = (long)checkCommand.ExecuteScalar();
 
-        if (exists == 0)  // 🔥 Om inga roller finns, lägg till dem
+        if (exists == 0)  
         {
             Debug.WriteLine("✅ Roller existerar ej - Skapar dem nu...");
 
@@ -222,11 +222,11 @@ public class DbInitializer
             using var command = new SqliteCommand(sql, connection);
             command.ExecuteNonQuery();
 
-            Debug.WriteLine("✅ Roller har lagts till.");
+            Debug.WriteLine("Roller har lagts till.");
         }
         else
         {
-            Debug.WriteLine("⚠️ Roller finns redan.");
+            Debug.WriteLine("Roller finns redan.");
         }
     }
 
