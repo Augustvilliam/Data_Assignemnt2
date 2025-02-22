@@ -64,9 +64,9 @@ public static class MauiProgram
             var context = scope.ServiceProvider.GetRequiredService<DataDbContext>();
             var dbInitializer = new DbInitializer($"Data Source={desktopPath}");
 
-            Debug.WriteLine("🔄 Återställer och initialiserar databasen...");
-           // context.Database.EnsureDeleted(); // Nukar databasen vid uppstart för att spara tid under utvecklingen. 
+            // context.Database.EnsureDeleted(); // Nukar databasen vid uppstart för att spara tid under utvecklingen. 
             dbInitializer.InitializeDatabase();  // ✅ Skapar tabeller enligt schema
+            dbInitializer.SeedData();           // ✅ Lägger in testdata (roller & tjänster)
             //dbInitializer.TestData();           // ✅ Lägger in testdata
         }
 
