@@ -26,6 +26,7 @@ public class CustomerService : ICustomerService
         {
             await _customerRepository.AddAsync(customer);
             await _customerRepository.CommitTransactionAsync();
+            dto.Id = customer.Id;
         }
         catch (Exception ex)
         {
@@ -34,10 +35,13 @@ public class CustomerService : ICustomerService
             throw;
         }
     }
-    public async Task<List<CustomerDto?>> GetAllCustomersAsync()
+    public async Task<List<CustomerDto>> GetAllCustomersAsync()
     {
-        var customer = await _customerRepository.GetAllAsync();
-        return customer.Select(CustomerFactory.CreateDto).ToList();
+        var customers = await _customerRepository.GetAllAsync();
+
+        return customers?
+            .Select(c => CustomerFactory.CreateDto(c))
+            .ToList() ?? new List<CustomerDto>();
     }
 
     public async Task<CustomerDto?> GetCustomersByIdAsync(int id)
@@ -51,10 +55,18 @@ public class CustomerService : ICustomerService
         await _customerRepository.BeginTransactionAsync();
         try
         {
-            var customer = CustomerFactory.CreateCustomer(dto);
-            customer.Id = dto.Id;
+            var existingCustomer = await _customerRepository.GetByIdAsync(dto.Id);
+            if (existingCustomer == null)
+            {
+                throw new InvalidOperationException("Customer not found.");
+            }
 
-            await _customerRepository.UpdateAsync(customer);
+            existingCustomer.FirstName = dto.FirstName;
+            existingCustomer.LastName = dto.LastName;
+            existingCustomer.Email = dto.Email;
+            existingCustomer.PhoneNumber = dto.PhoneNumber;
+
+            await _customerRepository.UpdateAsync(existingCustomer);
             await _customerRepository.CommitTransactionAsync();
         }
         catch (Exception ex)

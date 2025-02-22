@@ -45,18 +45,16 @@ public partial class CustomerViewModel : ObservableObject
     [RelayCommand]
     public async Task AddCustomers()
     {
-        var customer = CustomerFactory.CreateCustomer(NewCustomer); 
-
-        var errors = ValidationHelper.ValidateCustomer(NewCustomer);
+        var errors = await ValidationHelper.ValidateCustomer(NewCustomer, _customerService);
         if (errors.Count > 0)
         {
             await Application.Current.MainPage.DisplayAlert("Validation Error", string.Join("\n", errors), "OK");
             return;
         }
 
-        await _customerService.AddCustomersAsync(customer); 
+        await _customerService.AddCustomersAsync(NewCustomer); 
         await LoadCustomers();
-        NewCustomer = new();
+        NewCustomer = new CustomerDto();
     }
     [RelayCommand]
     public async Task DeleteCustomer()

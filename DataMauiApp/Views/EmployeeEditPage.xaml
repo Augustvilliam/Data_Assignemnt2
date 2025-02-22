@@ -59,7 +59,7 @@
                 <Label Text="Role:" FontAttributes="Bold"/>
                 <Picker ItemsSource="{Binding Roles}"
                         ItemDisplayBinding="{Binding Name}"
-                        SelectedItem="{Binding SelectedEmployee.Role, Mode=TwoWay}"/>
+                        SelectedItem="{Binding SelectedRole, Mode=TwoWay}"/>
 
                 <Label Text="Assigned Services:" FontAttributes="Bold" Margin="0,10,0,0"/>
                 <CollectionView ItemsSource="{Binding AvailableServices}">

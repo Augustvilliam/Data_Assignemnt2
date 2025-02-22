@@ -1,5 +1,4 @@
-﻿
-using System.Diagnostics;
+﻿using System.Diagnostics;
 using Data.Entities;
 using Microsoft.EntityFrameworkCore;
 
@@ -10,7 +9,6 @@ public class DataDbContext : DbContext
     public DataDbContext(DbContextOptions<DataDbContext> options) : base(options)
     {
         Debug.WriteLine("DataDbContext skapad");
-
     }
 
     public DbSet<EmployeeEntity> Employees { get; set; }
@@ -18,8 +16,6 @@ public class DataDbContext : DbContext
     public DbSet<RoleEntity> Roles { get; set; }
     public DbSet<CustomerEntity> Customers { get; set; }
     public DbSet<ProjectEntity> Projects { get; set; }
-
-
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -36,23 +32,33 @@ public class DataDbContext : DbContext
                     j.ToTable("EmployeeService");
                 });
 
+        modelBuilder.Entity<RoleEntity>().HasData(
+            new RoleEntity { Id = 1, Name = "Intern", Price = 100 },
+            new RoleEntity { Id = 2, Name = "Junior", Price = 200 },
+            new RoleEntity { Id = 3, Name = "Senior", Price = 400 }
+        );
+
+        modelBuilder.Entity<ServiceEntity>().HasData(
+            new ServiceEntity { Id = 1, Name = "Consultation", BasePrice = 500, EstimatedHours = 2 },
+            new ServiceEntity { Id = 2, Name = "Development", BasePrice = 1500, EstimatedHours = 10 },
+            new ServiceEntity { Id = 3, Name = "Testing", BasePrice = 700, EstimatedHours = 5 }
+        );
+
         base.OnModelCreating(modelBuilder);
     }
 
     public void SeedRoles()
     {
-        if (Roles.Any())
-            return;
-
-        Roles.AddRange(new List<RoleEntity>
+        if (!Roles.Any())
         {
-            new() { Id = 1, Name = "Intern", Price = 100},
-            new() { Id = 2, Name = "Junior", Price = 200},
-            new() { Id = 3, Name = "Senior", Price = 400}
-        });
-        SaveChanges();
-        Debug.WriteLine("Roller har lagts till i  Databasen.");
+            Roles.AddRange(new List<RoleEntity>
+            {
+                new() { Id = 1, Name = "Intern", Price = 100},
+                new() { Id = 2, Name = "Junior", Price = 200},
+                new() { Id = 3, Name = "Senior", Price = 400}
+            });
+            SaveChanges();
+            Debug.WriteLine("Roller har lagts till i databasen.");
+        }
     }
-
-
 }

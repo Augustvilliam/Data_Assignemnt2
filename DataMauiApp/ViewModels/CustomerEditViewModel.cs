@@ -7,6 +7,8 @@ using CommunityToolkit.Mvvm.Input;
 using Data.Entities;
 using System.Diagnostics;
 using Busniess.Helper;
+using Busniess.Dtos;
+using Busniess.Services;
 
 namespace DataMauiApp.ViewModels;
 
@@ -16,10 +18,9 @@ public partial class CustomerEditViewModel : ObservableObject
 
 
     [ObservableProperty]
-    private ObservableCollection<CustomerEntity> customers = new();
-
+    private ObservableCollection<CustomerDto> customers = new();
     [ObservableProperty]
-    private CustomerEntity selectedCustomer;
+    private CustomerDto selectedCustomer;
 
     public CustomerEditViewModel(ICustomerService customerService)
     {
@@ -31,13 +32,18 @@ public partial class CustomerEditViewModel : ObservableObject
     {
         try
         {
-            Customers = new ObservableCollection<CustomerEntity>(await _customerService.GetAllCustomersAsync());
-            if (Customers.Count > 0)
-                SelectedCustomer = Customers.First();
+            var previousSelectedCustomerId = SelectedCustomer?.Id;
+
+            Customers = new ObservableCollection<CustomerDto>(await _customerService.GetAllCustomersAsync());
+
+            if (previousSelectedCustomerId.HasValue)
+            {
+                SelectedCustomer = Customers.FirstOrDefault(c => c.Id == previousSelectedCustomerId) ?? Customers.FirstOrDefault();
+            }
         }
         catch (Exception ex)
         {
-            Debug.WriteLine($"something went wrong when loading Custoemrs {ex.Message}.");
+            Debug.WriteLine($"something went wrong when loading Customers {ex.Message}.");
         }
     }
 
@@ -50,7 +56,7 @@ public partial class CustomerEditViewModel : ObservableObject
             return;
         }
 
-        var errors = ValidationHelper.ValidateCustomer(SelectedCustomer);
+        var errors = await ValidationHelper.ValidateCustomer(SelectedCustomer, _customerService);
         if (errors.Count > 0)
         {
             Debug.WriteLine($"❌ Valideringsfel: {string.Join(", ", errors)}");

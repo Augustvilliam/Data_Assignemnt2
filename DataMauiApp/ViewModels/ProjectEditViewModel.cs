@@ -1,6 +1,7 @@
 ﻿
 using System.Collections.ObjectModel;
 using System.Diagnostics;
+using Busniess.Dtos;
 using Busniess.Helper;
 using Busniess.Interface;
 using CommunityToolkit.Mvvm.ComponentModel;
@@ -18,21 +19,21 @@ public partial class ProjectEditViewModel : ObservableObject
 
 
     [ObservableProperty]
-    private ObservableCollection<ProjectEntity> projects = new();
+    private ObservableCollection<ProjectDto> projects = new();
     [ObservableProperty]
-    private ObservableCollection<CustomerEntity> customers = new();
+    private ObservableCollection<CustomerDto> customers = new();
     [ObservableProperty]
-    private ObservableCollection<EmployeeEntity> employees = new();
+    private ObservableCollection<EmployeeDto> employees = new();
     [ObservableProperty]
-    private ObservableCollection<ServiceEntity> services = new();
+    private ObservableCollection<ServiceDto> services = new();
     [ObservableProperty]
-    private ProjectEntity selectedProject;
+    private ProjectDto selectedProject;
     [ObservableProperty]
-    private CustomerEntity selectedCustomer;
+    private CustomerDto selectedCustomer;
     [ObservableProperty]
-    private EmployeeEntity selectedEmployee;
+    private EmployeeDto selectedEmployee;
     [ObservableProperty]
-    private ServiceEntity selectedService;
+    private ServiceDto selectedService;
     [ObservableProperty]
     private string selectedStatus;
 
@@ -52,7 +53,7 @@ public partial class ProjectEditViewModel : ObservableObject
         _ = LoadData();
     }
 
-    partial void OnSelectedProjectChanged(ProjectEntity value)
+    partial void OnSelectedProjectChanged(ProjectDto value)
     {
         if (value != null)
         {
@@ -64,10 +65,10 @@ public partial class ProjectEditViewModel : ObservableObject
     {
         try
         {
-            Projects = new ObservableCollection<ProjectEntity>(await _projectService.GetAllProjectsAsync());
-            Customers = new ObservableCollection<CustomerEntity>(await _customerService.GetAllCustomersAsync());
-            Employees = new ObservableCollection<EmployeeEntity>(await _employeeService.GetAllEmployeesAsync());
-            Services = new ObservableCollection<ServiceEntity>(await _serviceService.GetAllServicesAsync());
+            Projects = new ObservableCollection<ProjectDto>(await _projectService.GetAllProjectsAsync());
+            Customers = new ObservableCollection<CustomerDto>(await _customerService.GetAllCustomersAsync());
+            Employees = new ObservableCollection<EmployeeDto>(await _employeeService.GetAllEmployeesAsync());
+            Services = new ObservableCollection<ServiceDto>(await _serviceService.GetAllServicesAsync());
 
             if (SelectedProject != null)
             {

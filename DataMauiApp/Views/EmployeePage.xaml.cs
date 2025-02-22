@@ -1,4 +1,5 @@
 using System.Diagnostics;
+using Busniess.Dtos;
 using Data.Entities;
 using DataMauiApp.ViewModels;
 
@@ -13,7 +14,7 @@ public partial class EmployeePage : ContentPage
     }
     private void OnServiceCheckedChanged(object sender, CheckedChangedEventArgs e)
     {
-        if (sender is CheckBox checkBox && checkBox.BindingContext is ServiceEntity service)
+        if (sender is CheckBox checkBox && checkBox.BindingContext is ServiceDto service)
         {
             if (BindingContext is EmployeeViewModel viewModel)
             {

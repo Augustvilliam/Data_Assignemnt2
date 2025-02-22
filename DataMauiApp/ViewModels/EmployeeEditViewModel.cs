@@ -3,6 +3,7 @@
 
 using System.Collections.ObjectModel;
 using System.Diagnostics;
+using Busniess.Dtos;
 using Busniess.Helper;
 using Busniess.Interface;
 using CommunityToolkit.Mvvm.ComponentModel;
@@ -20,18 +21,19 @@ public partial class EmployeeEditViewModel : ObservableObject
     private readonly IServiceService _serviceService;
 
     [ObservableProperty]
-    private ObservableCollection<EmployeeEntity> employees = new();
+    private ObservableCollection<EmployeeDto> employees = new();
     [ObservableProperty]
     private ObservableCollection<RoleEntity> roles = new();
     [ObservableProperty]
-    private ObservableCollection<ServiceEntity> availableServices = new();
+    private ObservableCollection<ServiceDto> availableServices = new();
     [ObservableProperty]
-    private ObservableCollection<ServiceEntity> selectedServices = new();
+    private ObservableCollection<ServiceDto> selectedServices = new();
     [ObservableProperty]
-    private ObservableCollection<ProjectEntity> projects = new();
+    private ObservableCollection<ProjectDto> projects = new();
     [ObservableProperty]
-    private EmployeeEntity selectedEmployee;
-
+    private EmployeeDto selectedEmployee;
+    [ObservableProperty]
+    private RoleEntity selectedRole;
 
 
     public EmployeeEditViewModel(IEmployeeService employeeService, IRoleService roleService, IServiceService serviceService)
@@ -46,16 +48,25 @@ public partial class EmployeeEditViewModel : ObservableObject
     {
         try
         {
-            Employees = new ObservableCollection<EmployeeEntity>(await _employeeService.GetAllEmployeesAsync());
+            Employees = new ObservableCollection<EmployeeDto>(await _employeeService.GetAllEmployeesAsync());
             Roles = new ObservableCollection<RoleEntity>(await _roleService.GetAllRolesAsync());
-            AvailableServices = new ObservableCollection<ServiceEntity>(await _serviceService.GetAllServicesAsync());
+            AvailableServices = new ObservableCollection<ServiceDto>(await _serviceService.GetAllServicesAsync());
 
             if (SelectedEmployee != null)
             {
-                SelectedServices = new ObservableCollection<ServiceEntity>(SelectedEmployee.Services);
-                Projects = new ObservableCollection<ProjectEntity>(SelectedEmployee.Projects);
-            }
+                SelectedServices = new ObservableCollection<ServiceDto>(
+                    SelectedEmployee.Services.Select(s => new ServiceDto { Id = s.Id, Name = s.Name }).ToList());
 
+                Projects = new ObservableCollection<ProjectDto>(
+                    SelectedEmployee.Projects.Select(p => new ProjectDto
+                    {
+                        Id = p.Id,
+                        Name = p.Name
+                    }).ToList()
+                );
+
+                SelectedRole = Roles.FirstOrDefault(r => r.Id == SelectedEmployee.RoleId);
+            }
         }
         catch (Exception ex)
         {
@@ -63,18 +74,23 @@ public partial class EmployeeEditViewModel : ObservableObject
         }
     }
 
-    partial void OnSelectedEmployeeChanged(EmployeeEntity value)
+
+
+    partial void OnSelectedEmployeeChanged(EmployeeDto value)
     {
         if (value != null)
         {
-            Debug.WriteLine($"🟢 Selected Employee: {value.FirstName}");
+            SelectedServices = new ObservableCollection<ServiceDto>(
+                value.Services.Select(s => new ServiceDto { Id = s.Id, Name = s.Name }).ToList()
+            );
 
-            SelectedServices = new ObservableCollection<ServiceEntity>(value.Services);
-            Projects = new ObservableCollection<ProjectEntity>(value.Projects);
+            Projects = new ObservableCollection<ProjectDto>(
+                value.Projects.Select(p => new ProjectDto { Id = p.Id, Name = p.Name }).ToList()
+            );
         }
     }
 
-    public void ToggleServiceSelection(ServiceEntity service, bool isChecked)
+    public void ToggleServiceSelection(ServiceDto service, bool isChecked)
     {
         if (isChecked)
         {
@@ -97,14 +113,26 @@ public partial class EmployeeEditViewModel : ObservableObject
     {
         if (SelectedEmployee != null)
         {
-            SelectedEmployee.Services = SelectedServices.ToList();
-            await _employeeService.UpdateEmployeeAsync(SelectedEmployee);
+            var employeeDto = new EmployeeDto
+            {
+                Id = SelectedEmployee.Id,
+                FirstName = SelectedEmployee.FirstName,
+                LastName = SelectedEmployee.LastName,
+                Email = SelectedEmployee.Email,
+                PhoneNumber = SelectedEmployee.PhoneNumber,
+                RoleId = SelectedRole?.Id ?? 0, 
+                RoleName = SelectedRole?.Name ?? "",
+                HourlyRate = SelectedRole?.Price ?? 0,
+                Services = SelectedServices.ToList(),
+                Projects = SelectedEmployee.Projects
+            };
 
-            // 🟢 Ladda om hela listan från databasen efter uppdatering
-            Employees = new ObservableCollection<EmployeeEntity>(await _employeeService.GetAllEmployeesAsync());
+            await _employeeService.UpdateEmployeeAsync(employeeDto);
 
-            // 🔄 Se till att den valda anställda fortfarande är markerad
-            SelectedEmployee = Employees.FirstOrDefault(e => e.Id == SelectedEmployee.Id);
+            Employees = new ObservableCollection<EmployeeDto>(await _employeeService.GetAllEmployeesAsync());
+
+            SelectedEmployee = Employees.FirstOrDefault(e => e.Id == employeeDto.Id);
+            SelectedRole = Roles.FirstOrDefault(r => r.Id == employeeDto.RoleId);
 
             Debug.WriteLine("✅ Employee Updated and UI Refreshed");
         }
@@ -113,6 +141,7 @@ public partial class EmployeeEditViewModel : ObservableObject
             Debug.WriteLine("❌ Error: No employee selected for update.");
         }
     }
+
 
 
     [RelayCommand]

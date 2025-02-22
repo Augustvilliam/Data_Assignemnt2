@@ -2,6 +2,9 @@
 
 using System.Net.NetworkInformation;
 using System.Text.RegularExpressions;
+using Busniess.Dtos;
+using Busniess.Interface;
+using Busniess.Services;
 using Data.Entities;
 
 namespace Busniess.Helper;
@@ -11,7 +14,7 @@ public class ValidationHelper
     private static readonly Regex EmailRegex = new(@"^[^\s@]+@[^\s@]+\.[^\s@]+$", RegexOptions.Compiled);
     private static readonly Regex PhoneRegex = new(@"^\+?[0-9]{7,15}$", RegexOptions.Compiled);
 
-    public static List<string> ValidateEmployee(EmployeeEntity employee)
+    public static async Task<List<string>> ValidateEmployee(EmployeeDto employee, IEmployeeService employeeService)
     {
         var errors = new List<string>();
         if (employee == null)
@@ -35,10 +38,17 @@ public class ValidationHelper
         if (employee.RoleId <= 0)
             errors.Add("A valid role must be selected.");
 
+        var existingEmployees = await employeeService.GetAllEmployeesAsync();
+        if (existingEmployees.Any(e => e.Email.ToLower() == employee.Email.ToLower() && e.Id != employee.Id))
+        {
+            errors.Add("This email is already in use by another employee.");
+        }
+
+
         return errors; ;
 
     }
-    public static List<String> ValidateCustomer(CustomerEntity customer)
+    public static async Task<List<String>> ValidateCustomer(CustomerDto customer, ICustomerService customerService)
     {
         var errors = new List<string>();
         if (customer == null)
@@ -59,9 +69,15 @@ public class ValidationHelper
         if (string.IsNullOrWhiteSpace(customer.PhoneNumber) || !PhoneRegex.IsMatch(customer.PhoneNumber))
             errors.Add("Valid phone number is required.");
 
+        var existingCustomer = await customerService.GetAllCustomersAsync();
+        if (existingCustomer.Any(e => e.Email.ToLower() == customer.Email.ToLower() && e.Id != customer.Id))
+        {
+            errors.Add("This email is already in use by another employee.");
+        }
+
         return errors;
     }
-    public static List<String> ValidateProject(ProjectEntity project)
+    public static List<String> ValidateProject(ProjectDto project)
     {
         var errors = new List<string>();
         if (project == null)

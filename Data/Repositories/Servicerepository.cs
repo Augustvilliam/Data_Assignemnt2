@@ -8,3 +8,4 @@ public class Servicerepository : GenericRepository<ServiceEntity>
     public Servicerepository(DataDbContext context) : base(context) { }
 }
 
+ 

@@ -1,14 +1,12 @@
 ﻿
-
 using System.Collections.ObjectModel;
 using System.Diagnostics;
-using Busniess.Factories;
+using Busniess.Dtos;
 using Busniess.Helper;
 using Busniess.Interface;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
-using Data.Entities;
-using DataMauiApp.Views;
+
 
 namespace DataMauiApp.ViewModels;
 
@@ -21,23 +19,25 @@ public partial class ProjectViewModel : ObservableObject
     private readonly IServiceService _serviceService;
 
     [ObservableProperty]
-    private ObservableCollection<ProjectEntity>  projects = new();
+    private ObservableCollection<ProjectDto>  projects = new();
     [ObservableProperty]
-    private ObservableCollection<CustomerEntity> customers = new();
+    private ObservableCollection<CustomerDto> customers = new();
     [ObservableProperty]
-    private ObservableCollection<EmployeeEntity> employees = new();
+    private ObservableCollection<EmployeeDto> employees = new();
     [ObservableProperty]
-    private ObservableCollection<ServiceEntity> services = new();
+    private ObservableCollection<ServiceDto> services = new();
+
     [ObservableProperty]
-    private ProjectEntity newProject = new();
+    private ProjectDto newProject = new();
+
     [ObservableProperty]
-    private ProjectEntity selectedProject;
+    private ProjectDto selectedProject;
     [ObservableProperty]
-    private CustomerEntity selectedCustomer;
+    private CustomerDto selectedCustomer;
     [ObservableProperty]
-    private EmployeeEntity selectedEmployee;
+    private EmployeeDto selectedEmployee;
     [ObservableProperty]
-    private ServiceEntity selectedService;
+    private ServiceDto selectedService;
     [ObservableProperty]
     private string selectedStatus;
 
@@ -61,10 +61,11 @@ public partial class ProjectViewModel : ObservableObject
     {
         try
         {
-            Projects = new ObservableCollection<ProjectEntity>(await _projectService.GetAllProjectsAsync());
-            Customers = new ObservableCollection<CustomerEntity>(await _customerService.GetAllCustomersAsync());
-            Employees = new ObservableCollection<EmployeeEntity>(await _employeeService.GetAllEmployeesAsync());
-            Services = new ObservableCollection<ServiceEntity>(await _serviceService.GetAllServicesAsync());
+            Projects = new ObservableCollection<ProjectDto>(await _projectService.GetAllProjectsAsync());
+            Customers = new ObservableCollection<CustomerDto>(await _customerService.GetAllCustomersAsync());
+            Employees = new ObservableCollection<EmployeeDto>(await _employeeService.GetAllEmployeesAsync());
+            Services = new ObservableCollection<ServiceDto>(await _serviceService.GetAllServicesAsync());
+
 
             Debug.WriteLine($"Laddade {Projects.Count} projekt, {Customers.Count} kunder, {Employees.Count} anställda, {Services.Count} tjänster.");
         }
@@ -83,18 +84,24 @@ public partial class ProjectViewModel : ObservableObject
             return;
         }
 
-        var project = ProjectFactory.CreateProject(
-            NewProject.Name,
-            NewProject.Description,
-            NewProject.StartDate,
-            NewProject.EndDate,
-            SelectedCustomer.Id,
-            SelectedEmployee.Id,
-            SelectedService.Id
-            );
+        var projectDto = new ProjectDto
+        {
+            Name = NewProject.Name,
+            Description = NewProject.Description,
+            StartDate = NewProject.StartDate,
+            EndDate = NewProject.EndDate,
+            CustomerId = SelectedCustomer.Id,
+            CustomerName = SelectedCustomer.FirstName + " " + SelectedCustomer.LastName,
+            EmployeeId = SelectedEmployee.Id,
+            EmployeeName = SelectedEmployee.FirstName + " " + SelectedEmployee.LastName,
+            ServiceId = SelectedService.Id,
+            ServiceName = SelectedService.Name,
+            Status = SelectedStatus
+        };
 
 
-        var errors = ValidationHelper.ValidateProject(project);
+
+        var errors = ValidationHelper.ValidateProject(projectDto);
 
         if (errors.Count > 0)
         {
@@ -102,7 +109,7 @@ public partial class ProjectViewModel : ObservableObject
             return;
         }
 
-        await _projectService.AddProject(project);
+        await _projectService.AddProject(projectDto);
         await LoadData();
         ClearProjectForm();
     }

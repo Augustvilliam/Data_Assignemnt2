@@ -1,10 +1,7 @@
-﻿
-
+﻿using Busniess.Dtos;
 using Busniess.Interface;
 using Data.Entities;
 using Data.Interface;
-
-namespace Busniess.Services;
 
 public class ServiceService : IServiceService
 {
@@ -15,23 +12,37 @@ public class ServiceService : IServiceService
         _serviceRepository = serviceRepository;
     }
 
-    public async Task AddService(ServiceEntity project)
+    public async Task AddService(ServiceDto serviceDto)
     {
-        await _serviceRepository.AddAsync(project);
-    }
-    public async Task<List<ServiceEntity>> GetAllServicesAsync()
-    {
-        return await _serviceRepository.GetAllAsync();
+        var serviceEntity = new ServiceEntity
+        {
+            Id = serviceDto.Id,
+            Name = serviceDto.Name
+        };
+
+        await _serviceRepository.AddAsync(serviceEntity);
     }
 
-    public async Task<ServiceEntity?> GetServiceByIdAsync(int id)
+    public async Task<List<ServiceDto>> GetAllServicesAsync()
     {
-        return await _serviceRepository.GetByIdAsync(id);
+        var services = await _serviceRepository.GetAllAsync();
+        return services.Select(s => new ServiceDto { Id = s.Id, Name = s.Name }).ToList();
     }
 
-    public async Task UpdateServiceAsync(ServiceEntity project)
+    public async Task<ServiceDto?> GetServiceByIdAsync(int id)
     {
-        await _serviceRepository.UpdateAsync(project);
+        var service = await _serviceRepository.GetByIdAsync(id);
+        return service != null ? new ServiceDto { Id = service.Id, Name = service.Name } : null;
+    }
+
+    public async Task UpdateServiceAsync(ServiceDto serviceDto)
+    {
+        var existingService = await _serviceRepository.GetByIdAsync(serviceDto.Id);
+        if (existingService != null)
+        {
+            existingService.Name = serviceDto.Name;
+            await _serviceRepository.UpdateAsync(existingService);
+        }
     }
 
     public async Task DeleteServiceAsync(int id)

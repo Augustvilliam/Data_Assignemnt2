@@ -24,11 +24,22 @@ public class EmployeeService : IEmployeeService
 
     public async Task AddEmployee(EmployeeDto dto)
     {
-        var employee = EmployeeFactory.CreateEmployee(dto);
-
         await _employeeRepository.BeginTransactionAsync();
         try
         {
+            var employee = EmployeeFactory.CreateEmployee(dto);
+
+            // 🟢 Hämta befintlig roll från databasen
+            employee.Role = await _context.Roles.FindAsync(dto.RoleId);
+            if (employee.Role == null)
+            {
+                throw new InvalidOperationException($"Role with Id {dto.RoleId} not found.");
+            }
+
+            // 🟢 Hämta de befintliga tjänsterna från databasen
+            var selectedServiceIds = dto.Services.Select(s => s.Id).ToList();
+            employee.Services = await _context.Services.Where(s => selectedServiceIds.Contains(s.Id)).ToListAsync();
+
             await _employeeRepository.AddAsync(employee);
             await _employeeRepository.CommitTransactionAsync();
         }
@@ -38,8 +49,8 @@ public class EmployeeService : IEmployeeService
             await _employeeRepository.RollbackTransactionAsync();
             throw;
         }
+    }
 
-     }
     public async Task<List<EmployeeDto>> GetAllEmployeesAsync()
     {
         var employees = await _context.Employees
@@ -50,8 +61,6 @@ public class EmployeeService : IEmployeeService
 
         return employees.Select(EmployeeFactory.CreateDto).ToList();
     }
-
-
     public async Task<EmployeeDto?> GetEmployeeByIdAsync(int id)
     {
         var employee = await _context.Employees
@@ -62,8 +71,6 @@ public class EmployeeService : IEmployeeService
 
         return employee != null ? EmployeeFactory.CreateDto(employee) : null;
     }
-
-
     public async Task UpdateEmployeeAsync(EmployeeDto dto)
     {
         await _employeeRepository.BeginTransactionAsync();
@@ -78,16 +85,16 @@ public class EmployeeService : IEmployeeService
                 throw new InvalidOperationException("Employee not found.");
             }
 
-            // 🛑 Rensa gamla tjänst-relationer för att undvika duplicering
+            // 🛑 Rensa gamla tjänst-relationer
             existingEmployee.Services.Clear();
             await _context.SaveChangesAsync();
 
-            // 🔄 Hämta uppdaterad lista över tjänster från databasen för att undvika duplicering
+            // 🟢 Hämta de befintliga tjänsterna från databasen
             var updatedServices = await _context.Services
                 .Where(s => dto.Services.Select(es => es.Id).Contains(s.Id))
                 .ToListAsync();
 
-            // 🆕 Uppdatera befintlig employee istället för att skapa en ny
+            // 🆕 Uppdatera befintlig employee istället för att skapa nya objekt
             existingEmployee.FirstName = dto.FirstName;
             existingEmployee.LastName = dto.LastName;
             existingEmployee.Email = dto.Email;

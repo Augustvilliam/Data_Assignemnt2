@@ -2,13 +2,13 @@
 
 using System.Collections.ObjectModel;
 using System.Diagnostics;
+using Busniess.Dtos;
 using Busniess.Factories;
 using Busniess.Helper;
 using Busniess.Interface;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using Data.Entities;
-using DataMauiApp.Views;
 
 namespace DataMauiApp.ViewModels;
 
@@ -23,30 +23,24 @@ public partial class EmployeeViewModel : ObservableObject
 
     [ObservableProperty]
     private ObservableCollection<RoleEntity> roles = new();
-
     [ObservableProperty]
-    private ObservableCollection<ServiceEntity> availableServices = new();
-
+    private ObservableCollection<ServiceDto> availableServices = new();
     [ObservableProperty]
-    private ObservableCollection<ServiceEntity> selectedServices = new();
-
+    private ObservableCollection<ServiceDto> selectedServices = new();
     [ObservableProperty]
-    private ObservableCollection<EmployeeEntity> employees = new();
-
+    private ObservableCollection<EmployeeDto> employees = new();
     [ObservableProperty]
-    private EmployeeEntity selectedEmployee;
-
+    private EmployeeDto selectedEmployee;
     [ObservableProperty]
     private RoleEntity selectedRole;
-
     [ObservableProperty]
-    private EmployeeEntity newEmployee = new()
+    private EmployeeDto newEmployee = new()
     {
         FirstName = string.Empty,
         LastName = string.Empty,
         Email = string.Empty,
         PhoneNumber = string.Empty,
-        Services = new List<ServiceEntity>()
+        Services = new List<ServiceDto>()
     };
 
     public EmployeeViewModel(IRoleService roleService, IEmployeeService employeeService, IServiceService serviceservice)
@@ -64,8 +58,13 @@ public partial class EmployeeViewModel : ObservableObject
         try
         {
             var serviceList = await _serviceService.GetAllServicesAsync();
-            AvailableServices = new ObservableCollection<ServiceEntity>(serviceList);
-            Debug.WriteLine($"Antal tjänster laddade: {AvailableServices.Count}");
+
+            foreach (var service in serviceList)
+            {
+                service.IsSelected = SelectedServices.Any(s => s.Id == service.Id);
+            }
+
+            AvailableServices = new ObservableCollection<ServiceDto>(serviceList);
         }
         catch (Exception ex)
         {
@@ -90,34 +89,36 @@ public partial class EmployeeViewModel : ObservableObject
         try
         {
             var employeeList = await _employeeService.GetAllEmployeesAsync();
-            Employees = new ObservableCollection<EmployeeEntity>(employeeList);
-            Debug.WriteLine($"✅ {Employees.Count} anställda laddade och UI uppdaterat.");
+            Employees = new ObservableCollection<EmployeeDto>(employeeList);
         }
         catch (Exception ex)
         {
-            Debug.WriteLine($"❌ Fel vid laddning av anställda: {ex.Message}");
+            Debug.WriteLine($"Fel vid laddning av anställda: {ex.Message}");
         }
     }
     [RelayCommand]
     public async Task SaveEmployee()
     {
-        var employees = EmployeeFactory.CreateEmployee(
-            NewEmployee.FirstName,
-            NewEmployee.LastName,
-            NewEmployee.Email,
-            NewEmployee.PhoneNumber,
-            SelectedRole,
-            SelectedServices.ToList()
-            );
+        var employee = new EmployeeDto
+        {
+            FirstName = NewEmployee.FirstName,
+            LastName = NewEmployee.LastName,
+            Email = NewEmployee.Email,
+            PhoneNumber = NewEmployee.PhoneNumber,
+            RoleId = SelectedRole.Id,
+            RoleName = SelectedRole.Name,
+            HourlyRate = SelectedRole.Price,
+            Services = SelectedServices.ToList()
+        };
 
-        var errors = ValidationHelper.ValidateEmployee(employees);
+        var errors = await ValidationHelper.ValidateEmployee(employee, _employeeService);
         if (errors.Count > 0)
         {
             await Application.Current.MainPage.DisplayAlert("Validation Error", string.Join("\n", errors), "OK");
             return;
         }
 
-        await _employeeService.AddEmployee(employees);
+        await _employeeService.AddEmployee(employee);
         await LoadEmployee();
         NewEmployee = new();
     }
@@ -127,12 +128,11 @@ public partial class EmployeeViewModel : ObservableObject
         if (SelectedEmployee != null)
         {
             await _employeeService.DeleteEmployeeAsync(SelectedEmployee.Id);
-
             await LoadEmployee();
         }
         else
         {
-            Debug.WriteLine("❌ Ingen kund vald.");
+            Debug.WriteLine("❌ Ingen anställd vald.");
         }
     }
     [RelayCommand]
@@ -141,7 +141,7 @@ public partial class EmployeeViewModel : ObservableObject
         Debug.WriteLine("Navigerar tillbaka...");
         await Shell.Current.GoToAsync("//MainMenuPage");
     }
-    public void ToggleServiceSelection(ServiceEntity service, bool isChecked)
+    public void ToggleServiceSelection(ServiceDto service, bool isChecked)
     {
         if (isChecked)
         {

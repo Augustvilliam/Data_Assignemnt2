@@ -41,8 +41,8 @@ public class EmployeeFactory
             RoleId = entity.RoleId,
             RoleName = entity.Role?.Name ?? string.Empty,
             HourlyRate = entity.Role?.Price ?? 0,
-            Services = entity.Services.Select(s => new ServiceDto { Id = s.Id, Name = s.Name }).ToList(),
-            Projects = entity.Projects.Select(p => new ProjectSummaryDto { Id = p.Id, Name = p.Name }).ToList()
+            Services = entity.Services?.Select(s => new ServiceDto { Id = s.Id, Name = s.Name }).ToList() ?? new List<ServiceDto>(),
+            Projects = entity.Projects?.Select(p => new ProjectSummaryDto { Id = p.Id, Name = p.Name }).ToList() ?? new List<ProjectSummaryDto>()
         };
     }
 }
