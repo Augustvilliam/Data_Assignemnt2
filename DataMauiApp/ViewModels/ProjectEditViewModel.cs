@@ -54,7 +54,7 @@ public partial class ProjectEditViewModel : ObservableObject
         _ = LoadData();
     }
 
-    partial void OnSelectedProjectChanged(ProjectDto value)
+    partial void OnSelectedProjectChanged(ProjectDto value) //genererad av chatGPt
     {
         if (value != null)
         {
@@ -82,7 +82,7 @@ public partial class ProjectEditViewModel : ObservableObject
         }
         catch (Exception ex)
         {
-            Debug.WriteLine($"❌ Error loading data: {ex.Message}");
+            Debug.WriteLine($"Error loading data: {ex.Message}");
         }
     }
 
@@ -98,7 +98,6 @@ public partial class ProjectEditViewModel : ObservableObject
         var errors = ValidationHelper.ValidateProject(SelectedProject);
         if (errors.Count > 0)
         {
-            Debug.WriteLine($"❌ Validation errors: {string.Join(", ", errors)}");
             await Application.Current.MainPage.DisplayAlert("Validation Error", string.Join("\n", errors), "OK");
             return;
         }
@@ -115,7 +114,6 @@ public partial class ProjectEditViewModel : ObservableObject
     [RelayCommand]
     public async Task NavigateBack()
     {
-        Debug.WriteLine("Navigerar tillbaka till ProjectPage...");
         await Shell.Current.GoToAsync("//ProjectPage");
     }
 }

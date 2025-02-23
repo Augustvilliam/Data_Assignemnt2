@@ -58,7 +58,7 @@ public partial class EmployeeViewModel : ObservableObject
     {
         try
         {
-            var serviceList = await _serviceService.GetAllServicesAsync();
+            var serviceList = await _serviceService.GetAllServicesAsync(); //ladda lista med alla services, ladda in samtliga. 
 
             foreach (var service in serviceList)
             {
@@ -78,7 +78,7 @@ public partial class EmployeeViewModel : ObservableObject
 
         try
         {
-            if (Roles.Count > 0 && SelectedRole == null)
+            if (Roles.Count > 0 && SelectedRole == null) //om det finns roller, välj den första som standard för att slippa exception när en roll inte är vald
             {
                 SelectedRole = Roles.First();
             }
@@ -91,11 +91,11 @@ public partial class EmployeeViewModel : ObservableObject
             Debug.WriteLine($"Fel vid laddning av roller. { ex.Message} ");
         }
     }
-    partial void OnSelectedRoleChanged(RoleDto? value)
+    partial void OnSelectedRoleChanged(RoleDto? value) //genererad av chatGPt
     {
         SelectedRole = value ?? new RoleDto { Id = 0, Name = "Unknown", Price = 0 };
     }
-    public async Task LoadEmployee()
+    public async Task LoadEmployee() //laddar anställdlistan 
     {
         try
         {
@@ -108,7 +108,7 @@ public partial class EmployeeViewModel : ObservableObject
         }
     }
     [RelayCommand]
-    public async Task SaveEmployee()
+    public async Task SaveEmployee() //spara validerar och laddar om employees
     {
         var employee = new EmployeeDto
         {
@@ -132,7 +132,7 @@ public partial class EmployeeViewModel : ObservableObject
         await _employeeService.AddEmployee(employee);
         await LoadEmployee();
         NewEmployee = new();
-    }
+    } //
     [RelayCommand]
     public async Task DeleteEmployee()
     {
@@ -149,10 +149,9 @@ public partial class EmployeeViewModel : ObservableObject
     [RelayCommand]
     public async Task NavigateBack()
     {
-        Debug.WriteLine("Navigerar tillbaka...");
         await Shell.Current.GoToAsync("//MainMenuPage");
     }
-    public void ToggleServiceSelection(ServiceDto service, bool isChecked)
+    public void ToggleServiceSelection(ServiceDto service, bool isChecked) //genererad av chatgpt. användes för checkboxarna som skulle hjälpa att assigna vilka services som skulle gå att använda per anställd. 
     {
         if (isChecked)
         {
@@ -169,7 +168,6 @@ public partial class EmployeeViewModel : ObservableObject
                 SelectedServices.Remove(existingService);
             }
         }
-        Debug.WriteLine($"🛠️ Valda tjänster: {string.Join(", ", SelectedServices.Select(s => s.Name))}");
     }
     [RelayCommand]
     public async Task OpenEditMode()
@@ -183,8 +181,7 @@ public partial class EmployeeViewModel : ObservableObject
         }
         else
         {
-            await Application.Current.MainPage.DisplayAlert("Error", "You must select an employee before editing!", "OK");
-            Debug.WriteLine("No employee Selected");
+            await AlertHelper.ShowSelectionAlert("Employee");
         }
     }
 

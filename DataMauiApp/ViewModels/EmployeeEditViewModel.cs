@@ -71,7 +71,7 @@ public partial class EmployeeEditViewModel : ObservableObject
         }
         catch (Exception ex)
         {
-            Debug.WriteLine($"❌ Error loading data: {ex.Message}");
+            Debug.WriteLine($"Error loading data: {ex.Message}");
         }
     }
 

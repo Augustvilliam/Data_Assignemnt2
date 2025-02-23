@@ -9,7 +9,7 @@ public class EmployeeDto
     public string LastName { get; set; } = string.Empty;
     public string Email { get; set; } = string.Empty;
     public string PhoneNumber { get; set; } = string.Empty;
-    public int RoleId { get; set; } 
+    public int RoleId { get; set; } = 1;
     public string RoleName { get; set; } = string.Empty;
     public decimal HourlyRate { get; set; }
     public List<ServiceDto> Services { get; set; } = new();

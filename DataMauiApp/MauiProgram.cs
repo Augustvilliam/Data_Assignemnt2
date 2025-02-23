@@ -65,9 +65,9 @@ public static class MauiProgram
             var dbInitializer = new DbInitializer($"Data Source={desktopPath}");
 
             // context.Database.EnsureDeleted(); // Nukar databasen vid uppstart för att spara tid under utvecklingen. 
-            dbInitializer.InitializeDatabase();  // ✅ Skapar tabeller enligt schema
-            dbInitializer.SeedData();           // ✅ Lägger in testdata (roller & tjänster)
-            //dbInitializer.TestData();           // ✅ Lägger in testdata
+            dbInitializer.InitializeDatabase();  //  Skapar tabeller enligt schema
+            dbInitializer.SeedData();           // Lägger in roller & tjänster
+            //dbInitializer.TestData();           // Lägger in testdata
         }
 
 #if DEBUG

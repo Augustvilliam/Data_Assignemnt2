@@ -29,7 +29,7 @@
 
         <Border Grid.Row="1"  Grid.Column="1" Margin="10" Padding="10" Stroke="Gray">
             <VerticalStackLayout>
-                <Label Text="Employee Details" FontSize="Medium" FontAttributes="Bold"/>
+                <Label Text="Customer Details" FontSize="Medium" FontAttributes="Bold"/>
 
                 <Label Text="ID:" FontAttributes="Bold"/>
                 <Label Text="{Binding SelectedCustomer.Id}" />

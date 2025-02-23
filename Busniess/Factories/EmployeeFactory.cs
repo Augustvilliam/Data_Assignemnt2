@@ -1,5 +1,6 @@
 ﻿
 using Busniess.Dtos;
+using Data.Context;
 using Data.Entities;
 
 namespace Busniess.Factories;
@@ -7,8 +8,20 @@ namespace Busniess.Factories;
 public class EmployeeFactory
 {
     // mappar en EmployeeEntity från Dto
-    public static EmployeeEntity CreateEmployee(EmployeeDto dto)
+    public static EmployeeEntity CreateEmployee(EmployeeDto dto, DataDbContext context)
     {
+        int roleId = dto.RoleId > 0 ? dto.RoleId : 1; //Se till att RoleId aldrig är 0
+
+        var role = context.Roles.Find(roleId);
+        if (role == null)
+        {
+            throw new InvalidOperationException($"Role with Id {roleId} not found.");
+        }
+
+        var serviceIds = dto.Services.Select(s => s.Id).ToList();
+        var services = context.Services.Where(s => serviceIds.Contains(s.Id)).ToList();
+
+
         return new EmployeeEntity
         {
             Id = dto.Id,
@@ -16,17 +29,13 @@ public class EmployeeFactory
             LastName = dto.LastName,
             Email = dto.Email,
             PhoneNumber = dto.PhoneNumber,
-            RoleId = dto.RoleId,
-            Role = new RoleDto
-            {
-                Id = dto.RoleId,
-                Name = dto.RoleName,
-                Price = dto.HourlyRate
-            },
-            Services = dto.Services.Select(s => new ServiceEntity { Id = s.Id, Name = s.Name }).ToList(),
+            RoleId = role.Id,
+            Role = role,
+            Services = services,
             Projects = dto.Projects.Select(p => new ProjectEntity { Id = p.Id, Name = p.Name }).ToList()
         };
     }
+    
 
     // mappar en EmployeeDto frå entitet.
     public static EmployeeDto CreateDto(EmployeeEntity entity)

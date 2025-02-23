@@ -1,4 +1,5 @@
 ﻿
+using System.Data;
 using System.Diagnostics;
 using System.Runtime.InteropServices;
 using Busniess.Dtos;
@@ -27,25 +28,23 @@ public class EmployeeService : IEmployeeService //Delvis omgjord med chat GPT n�
         await _employeeRepository.BeginTransactionAsync();
         try
         {
-            var employee = EmployeeFactory.CreateEmployee(dto);
-
+            int roleId = dto.RoleId > 0 ? dto.RoleId : 1;
             // Hämta befintlig roll från databasen eftersom dessa är förkodade när databasen skapas. 
-            employee.Role = await _context.Roles.FindAsync(dto.RoleId);
-            if (employee.Role == null)
+            var role = await _context.Roles.FindAsync(roleId);
+            if (role == null)
             {
-                throw new InvalidOperationException($"Role with Id {dto.RoleId} not found.");
+                throw new InvalidOperationException($"Role with Id {roleId} does not exist in Roles table.");
             }
 
             //  Hämta de befintliga tjänsterna från databasen, samma här då Services fick bli hårdkodade. 
-            var selectedServiceIds = dto.Services.Select(s => s.Id).ToList();
-            employee.Services = await _context.Services.Where(s => selectedServiceIds.Contains(s.Id)).ToListAsync();
+            var employee = EmployeeFactory.CreateEmployee(dto, _context);
+            employee.Role = role;
 
             await _employeeRepository.AddAsync(employee);
             await _employeeRepository.CommitTransactionAsync();
         }
         catch (Exception ex)
         {
-            Debug.WriteLine($"❌ Error adding employee: {ex.Message}"); //Behåller Debugsen här även om det är oanvändbart i skaprt läge, för lat för att byta till en Alert eller logger.. 
             await _employeeRepository.RollbackTransactionAsync();
             throw;
         }
@@ -79,7 +78,6 @@ public class EmployeeService : IEmployeeService //Delvis omgjord med chat GPT n�
             var existingEmployee = await _context.Employees
                 .Include(e => e.Services)
                 .FirstOrDefaultAsync(e => e.Id == dto.Id);
-
             if (existingEmployee == null)
             {
                 throw new InvalidOperationException("Employee not found.");
@@ -89,18 +87,24 @@ public class EmployeeService : IEmployeeService //Delvis omgjord med chat GPT n�
             existingEmployee.Services.Clear();
             await _context.SaveChangesAsync();
 
+            int roleId = dto.RoleId > 0 ? dto.RoleId : 1;
+            var role = await _context.Roles.FindAsync(roleId);
+            if (role == null)
+            {
+                throw new InvalidOperationException($"Role with Id {roleId} does not exist in Roles table.");
+            }
             //  Hämta de befintliga tjänsterna från databasen efter att det är sparat
             var updatedServices = await _context.Services
-                .Where(s => dto.Services.Select(es => es.Id).Contains(s.Id))
-                .ToListAsync();
+           .Where(s => dto.Services.Select(es => es.Id).Contains(s.Id))
+           .ToListAsync();
 
             //  Uppdatera den valda employees, denna är copypast från chatgpt
             existingEmployee.FirstName = dto.FirstName;
             existingEmployee.LastName = dto.LastName;
             existingEmployee.Email = dto.Email;
             existingEmployee.PhoneNumber = dto.PhoneNumber;
-            existingEmployee.RoleId = dto.RoleId;
-            existingEmployee.Role = await _context.Roles.FindAsync(dto.RoleId);
+            existingEmployee.RoleId = role.Id;
+            existingEmployee.Role = role;
             existingEmployee.Services = updatedServices;
 
             await _context.SaveChangesAsync();
@@ -113,7 +117,6 @@ public class EmployeeService : IEmployeeService //Delvis omgjord med chat GPT n�
             throw;
         }
     }
-
     public async Task DeleteEmployeeAsync(int id)
     {
         await _employeeRepository.BeginTransactionAsync();

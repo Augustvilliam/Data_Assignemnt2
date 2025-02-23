@@ -29,7 +29,7 @@ public partial class CustomerEditViewModel : ObservableObject
         _ = LoadCustomers();
     }
 
-    public async Task LoadCustomers()
+    public async Task LoadCustomers() //laddar en fräsch lista över employees. 
     {
         try
         {
@@ -51,7 +51,7 @@ public partial class CustomerEditViewModel : ObservableObject
     [RelayCommand]
     public async Task SaveChanges()
     {
-        if (SelectedCustomer == null)
+        if (SelectedCustomer == null) //ingen användare vald, ajabaja
         {
             await AlertHelper.ShowSelectionAlert("Customer");
             return;
@@ -65,8 +65,8 @@ public partial class CustomerEditViewModel : ObservableObject
             return;
         }
 
-        await _customerService.UpdateCustomersAsync(SelectedCustomer);
-        await LoadCustomers();
+        await _customerService.UpdateCustomersAsync(SelectedCustomer); //allt som det ska? suuuuperbra då får du spara 
+        await LoadCustomers(); //laddar om listan med Customers
     }
 
     [RelayCommand]

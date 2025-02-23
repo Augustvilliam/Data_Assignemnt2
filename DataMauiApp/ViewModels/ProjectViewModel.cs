@@ -76,17 +76,16 @@ public partial class ProjectViewModel : ObservableObject
     [RelayCommand]
     private async Task SaveProject()
     {
-        if (SelectedCustomer == null || SelectedEmployee == null || SelectedService == null)
+        if (SelectedCustomer == null || SelectedEmployee == null || SelectedService == null) //är någon null? ajabaja
         {
             await AlertHelper.ShowSelectionAlert("Project, Customer, Employee");
-
             return;
         }
 
         await Application.Current.MainPage.DisplayAlert("Saving Project...", "Chilla lite, detta kommer ta ungefär en livstid...", "OK"); //epic prank lol Xd
         await Task.Delay(2000);
 
-        var projectDto = new ProjectDto
+        var projectDto = new ProjectDto //gör en dto
         {
             Name = NewProject.Name,
             Description = NewProject.Description,
@@ -102,8 +101,7 @@ public partial class ProjectViewModel : ObservableObject
         };
 
 
-
-        var errors = ValidationHelper.ValidateProject(projectDto);
+        var errors = ValidationHelper.ValidateProject(projectDto); //kör validationhelper för att kolla så allt är giltigt. 
 
         if (errors.Count > 0)
         {
@@ -111,9 +109,9 @@ public partial class ProjectViewModel : ObservableObject
             return;
         }
 
-        await _projectService.AddProject(projectDto);
-        await LoadData();
-        ClearProjectForm();
+        await _projectService.AddProject(projectDto); //lägger till projectet
+        await LoadData(); //laddar om samtlig data så det är nytt och fräsch
+        ClearProjectForm(); //rensar formuläret. 
 
         await Application.Current.MainPage.DisplayAlert("Success", "Skojar med dig hans, jag bara duuuuuumar maaaaaj", "OK");
     }
@@ -124,7 +122,7 @@ public partial class ProjectViewModel : ObservableObject
             {
             await _projectService.DeleteProjectAsync(SelectedProject.Id);
             LoadData();
-            SelectedProject = null;
+            SelectedProject = null; //nollar selected project så det inte ligger kvar någon/crashar
             }
     }
     [RelayCommand]
@@ -139,8 +137,7 @@ public partial class ProjectViewModel : ObservableObject
         }
         else
         {
-            await Application.Current.MainPage.DisplayAlert("Error", "You must select an employee before editing!", "OK");
-            Debug.WriteLine("No Project Selected");
+            await AlertHelper.ShowSelectionAlert("project");
         }
     }
     [RelayCommand]
@@ -149,7 +146,7 @@ public partial class ProjectViewModel : ObservableObject
         await Shell.Current.GoToAsync("//MainMenuPage");
     }
 
-    private void ClearProjectForm()
+    private void ClearProjectForm() //nollar pickers och labels, status sätts till not started.
     {
         NewProject = new();
         SelectedCustomer = null;
