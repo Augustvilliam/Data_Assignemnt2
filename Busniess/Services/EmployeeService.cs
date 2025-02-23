@@ -112,7 +112,7 @@ public class EmployeeService : IEmployeeService //Delvis omgjord med chat GPT n�
         }
         catch (Exception ex)
         {
-            Debug.WriteLine($"❌ Error updating employee: {ex.Message}"); //Behåller Debugsen här även om det är oanvändbart i skaprt läge, för lat för att byta till en Alert eller logger.. 
+            Debug.WriteLine($"Error updating employee: {ex.Message}"); //Behåller Debugsen här även om det är oanvändbart i skaprt läge, för lat för att byta till en Alert eller logger.. 
             await _employeeRepository.RollbackTransactionAsync();
             throw;
         }

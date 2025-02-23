@@ -12,7 +12,7 @@ public class EmployeeFactory
     {
         int roleId = dto.RoleId > 0 ? dto.RoleId : 1; //Se till att RoleId aldrig är 0
 
-        var role = context.Roles.Find(roleId);
+        var role = context.Roles.Find(roleId); //letar redo på roller. gjord med chatGPT
         if (role == null)
         {
             throw new InvalidOperationException($"Role with Id {roleId} not found.");
@@ -22,7 +22,7 @@ public class EmployeeFactory
         var services = context.Services.Where(s => serviceIds.Contains(s.Id)).ToList();
 
 
-        return new EmployeeEntity
+        return new EmployeeEntity //mappar enititen 
         {
             Id = dto.Id,
             FirstName = dto.FirstName,
@@ -40,7 +40,7 @@ public class EmployeeFactory
     // mappar en EmployeeDto frå entitet.
     public static EmployeeDto CreateDto(EmployeeEntity entity)
     {
-        return new EmployeeDto
+        return new EmployeeDto //mappar dton
         {
             Id = entity.Id,
             FirstName = entity.FirstName,
