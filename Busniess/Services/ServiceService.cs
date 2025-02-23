@@ -3,7 +3,7 @@ using Busniess.Interface;
 using Data.Entities;
 using Data.Interface;
 
-public class ServiceService : IServiceService
+public class ServiceService : IServiceService //Mestadels copypast från chatGPT eftersom det blir bajsing med CRUD när jag byggde om till att anävnda DTO. 
 {
     private readonly IGenericRepository<ServiceEntity> _serviceRepository;
 

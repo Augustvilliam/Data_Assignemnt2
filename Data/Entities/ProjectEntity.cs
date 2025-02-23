@@ -9,7 +9,7 @@ public class ProjectEntity
     public DateTime StartDate { get; set; }
     public DateTime EndDate { get; set; }
     public string Status { get; set; } = "Not started";
-    public string Description { get; set; } = "Enter workorder Description";
+    public string Description { get; set; } = "Enter workorder Description"; 
     
 
     public int EmployeeId { get; set; }
@@ -22,7 +22,7 @@ public class ProjectEntity
     public int ServiceId { get; set; }
     public ServiceEntity?  Service { get; set; }
 
-    public decimal TotalPrice
+    public decimal TotalPrice //Totalprice genererad av chatgpt. Tar och slänger ihop price från roll (Vet ärligt inte om den funkar över huvudtaget) tillsammans med Estimerade timmar som är hårdkodade med Services
     {
         get
         {

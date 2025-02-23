@@ -12,7 +12,7 @@ using SQLitePCL;
 
 namespace Busniess.Services;
 
-public class ProjectService : IProjectService
+public class ProjectService : IProjectService //Delvis omgjord med chat GPT när jag införde DTOs i systmet. 
 {
     private readonly IGenericRepository<ProjectEntity> _projectRepository;
     private readonly DataDbContext _context;

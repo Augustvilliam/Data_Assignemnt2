@@ -1,9 +1,8 @@
 ﻿using Busniess.Dtos;
-using Data.Entities;
 
 namespace Busniess.Interface
 {
-    public interface ICustomerService
+    public interface ICustomerService 
     {
         Task AddCustomersAsync(CustomerDto dto);
         Task DeleteCustomersAsync(int id);

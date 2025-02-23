@@ -8,7 +8,7 @@ using Data.Interface;
 
 namespace Busniess.Services;
 
-public class CustomerService : ICustomerService
+public class CustomerService : ICustomerService //Delvis omgjord med chat GPT när jag införde DTOs i systmet. 
 {
     private readonly IGenericRepository<CustomerEntity> _customerRepository;
 
@@ -30,7 +30,7 @@ public class CustomerService : ICustomerService
         }
         catch (Exception ex)
         {
-            Debug.WriteLine($"❌ Error adding customer: {ex.Message}");
+            Debug.WriteLine($"❌ Error adding customer: {ex.Message}"); //Behåller Debugsen här även om det är oanvändbart i skaprt läge, för lat för att byta till en Alert eller logger.. 
             await _customerRepository.RollbackTransactionAsync();
             throw;
         }
@@ -71,7 +71,7 @@ public class CustomerService : ICustomerService
         }
         catch (Exception ex)
         {
-            Debug.WriteLine($" Error updating customer: {ex.Message}");
+            Debug.WriteLine($" Error updating customer: {ex.Message}" ); //Behåller Debugsen här även om det är oanvändbart i skaprt läge, för lat för att byta till en Alert eller logger.. 
             await _customerRepository.RollbackTransactionAsync();
             throw;
         }
@@ -87,7 +87,7 @@ public class CustomerService : ICustomerService
         }
         catch (Exception ex)
         {
-            Debug.WriteLine($"❌ Error deleting customer: {ex.Message}");
+            Debug.WriteLine($"❌ Error deleting customer: {ex.Message}"); //Behåller Debugsen här även om det är oanvändbart i skaprt läge, för lat för att byta till en Alert eller logger.. 
             await _customerRepository.RollbackTransactionAsync();
             throw;
         }

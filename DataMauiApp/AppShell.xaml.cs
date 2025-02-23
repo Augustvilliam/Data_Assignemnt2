@@ -1,5 +1,4 @@
-﻿using DataMauiApp.Views;
-
+﻿
 namespace DataMauiApp
 {
     public partial class AppShell : Shell
@@ -7,7 +6,6 @@ namespace DataMauiApp
         public AppShell()
         {
             InitializeComponent();
-
         }
     }
 }

@@ -52,14 +52,14 @@ public partial class CustomerEditViewModel : ObservableObject
     {
         if (SelectedCustomer == null)
         {
-            Debug.WriteLine("❌ Ingen kund vald.");
+            Debug.WriteLine("Ingen kund vald.");
             return;
         }
 
         var errors = await ValidationHelper.ValidateCustomer(SelectedCustomer, _customerService);
         if (errors.Count > 0)
         {
-            Debug.WriteLine($"❌ Valideringsfel: {string.Join(", ", errors)}");
+            Debug.WriteLine($"Valideringsfel: {string.Join(", ", errors)}");
             await Application.Current.MainPage.DisplayAlert("Validation Error", string.Join("\n", errors), "OK");
             return;
         }
@@ -71,7 +71,6 @@ public partial class CustomerEditViewModel : ObservableObject
     [RelayCommand]
     public async Task NavigateBack()
     {
-        Debug.WriteLine("Navigerar tillbaka till CustomerPage...");
         await Shell.Current.GoToAsync("//CustomerPage");
     }
 }

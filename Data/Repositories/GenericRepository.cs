@@ -6,7 +6,7 @@ using Data.Interface;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Storage;
 
-namespace Data.Repositories;
+namespace Data.Repositories; //Generisk repository som bas för alla andra. Tillsnyggad med chatgpt.
 
 public class GenericRepository<T> : IGenericRepository<T> where T : class
 {
@@ -19,7 +19,6 @@ public class GenericRepository<T> : IGenericRepository<T> where T : class
         _context = context;
         _dbSet = _context.Set<T>();
     }
-
     #region CRUD
     public async Task AddAsync(T entity)
     {
@@ -79,9 +78,6 @@ public class GenericRepository<T> : IGenericRepository<T> where T : class
     }
 
     #endregion
-
-
-
     public async Task<List<T>> FindAsync(Expression<Func<T, bool>> predicate)
     {
         return await _dbSet.Where(predicate).ToListAsync();

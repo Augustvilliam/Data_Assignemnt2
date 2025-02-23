@@ -76,7 +76,7 @@ public class DbInitializer
             command.ExecuteNonQuery();
         }
     }
-    //TestData som använder under uppgiftens gång då jag Nukat databasen vi uppstart för att testa så allt funkar rent. Låter kommentaren ligga kvar för dokumentation. 
+    //TestData som använder under uppgiftens gång då jag Nukat databasen vi uppstart för att testa så allt funkar rent. Låter kommentaren ligga kvar för dokumentation. delar av koden är genererad av chatGPT, mestadels där det ligger debugs när jag inte fick databasen att skapas. 
     //public void TestData() 
     //  {
     //      using var connection = new SqliteConnection(_connectionString);
@@ -196,12 +196,10 @@ public class DbInitializer
     //    }
     //}
 
-    public void SeedData()
+    public void SeedData() //slänger in roller och services i databas 
     {
         using var connection = new SqliteConnection(_connectionString);
         connection.Open();
-
-        Debug.WriteLine("⚡ Initierar roller och tjänster...");
 
         // Kontrollera om roller redan finns
         var checkRolesSql = "SELECT COUNT(*) FROM Roles;";
@@ -218,11 +216,10 @@ public class DbInitializer
             ";
             using var insertRolesCommand = new SqliteCommand(insertRolesSql, connection);
             insertRolesCommand.ExecuteNonQuery();
-            Debug.WriteLine("✅ Roller har lagts till.");
         }
         else
         {
-            Debug.WriteLine("🔹 Roller finns redan.");
+            Debug.WriteLine("Roller finns redan.");
         }
 
         // Kontrollera om tjänster redan finns
@@ -240,11 +237,10 @@ public class DbInitializer
             ";
             using var insertServicesCommand = new SqliteCommand(insertServicesSql, connection);
             insertServicesCommand.ExecuteNonQuery();
-            Debug.WriteLine("✅ Tjänster har lagts till.");
         }
         else
         {
-            Debug.WriteLine("🔹 Tjänster finns redan.");
+            Debug.WriteLine("Tjänster finns redan.");
         }
     }
 

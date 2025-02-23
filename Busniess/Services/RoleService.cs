@@ -8,7 +8,7 @@ using Data.Repositories;
 
 namespace Busniess.Services;
 
-public class RoleService : IRoleService
+public class RoleService : IRoleService //Delvis omgjord med chat GPT när jag införde DTOs i systmet. 
 {
     private readonly IGenericRepository<RoleEntity> _roleRepository;
 

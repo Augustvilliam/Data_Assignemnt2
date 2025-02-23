@@ -6,7 +6,7 @@ namespace Busniess.Factories;
 
 public class EmployeeFactory
 {
-    // Skapar en EmployeeEntity från Dto
+    // mappar en EmployeeEntity från Dto
     public static EmployeeEntity CreateEmployee(EmployeeDto dto)
     {
         return new EmployeeEntity
@@ -28,7 +28,7 @@ public class EmployeeFactory
         };
     }
 
-    // Skapar en EmployeeDto frå entitet.
+    // mappar en EmployeeDto frå entitet.
     public static EmployeeDto CreateDto(EmployeeEntity entity)
     {
         return new EmployeeDto

@@ -25,7 +25,7 @@ public static class MauiProgram
             });
 
         var desktopPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.Desktop), "project.db");
-        Debug.WriteLine($"📂 Databasen finns här: {desktopPath}");
+        Debug.WriteLine($"Databasen finns här: {desktopPath}"); //Eftesom daabasen la sig huller om buller innan fick den så snällt hamna på skrivbordet istället. och med en debug bara för att se att den faktiskt hamnar där.
 
         builder.Services.AddDbContext<DataDbContext>(options =>
             options.UseSqlite($"Data Source={desktopPath}"));

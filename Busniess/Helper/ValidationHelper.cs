@@ -9,7 +9,7 @@ using Data.Entities;
 
 namespace Busniess.Helper;
 
-public class ValidationHelper
+public class ValidationHelper //Reggex genererade av chatgpt. ValidateEmployee och Customer kollar efter dubleter av Epost i databasen då den crashade appen oavsätt om den var en key eller inte. 
 {
     private static readonly Regex EmailRegex = new(@"^[^\s@]+@[^\s@]+\.[^\s@]+$", RegexOptions.Compiled);
     private static readonly Regex PhoneRegex = new(@"^\+?[0-9]{7,15}$", RegexOptions.Compiled);
@@ -38,7 +38,7 @@ public class ValidationHelper
         if (employee.RoleId <= 0)
             errors.Add("A valid role must be selected.");
 
-        var existingEmployees = await employeeService.GetAllEmployeesAsync();
+        var existingEmployees = await employeeService.GetAllEmployeesAsync(); //kollar om det redan finns en sådan Epost.
         if (existingEmployees.Any(e => e.Email.ToLower() == employee.Email.ToLower() && e.Id != employee.Id))
         {
             errors.Add("This email is already in use by another employee.");

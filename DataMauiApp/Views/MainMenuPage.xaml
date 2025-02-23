@@ -3,25 +3,53 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              x:Class="DataMauiApp.Views.MainMenuPage"
              Title="MainMenuPage">
-    <VerticalStackLayout>
-      <Label HorizontalOptions="Center" FontSize="30" Text="Main Menu, Please select and option." />
+    
+    <Grid Margin="30"
+        RowDefinitions="auto, *, auto"
+        ColumnDefinitions="*, *, *, *, *">
 
-        <Button Text="Emplyee Menu"
+        <VerticalStackLayout  Grid.ColumnSpan="5" HorizontalOptions="Center">
+            <Label HorizontalOptions="Center" FontSize="30" Text="Main Menu, Please select and option." />
+        </VerticalStackLayout>
+
+        <VerticalStackLayout VerticalOptions="Center" Grid.Column="0" Grid.Row="1">
+            <Button 
+                Padding="40, 300, 40, 300"
+                Text="Emplyoee Menu"
                 Margin="20"
                 Command="{Binding NavigateToEmployeeMenuCommand}"
-                Background="DarkOliveGreen"
+                Background="DarkSlateBlue"
                 TextColor="White"/>
-        <Button Text="Customer Menu"
+        </VerticalStackLayout>
+
+        <VerticalStackLayout VerticalOptions="Center"  Grid.Column="1" Grid.Row="1">
+            <Label Text="First Step: ←Create Employees and customers→" FontSize="15" FontAttributes="Bold"  />
+        </VerticalStackLayout>
+
+        <VerticalStackLayout VerticalOptions="Center"  Grid.Column="2" Grid.Row="1">
+            <Button 
+                Padding="40, 300, 40, 300"
+                Text="Customer Menu"
                 Margin="20"
                 Command="{Binding NavigateToCustomerMenuCommand}"
-                Background="DarkOliveGreen"
+                Background="DarkSlateBlue"
                 TextColor="White"/>
-        <Button Text="Project Menu"
+        </VerticalStackLayout>
+
+        <VerticalStackLayout VerticalOptions="Center"  Grid.Column="3" Grid.Row="1">
+            <Label  FontSize="13" FontAttributes="Bold" HorizontalOptions="Center" Text="Already Have Employees and Customers in the system?"  />
+            <Label  FontSize="15" FontAttributes="Bold" HorizontalOptions="Center" Text="Go Ahead and create your projects! →"  />
+        </VerticalStackLayout>
+
+        <VerticalStackLayout VerticalOptions="Center"  Grid.Column="4" Grid.Row="1">
+            <Button 
+                Padding="40, 300, 40, 300"
+                Text="Project Menu"
                 Margin="20"
                 Command="{Binding NavigateToProjectMenuCommand}"
-                Background="DarkOliveGreen"
+                Background="DarkSlateBlue"
                 TextColor="White"/>
+        </VerticalStackLayout>
 
-
-    </VerticalStackLayout>
+    </Grid>
 </ContentPage>

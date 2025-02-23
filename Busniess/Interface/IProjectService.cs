@@ -1,5 +1,4 @@
 ﻿using Busniess.Dtos;
-using Data.Entities;
 
 namespace Busniess.Interface
 {

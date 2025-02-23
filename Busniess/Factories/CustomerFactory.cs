@@ -5,11 +5,13 @@ using Data.Entities;
 
 namespace Busniess.Factories;
 
+
+//Factory för Cusomer, båda tillsnyggade med chatgpt.
 public class CustomerFactory
 {
     public static CustomerEntity CreateCustomer(CustomerDto dto)
     {
-        return new CustomerEntity
+        return new CustomerEntity //mappar en CustomerEntity
         {
             FirstName = dto.FirstName,
             LastName = dto.LastName,
@@ -21,8 +23,8 @@ public class CustomerFactory
 
     public static CustomerDto CreateDto(CustomerEntity entity)
     {
-        return new CustomerDto
-        {
+        return new CustomerDto //mappar en Dto från en entity
+        { 
             Id = entity.Id,
             FirstName = entity.FirstName,
             LastName = entity.LastName,
