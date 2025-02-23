@@ -62,7 +62,7 @@ public partial class ProjectEditViewModel : ObservableObject
             _ = LoadData();
         }
     }
-    private async Task LoadData()
+    private async Task LoadData() //laddar samtliga saker some behövs 
     {
         try
         {
@@ -70,7 +70,6 @@ public partial class ProjectEditViewModel : ObservableObject
             Customers = new ObservableCollection<CustomerDto>(await _customerService.GetAllCustomersAsync());
             Employees = new ObservableCollection<EmployeeDto>(await _employeeService.GetAllEmployeesAsync());
             Services = new ObservableCollection<ServiceDto>(await _serviceService.GetAllServicesAsync());
-
             if (SelectedProject != null)
             {
                 SelectedCustomer = Customers.FirstOrDefault(c => c.Id == SelectedProject.CustomerId);
@@ -78,7 +77,6 @@ public partial class ProjectEditViewModel : ObservableObject
                 SelectedService = Services.FirstOrDefault(s => s.Id == SelectedProject.ServiceId);
                 SelectedStatus = SelectedProject.Status;
             }
-
         }
         catch (Exception ex)
         {
@@ -94,14 +92,12 @@ public partial class ProjectEditViewModel : ObservableObject
             await AlertHelper.ShowSelectionAlert("Project");
             return;
         }
-
         var errors = ValidationHelper.ValidateProject(SelectedProject);
         if (errors.Count > 0)
         {
             await Application.Current.MainPage.DisplayAlert("Validation Error", string.Join("\n", errors), "OK");
             return;
         }
-
         SelectedProject.CustomerId = SelectedCustomer?.Id ?? 0;
         SelectedProject.EmployeeId = SelectedEmployee?.Id ?? 0;
         SelectedProject.ServiceId = SelectedService?.Id ?? 0;

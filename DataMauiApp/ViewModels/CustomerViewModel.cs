@@ -29,7 +29,7 @@ public partial class CustomerViewModel : ObservableObject
         _ = LoadCustomers();
     }
 
-    public async Task LoadCustomers()
+    public async Task LoadCustomers() //laddar samtliga cusomers
     {
         try
         {
@@ -62,7 +62,7 @@ public partial class CustomerViewModel : ObservableObject
     {
         if (SelectedCustomer != null)
         {
-            await _customerService.DeleteCustomersAsync(SelectedCustomer.Id);
+            await _customerService.DeleteCustomersAsync(SelectedCustomer.Id); //tar bort via id så vi tar bort korrekt customer
             await LoadCustomers();
         }
         else

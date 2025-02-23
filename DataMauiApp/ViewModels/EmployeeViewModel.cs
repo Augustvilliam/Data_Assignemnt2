@@ -72,7 +72,7 @@ public partial class EmployeeViewModel : ObservableObject
             Debug.WriteLine($"Fel vid laddning av tjänster: {ex.Message}");
         }
     }
-    public async Task LoadRoles()
+    public async Task LoadRoles() //laddar roller, egentligen borde man slå ihop denna och LoadServices men det orkar jag inte :D
     {
         Roles = new ObservableCollection<RoleDto>(await _roleService.GetAllRolesAsync());
 
@@ -95,7 +95,7 @@ public partial class EmployeeViewModel : ObservableObject
     {
         SelectedRole = value ?? new RoleDto { Id = 0, Name = "Unknown", Price = 0 };
     }
-    public async Task LoadEmployee() //laddar anställdlistan 
+    public async Task LoadEmployee() //laddar anställdlistan, som sagt denna borde också slås ihop till en loadData istället
     {
         try
         {

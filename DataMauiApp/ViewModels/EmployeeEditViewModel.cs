@@ -45,7 +45,7 @@ public partial class EmployeeEditViewModel : ObservableObject
         _ = LoadData();
     }
 
-    public async Task LoadData()
+    public async Task LoadData() //laddar in Employees, roller och services
     {
         try
         {
@@ -77,7 +77,7 @@ public partial class EmployeeEditViewModel : ObservableObject
 
 
 
-    partial void OnSelectedEmployeeChanged(EmployeeDto value)
+    partial void OnSelectedEmployeeChanged(EmployeeDto value) //genererad med chatGPT
     {
         if (value != null)
         {

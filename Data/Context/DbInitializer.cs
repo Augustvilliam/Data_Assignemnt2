@@ -14,7 +14,7 @@ public class DbInitializer
 
     public void InitializeDatabase()
     {
-        using (var connection = new SqliteConnection(_connectionString))
+        using (var connection = new SqliteConnection(_connectionString)) //skapar tabellerna manuellt.
         {
             connection.Open();
             var sql = @"
@@ -222,7 +222,7 @@ public class DbInitializer
             Debug.WriteLine("Roller finns redan.");
         }
 
-        // Kontrollera om tjänster redan finns
+        // Kontrollera om services redan finns
         var checkServicesSql = "SELECT COUNT(*) FROM Services;";
         using var checkServicesCommand = new SqliteCommand(checkServicesSql, connection);
         var serviceExists = (long)checkServicesCommand.ExecuteScalar();
