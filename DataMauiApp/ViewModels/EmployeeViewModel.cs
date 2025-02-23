@@ -9,6 +9,7 @@ using Busniess.Interface;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using Data.Entities;
+using DataMauiApp.Helpers;
 
 namespace DataMauiApp.ViewModels;
 
@@ -22,7 +23,7 @@ public partial class EmployeeViewModel : ObservableObject
 
 
     [ObservableProperty]
-    private ObservableCollection<RoleEntity> roles = new();
+    private ObservableCollection<RoleDto> roles = new();
     [ObservableProperty]
     private ObservableCollection<ServiceDto> availableServices = new();
     [ObservableProperty]
@@ -32,7 +33,7 @@ public partial class EmployeeViewModel : ObservableObject
     [ObservableProperty]
     private EmployeeDto selectedEmployee;
     [ObservableProperty]
-    private RoleEntity selectedRole;
+    private RoleDto selectedRole;
     [ObservableProperty]
     private EmployeeDto newEmployee = new()
     {
@@ -73,16 +74,26 @@ public partial class EmployeeViewModel : ObservableObject
     }
     public async Task LoadRoles()
     {
+        Roles = new ObservableCollection<RoleDto>(await _roleService.GetAllRolesAsync());
+
         try
         {
+            if (Roles.Count > 0 && SelectedRole == null)
+            {
+                SelectedRole = Roles.First();
+            }
             var roleList = await _roleService.GetAllRolesAsync();
-            Roles = new ObservableCollection<RoleEntity>(roleList);
+            Roles = new ObservableCollection<RoleDto>(roleList);
             Debug.WriteLine($"Antal roller laddade: {Roles.Count}");
         }
         catch (Exception ex)
         {
             Debug.WriteLine($"Fel vid laddning av roller. { ex.Message} ");
         }
+    }
+    partial void OnSelectedRoleChanged(RoleDto? value)
+    {
+        SelectedRole = value ?? new RoleDto { Id = 0, Name = "Unknown", Price = 0 };
     }
     public async Task LoadEmployee()
     {
@@ -132,7 +143,7 @@ public partial class EmployeeViewModel : ObservableObject
         }
         else
         {
-            Debug.WriteLine("❌ Ingen anställd vald.");
+            await AlertHelper.ShowSelectionAlert("Employee");
         }
     }
     [RelayCommand]

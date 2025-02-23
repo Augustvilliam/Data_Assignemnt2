@@ -6,6 +6,7 @@ using Busniess.Helper;
 using Busniess.Interface;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
+using DataMauiApp.Helpers;
 
 
 namespace DataMauiApp.ViewModels;
@@ -65,9 +66,6 @@ public partial class ProjectViewModel : ObservableObject
             Customers = new ObservableCollection<CustomerDto>(await _customerService.GetAllCustomersAsync());
             Employees = new ObservableCollection<EmployeeDto>(await _employeeService.GetAllEmployeesAsync());
             Services = new ObservableCollection<ServiceDto>(await _serviceService.GetAllServicesAsync());
-
-
-            Debug.WriteLine($"Laddade {Projects.Count} projekt, {Customers.Count} kunder, {Employees.Count} anställda, {Services.Count} tjänster.");
         }
         catch (Exception ex)
         {
@@ -80,9 +78,13 @@ public partial class ProjectViewModel : ObservableObject
     {
         if (SelectedCustomer == null || SelectedEmployee == null || SelectedService == null)
         {
-            await Application.Current.MainPage.DisplayAlert("Validation Error", "You must select a customer, employee, and service!", "OK");
+            await AlertHelper.ShowSelectionAlert("Project, Customer, Employee");
+
             return;
         }
+
+        await Application.Current.MainPage.DisplayAlert("Saving Project...", "Chilla lite, detta kommer ta ungefär en livstid...", "OK"); //epic prank lol Xd
+        await Task.Delay(2000);
 
         var projectDto = new ProjectDto
         {
@@ -112,6 +114,8 @@ public partial class ProjectViewModel : ObservableObject
         await _projectService.AddProject(projectDto);
         await LoadData();
         ClearProjectForm();
+
+        await Application.Current.MainPage.DisplayAlert("Success", "Skojar med dig hans, jag bara duuuuuumar maaaaaj", "OK");
     }
     [RelayCommand]
     public async Task DeleteProject()
@@ -119,7 +123,6 @@ public partial class ProjectViewModel : ObservableObject
         if (SelectedProject != null && SelectedProject.Id != 0)
             {
             await _projectService.DeleteProjectAsync(SelectedProject.Id);
-            Debug.WriteLine($"🗑️ Projekt '{SelectedProject.Name}' raderat.");
             LoadData();
             SelectedProject = null;
             }
@@ -143,7 +146,6 @@ public partial class ProjectViewModel : ObservableObject
     [RelayCommand]
     public async Task NavigateBack()
     {
-        Debug.WriteLine("Navigerar tillbaka...");
         await Shell.Current.GoToAsync("//MainMenuPage");
     }
 

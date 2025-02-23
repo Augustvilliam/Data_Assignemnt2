@@ -5,10 +5,10 @@ namespace Busniess.Interface
 {
     public interface IRoleService
     {
-        Task<List<RoleEntity>> GetAllRolesAsync();
-        Task<RoleEntity?> GetRoleByIdAsync(int id);
-        Task AddRoleAsync(RoleEntity role);
-        Task UpdateRoleAsync(RoleEntity role);
+        Task<List<RoleDto>> GetAllRolesAsync();
+        Task<RoleDto?> GetRoleByIdAsync(int id);
+        Task AddRoleAsync(RoleDto role);
+        Task UpdateRoleAsync(RoleDto role);
         Task DeleteRoleAsync(int id);
     }
 }

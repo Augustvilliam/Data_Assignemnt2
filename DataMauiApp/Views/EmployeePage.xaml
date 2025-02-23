@@ -18,7 +18,6 @@
                                 <Label Margin="10, 0, 0, 0"  Text="{Binding Id}" FontSize="14"/>
                                 <Label Margin="10, 0, 0, 0" Text="{Binding FirstName}" FontSize="18" FontAttributes="Bold"/>
                                 <Label Margin="10, 0, 0, 10"  Text="{Binding Email}" FontSize="14"/>
-                                
                             </VerticalStackLayout>
                         </Border>
                     </DataTemplate>

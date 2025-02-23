@@ -9,6 +9,7 @@ using System.Diagnostics;
 using Busniess.Helper;
 using Busniess.Dtos;
 using Busniess.Services;
+using DataMauiApp.Helpers;
 
 namespace DataMauiApp.ViewModels;
 
@@ -52,7 +53,7 @@ public partial class CustomerEditViewModel : ObservableObject
     {
         if (SelectedCustomer == null)
         {
-            Debug.WriteLine("Ingen kund vald.");
+            await AlertHelper.ShowSelectionAlert("Customer");
             return;
         }
 

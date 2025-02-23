@@ -7,6 +7,7 @@ using Busniess.Interface;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using Data.Entities;
+using DataMauiApp.Helpers;
 
 namespace DataMauiApp.ViewModels;
 [QueryProperty(nameof(SelectedProject), "Project")]
@@ -78,7 +79,6 @@ public partial class ProjectEditViewModel : ObservableObject
                 SelectedStatus = SelectedProject.Status;
             }
 
-            Debug.WriteLine($"✅ Loaded {Projects.Count} projects, {Customers.Count} customers, {Employees.Count} employees, {Services.Count} services.");
         }
         catch (Exception ex)
         {
@@ -91,7 +91,7 @@ public partial class ProjectEditViewModel : ObservableObject
     {
         if (SelectedProject == null)
         {
-            Debug.WriteLine("❌ No project selected.");
+            await AlertHelper.ShowSelectionAlert("Project");
             return;
         }
 

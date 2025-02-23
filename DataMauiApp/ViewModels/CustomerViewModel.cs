@@ -8,6 +8,7 @@ using Busniess.Interface;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using Data.Entities;
+using DataMauiApp.Helpers;
 
 namespace DataMauiApp.ViewModels;
 
@@ -66,7 +67,7 @@ public partial class CustomerViewModel : ObservableObject
         }
         else
         {
-            Debug.WriteLine("❌ Ingen kund vald.");
+            await AlertHelper.ShowSelectionAlert("Customer");
         }
     }
     [RelayCommand]
@@ -86,7 +87,7 @@ public partial class CustomerViewModel : ObservableObject
         }
         else
         {
-            await Application.Current.MainPage.DisplayAlert("Error", "You must select a customer before editing!", "OK");
+            await AlertHelper.ShowSelectionAlert("Customer");
         }
     }
 }

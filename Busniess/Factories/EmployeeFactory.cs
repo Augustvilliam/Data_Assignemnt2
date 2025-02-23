@@ -17,7 +17,7 @@ public class EmployeeFactory
             Email = dto.Email,
             PhoneNumber = dto.PhoneNumber,
             RoleId = dto.RoleId,
-            Role = new RoleEntity
+            Role = new RoleDto
             {
                 Id = dto.RoleId,
                 Name = dto.RoleName,

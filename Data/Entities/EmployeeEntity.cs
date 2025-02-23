@@ -11,7 +11,7 @@ public class EmployeeEntity
     public string PhoneNumber { get; set; } = null!;
 
     public int RoleId { get; set; } 
-    public RoleEntity? Role { get; set; } = null!; //genererad av chatgpt
+    public RoleDto? Role { get; set; } = null!; //genererad av chatgpt
 
     public decimal Price => Role?.Price ?? 0; //genererad av chatgpt
 

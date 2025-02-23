@@ -13,7 +13,7 @@ public class DataDbContext : DbContext
 
     public DbSet<EmployeeEntity> Employees { get; set; }
     public DbSet<ServiceEntity> Services { get; set; }
-    public DbSet<RoleEntity> Roles { get; set; }
+    public DbSet<RoleDto> Roles { get; set; }
     public DbSet<CustomerEntity> Customers { get; set; }
     public DbSet<ProjectEntity> Projects { get; set; }
 
@@ -32,10 +32,10 @@ public class DataDbContext : DbContext
                     j.ToTable("EmployeeService");
                 });
 
-        modelBuilder.Entity<RoleEntity>().HasData( //hårdkodade Roller och services eftersom det blev för många steg att skapa en Employee och senare projekt. Genererad av chatGPT
-            new RoleEntity { Id = 1, Name = "Intern", Price = 100 },
-            new RoleEntity { Id = 2, Name = "Junior", Price = 200 },
-            new RoleEntity { Id = 3, Name = "Senior", Price = 400 }
+        modelBuilder.Entity<RoleDto>().HasData( //hårdkodade Roller och services eftersom det blev för många steg att skapa en Employee och senare projekt. Genererad av chatGPT
+            new RoleDto { Id = 1, Name = "Intern", Price = 100 },
+            new RoleDto { Id = 2, Name = "Junior", Price = 200 },
+            new RoleDto { Id = 3, Name = "Senior", Price = 400 }
         );
 
         modelBuilder.Entity<ServiceEntity>().HasData( //som tidigare nämt är EstimatedHours i princip en restprodukt i detta skedet. 

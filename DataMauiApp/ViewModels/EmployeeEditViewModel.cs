@@ -9,6 +9,7 @@ using Busniess.Interface;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using Data.Entities;
+using DataMauiApp.Helpers;
 using Microsoft.EntityFrameworkCore.Diagnostics;
 
 namespace DataMauiApp.ViewModels;
@@ -23,7 +24,7 @@ public partial class EmployeeEditViewModel : ObservableObject
     [ObservableProperty]
     private ObservableCollection<EmployeeDto> employees = new();
     [ObservableProperty]
-    private ObservableCollection<RoleEntity> roles = new();
+    private ObservableCollection<RoleDto> roles = new();
     [ObservableProperty]
     private ObservableCollection<ServiceDto> availableServices = new();
     [ObservableProperty]
@@ -33,7 +34,7 @@ public partial class EmployeeEditViewModel : ObservableObject
     [ObservableProperty]
     private EmployeeDto selectedEmployee;
     [ObservableProperty]
-    private RoleEntity selectedRole;
+    private RoleDto selectedRole;
 
 
     public EmployeeEditViewModel(IEmployeeService employeeService, IRoleService roleService, IServiceService serviceService)
@@ -49,7 +50,7 @@ public partial class EmployeeEditViewModel : ObservableObject
         try
         {
             Employees = new ObservableCollection<EmployeeDto>(await _employeeService.GetAllEmployeesAsync());
-            Roles = new ObservableCollection<RoleEntity>(await _roleService.GetAllRolesAsync());
+            Roles = new ObservableCollection<RoleDto>(await _roleService.GetAllRolesAsync());
             AvailableServices = new ObservableCollection<ServiceDto>(await _serviceService.GetAllServicesAsync());
 
             if (SelectedEmployee != null)
@@ -90,7 +91,7 @@ public partial class EmployeeEditViewModel : ObservableObject
         }
     }
 
-    public void ToggleServiceSelection(ServiceDto service, bool isChecked)
+    public void ToggleServiceSelection(ServiceDto service, bool isChecked) //tanken var att denna skulle toggla så att vi Employees bara kunde utföra vissa services. Men fick aldrig skiten att funka...
     {
         if (isChecked)
         {
@@ -103,8 +104,6 @@ public partial class EmployeeEditViewModel : ObservableObject
             if (existingService != null)
                 SelectedServices.Remove(existingService);
         }
-
-        Debug.WriteLine($"🛠️ Selected Services: {string.Join(", ", SelectedServices.Select(s => s.Name))}");
     }
 
 
@@ -133,12 +132,10 @@ public partial class EmployeeEditViewModel : ObservableObject
 
             SelectedEmployee = Employees.FirstOrDefault(e => e.Id == employeeDto.Id);
             SelectedRole = Roles.FirstOrDefault(r => r.Id == employeeDto.RoleId);
-
-            Debug.WriteLine("✅ Employee Updated and UI Refreshed");
         }
         else
         {
-            Debug.WriteLine("❌ Error: No employee selected for update.");
+            await AlertHelper.ShowSelectionAlert("Employee");
         }
     }
 
@@ -147,7 +144,6 @@ public partial class EmployeeEditViewModel : ObservableObject
     [RelayCommand]
     public async Task NavigateBack()
     {
-        Debug.WriteLine("Navigerar tillbaka till EmployeePage...");
         await Shell.Current.GoToAsync("//EmployeePage");
     }
 }
